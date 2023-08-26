@@ -86,7 +86,7 @@ CREATE TABLE "Postagem" (
 
 CREATE TABLE "Votacao" (
   "id" uuid PRIMARY KEY NOT NULL default generate_uuid_v4(),
-  "tipo" BOOLEAN NOT NULL,
+  "tipo" bool NOT NULL,
   "id_postagem" INTEGER NOT NULL,
   "id_paciente" INTEGER
 );
