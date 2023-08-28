@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Import;
 @Import(AmparoConfiguration.class)
 public class BackendAmparoApplication {
 	public static void main(String[] args) {
-		SpringApplication.run(BackendAmparoApplication.class, args);
+		SpringApplication.run
+				(BackendAmparoApplication.class, args);
 	}
-
 }
