@@ -1,4 +1,4 @@
-package br.com.amparo.backend.domain;
+package br.com.amparo.backend.domain.record;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -11,6 +11,11 @@ public record User(String id, String email, String password, String name, String
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return null;
+    }
+
+    @Override
+    public String getPassword() {
+        return this.password;
     }
 
     @Override
