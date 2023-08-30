@@ -5,9 +5,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 
-public record User(String id, String email, String password, String name, String phone,
-                   String profilePhoto, boolean anonymous)
-        implements UserDetails {
+public record User(String id, String email, String password, String name, String phone, String profilePhoto, boolean anonymous) implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return null;

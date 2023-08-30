@@ -33,6 +33,4 @@ public class PatientServiceImpl implements PatientService {
         Patient savedUser = patientRepository.save(patient);
         return PatientMapper.MAPPER.mapToPatientRegistrationData(savedUser);
     }
-
-
 }
