@@ -1,4 +1,4 @@
-package br.com.amparo.backend.service;
+package br.com.amparo.backend.service.login;
 
 import br.com.amparo.backend.domain.record.User;
 import com.auth0.jwt.JWT;
