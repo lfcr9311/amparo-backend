@@ -15,6 +15,7 @@ public record User(String id, String email, String password, String name, String
 
     @Override
     public String getPassword() {
+
         return this.password;
     }
 
@@ -22,7 +23,6 @@ public record User(String id, String email, String password, String name, String
     public String getUsername() {
         return this.email;
     }
-
     @Override
     public boolean isAccountNonExpired() {
         return false;
@@ -42,4 +42,5 @@ public record User(String id, String email, String password, String name, String
     public boolean isEnabled() {
         return true;
     }
+
 }

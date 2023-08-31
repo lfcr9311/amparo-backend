@@ -28,12 +28,15 @@ public class User implements Serializable {
     private String fullName;
 
     @Column(name = "data_nascimento", nullable = false)
-    private String dataNAscimento;
+    private String dataNascimento;
 
     @Column(name = "password", nullable = false)
     private String password;
 
     @Column(name = "confirm_Password", nullable = false)
     private String confirm_Password;
+
+    @Column(name= "is_Anonymous", nullable = false)
+    private Boolean is_Anonymous;
 
 }

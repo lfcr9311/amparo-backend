@@ -1,7 +1,7 @@
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
 CREATE TABLE "Usuario" (
-  "id" uuid PRIMARY KEY NOT NULL default generate_uuid_v4(),
+  "id" uuid PRIMARY KEY NOT NULL default uuid_generate_v4(),
   "email" TEXT UNIQUE NOT NULL,
   "senha" TEXT NOT NULL,
   "nome" TEXT NOT NULL,
@@ -22,7 +22,7 @@ CREATE TABLE "Paciente" (
 );
 
 CREATE TABLE "Informacao" (
-  "id" uuid PRIMARY KEY NOT NULL default generate_uuid_v4(),
+  "id" uuid PRIMARY KEY NOT NULL default uuid_generate_v4(),
   "titulo" TEXT,
   "link" TEXT,
   "imagem" TEXT,
@@ -31,22 +31,22 @@ CREATE TABLE "Informacao" (
 );
 
 CREATE TABLE "MedicoPaciente" (
-  "id" uuid PRIMARY KEY NOT NULL default generate_uuid_v4(),
-  "id_medico" INTEGER,
-  "id_paciente" INTEGER
+  "id" uuid PRIMARY KEY NOT NULL default uuid_generate_v4(),
+  "id_medico" uuid,
+  "id_paciente" uuid
 );
 
 CREATE TABLE "Consulta" (
-  "id" uuid PRIMARY KEY NOT NULL default generate_uuid_v4(),
-  "id_medico" INTEGER,
-  "id_paciente" INTEGER,
+  "id" uuid PRIMARY KEY NOT NULL default uuid_generate_v4(),
+  "id_medico" uuid,
+  "id_paciente" uuid,
   "data_consulta" timestamp NOT NULL
 );
 
 CREATE TABLE "Dosagem" (
-  "id" uuid PRIMARY KEY NOT NULL default generate_uuid_v4(),
-  "id_paciente" INTEGER,
-  "id_medicamento" INTEGER,
+  "id" uuid PRIMARY KEY NOT NULL default uuid_generate_v4(),
+  "id_paciente" uuid,
+  "id_medicamento" uuid,
   "quantidade" TEXT NOT NULL,
   "horario_inicial" timestamp,
   "frequencia" timestamp,
@@ -54,41 +54,41 @@ CREATE TABLE "Dosagem" (
 );
 
 CREATE TABLE "Medicamento" (
-  "id" uuid PRIMARY KEY NOT NULL default generate_uuid_v4(),
+  "id" uuid PRIMARY KEY NOT NULL default uuid_generate_v4(),
   "nome" TEXT NOT NULL,
   "bula" TEXT
 );
 
 CREATE TABLE "Incompatibilidade" (
-  "id" uuid PRIMARY KEY NOT NULL default generate_uuid_v4(),
-  "id_medicamento" INTEGER,
-  "id_medicamento_inc" INTEGER,
+  "id" uuid PRIMARY KEY NOT NULL default uuid_generate_v4(),
+  "id_medicamento" uuid,
+  "id_medicamento_inc" uuid,
   "severidade" TEXT,
   "descricao" TEXT
 );
 
 CREATE TABLE "Exame" (
-  "id" uuid PRIMARY KEY NOT NULL default generate_uuid_v4(),
+  "id" uuid PRIMARY KEY NOT NULL default uuid_generate_v4(),
   "descricao" TEXT,
   "data_exame" timestamp NOT NULL,
   "realizado" BOOLEAN,
-  "id_paciente" INTEGER
+  "id_paciente" uuid
 );
 
 CREATE TABLE "Postagem" (
-  "id" uuid PRIMARY KEY NOT NULL default generate_uuid_v4(),
+  "id" uuid PRIMARY KEY NOT NULL default uuid_generate_v4(),
   "conteudo" TEXT,
   "data_criacao" timestamp NOT NULL,
-  "id_paciente" INTEGER,
+  "id_paciente" uuid,
   "main" BOOLEAN NOT NULL,
-  "id_postagem_mae" INTEGER
+  "id_postagem_mae" uuid
 );
 
 CREATE TABLE "Votacao" (
-  "id" uuid PRIMARY KEY NOT NULL default generate_uuid_v4(),
+  "id" uuid PRIMARY KEY NOT NULL default uuid_generate_v4(),
   "tipo" BOOLEAN NOT NULL,
-  "id_postagem" INTEGER NOT NULL,
-  "id_paciente" INTEGER
+  "id_postagem" uuid NOT NULL,
+  "id_paciente" uuid
 );
 
 ALTER TABLE "Medico" ADD FOREIGN KEY ("id") REFERENCES "Usuario" ("id");

@@ -9,4 +9,6 @@ import java.util.UUID;
 public interface PatientRepository extends JpaRepository<Patient, UUID> {
 
     Optional<Patient> findByUser_Id(final UUID userId);
+
+    Optional<Patient> findByCpf(final String cpf);
 }

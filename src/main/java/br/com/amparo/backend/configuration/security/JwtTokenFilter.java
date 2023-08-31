@@ -1,6 +1,7 @@
 package br.com.amparo.backend.configuration.security;
 
 import br.com.amparo.backend.configuration.security.domain.TokenUser;
+import br.com.amparo.backend.repository.UserRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.web.authentication.preauth.AbstractPreAuthenticatedProcessingFilter;
@@ -22,6 +23,7 @@ public class JwtTokenFilter extends AbstractPreAuthenticatedProcessingFilter {
 
     @Override
     protected Object getPreAuthenticatedCredentials(HttpServletRequest request) {
+
         return "N/A";
     }
 
@@ -30,6 +32,6 @@ public class JwtTokenFilter extends AbstractPreAuthenticatedProcessingFilter {
             String jwtToken = auth.getPrincipal().toString();
             TokenUser tokenUser = tokenService.decript(jwtToken);
 
-        };
+        }
     }
 }
