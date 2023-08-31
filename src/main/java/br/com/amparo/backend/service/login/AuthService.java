@@ -20,7 +20,6 @@ public class AuthService {
             throws NoSuchAlgorithmException {
         this.tokenService = tokenService;
         this.userTokenRepository = userTokenRepository;
-        this.sha256Digestor = MessageDigest.getInstance("SHA-256");
     }
 
     public Optional<String> login(LoginRequest loginRequest) {
@@ -29,6 +28,7 @@ public class AuthService {
                     var inputPassword = loginRequest.password() + userTokenEntity.salt();
                     var encodedInputPassword = sha256Digestor.digest(inputPassword.getBytes(StandardCharsets.UTF_8));
                     if (Arrays.equals(encodedInputPassword, userTokenEntity.getBytePassword())) {
+                        tokenService.generateToken(userTokenEntity)
                         //@Todo fazer o parse pro token, não colocar todos os campos do UserToken só o q for importante.
                         return Optional.of("GENERATED TOKEN");
                     } else {
