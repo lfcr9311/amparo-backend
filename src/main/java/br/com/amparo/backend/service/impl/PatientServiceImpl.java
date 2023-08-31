@@ -11,13 +11,14 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.UUID;
+
 import static br.com.amparo.backend.exception.ApiError.EMAIL_JA_EXISTE;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
 @Service
 @RequiredArgsConstructor
 public class PatientServiceImpl implements PatientService {
-
     private final PatientRepository patientRepository;
     private final UserService userService;
     private final PatientMapper patientMapper;
@@ -25,14 +26,14 @@ public class PatientServiceImpl implements PatientService {
     @Override
     @Transactional
     public PatientRegistrationData saveNewPatient(PatientRegistrationData patientRegistrationData) {
-        if (userService.alreadyExistsEmail(patientRegistrationData.user().email())) {
+        if (userService.alreadyExistsEmail(patientRegistrationData.user().email())
+                ||userService.alreadyExistsId(UUID.fromString(patientRegistrationData.user().id()))){
             throw new ApiErrorException(EMAIL_JA_EXISTE.getMessage(), BAD_REQUEST);
         }
+
 
         Patient patient = PatientMapper.MAPPER.mapToPatient(patientRegistrationData);
         Patient savedUser = patientRepository.save(patient);
         return PatientMapper.MAPPER.mapToPatientRegistrationData(savedUser);
     }
-
-
 }
