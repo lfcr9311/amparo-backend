@@ -3,6 +3,7 @@ CREATE TABLE "User" (
   "id" uuid PRIMARY KEY NOT NULL DEFAULT uuid_generate_v4(),
   "email" TEXT UNIQUE NOT NULL,
   "password" TEXT NOT NULL,
+  "salt" TEXT NOT NULL,
   "name" TEXT NOT NULL,
   "cellphone" LONG NOT NULL,
   "profile_picture" TEXT,
