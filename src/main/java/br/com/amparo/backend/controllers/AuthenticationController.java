@@ -35,17 +35,4 @@ public class AuthenticationController {
                         Map.of("message", "email or password invalid"), HttpStatus.UNAUTHORIZED)
                 );
     }
-
-    //@Todo isso é responsabilidade da squad 2, a gente não precisa implementar
-    @PostMapping("/register")
-    public ResponseEntity<?> register(@RequestBody RegisterDto dto) {
-        if (repository.findByLogin(dto.login()) != null) {
-            return ResponseEntity.badRequest().build();
-        }
-
-        String encodedPassword = new BCryptPasswordEncoder().encode(dto.password());
-        repository.save(new User(dto.login(), encodedPassword, dto.role()));
-
-        return ResponseEntity.ok().build();
-    }
 }
