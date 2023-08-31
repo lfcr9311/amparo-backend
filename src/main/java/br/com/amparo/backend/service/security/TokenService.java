@@ -1,7 +1,7 @@
-package br.com.amparo.backend.service.login;
+package br.com.amparo.backend.service.security;
 
+import br.com.amparo.backend.configuration.security.domain.ApiUser;
 import br.com.amparo.backend.configuration.security.domain.TokenUser;
-import br.com.amparo.backend.domain.record.User;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTCreationException;
@@ -21,13 +21,15 @@ public class TokenService {
 
     @Value("${api.security.token.secret}")
     private String secret;
-    public String generateToken(User user) {
+    public String generateToken(TokenUser apiUser) {
         try {
             Algorithm algorithm = Algorithm.HMAC256(secret);
 
             return JWT.create()
-                    .withIssuer("auth-api")
-                    .withSubject(user.getUsername())
+                    .withIssuer("amparo-api")
+                    .withSubject(apiUser.subject())
+                    .withClaim("roles", apiUser.roles())
+                    .withClaim("email", apiUser.email())
                     .withExpiresAt(genExpirationDate())
                     .sign(algorithm);
         } catch (JWTCreationException e) {
@@ -35,15 +37,15 @@ public class TokenService {
         }
     }
 
-    public TokenUser validateToken(String token) {
+    public ApiUser validateToken(String token) {
         try {
             Algorithm algorithm = Algorithm.HMAC256(secret);
             DecodedJWT decodedJWT =  JWT.require(algorithm).build().verify(token);
-
+            String id = decodedJWT.getSubject();
             String email = decodedJWT.getClaim("email").asString();
             List<String> authorities = decodedJWT.getClaim("roles").asList(String.class);
 
-            return new TokenUser(email, token, authorities.stream().map(SimpleGrantedAuthority::new).toList());
+            return new ApiUser(id, email, token, authorities.stream().map(SimpleGrantedAuthority::new).toList());
         } catch (JWTVerificationException e) {
             throw new RuntimeException("Error while validating token", e);
         }

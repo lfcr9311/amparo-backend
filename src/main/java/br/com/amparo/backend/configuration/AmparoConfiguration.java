@@ -2,8 +2,8 @@ package br.com.amparo.backend.configuration;
 
 import br.com.amparo.backend.configuration.security.AmparoSecurityConfiguration;
 import br.com.amparo.backend.repository.UserTokenRepository;
-import br.com.amparo.backend.service.login.AuthService;
-import br.com.amparo.backend.service.login.TokenService;
+import br.com.amparo.backend.service.security.AuthService;
+import br.com.amparo.backend.service.security.TokenService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
