@@ -1,122 +1,138 @@
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
-
-CREATE TABLE "Usuario" (
-  "id" uuid PRIMARY KEY NOT NULL default generate_uuid_v4(),
+CREATE TABLE "User" (
+  "id" uuid PRIMARY KEY NOT NULL DEFAULT uuid_generate_v4(),
   "email" TEXT UNIQUE NOT NULL,
-  "senha" TEXT NOT NULL,
-  "nome" TEXT NOT NULL,
-  "telefone" INTEGER NOT NULL,
-  "foto_perfil" TEXT,
-  "anonimo" BOOL
+  "password" TEXT NOT NULL,
+  "salt" TEXT NOT NULL,
+  "name" TEXT NOT NULL,
+  "cellphone" LONG NOT NULL,
+  "profile_picture" TEXT,
+  "is_anonymous" BOOL
 );
 
-CREATE TABLE "Medico" (
+CREATE TABLE "Doctor" (
   "id" uuid UNIQUE PRIMARY KEY NOT NULL,
   "crm" INTEGER UNIQUE NOT NULL,
   "uf" TEXT NOT NULL
 );
 
-CREATE TABLE "Paciente" (
+CREATE TABLE "DoctorHealthPlan" (
+  "id" uuid PRIMARY KEY NOT NULL DEFAULT uuid_generate_v4(),
+  "id_doctor" uuid,
+  "id_health_plan" uuid
+);
+
+CREATE TABLE "HealthPlan" (
+  "id" uuid PRIMARY KEY NOT NULL DEFAULT uuid_generate_v4(),
+  "name" TEXT NOT NULL,
+  "health_plan_image" TEXT
+);
+
+CREATE TABLE "Patient" (
   "id" uuid UNIQUE PRIMARY KEY NOT NULL,
   "cpf" TEXT
 );
 
-CREATE TABLE "Informacao" (
-  "id" uuid PRIMARY KEY NOT NULL default generate_uuid_v4(),
-  "titulo" TEXT,
+CREATE TABLE "Information" (
+  "id" uuid PRIMARY KEY NOT NULL DEFAULT uuid_generate_v4(),
+  "title" TEXT,
   "link" TEXT,
-  "imagem" TEXT,
-  "descricao" TEXT,
-  "id_medico" uuid NOT NULL
+  "image" TEXT,
+  "description" TEXT,
+  "id_doctor" uuid NOT NULL
 );
 
-CREATE TABLE "MedicoPaciente" (
-  "id" uuid PRIMARY KEY NOT NULL default generate_uuid_v4(),
-  "id_medico" INTEGER,
-  "id_paciente" INTEGER
+CREATE TABLE "DoctorPatient" (
+  "id" uuid PRIMARY KEY NOT NULL DEFAULT uuid_generate_v4(),
+  "id_doctor" uuid,
+  "id_patient" uuid
 );
 
-CREATE TABLE "Consulta" (
-  "id" uuid PRIMARY KEY NOT NULL default generate_uuid_v4(),
-  "id_medico" INTEGER,
-  "id_paciente" INTEGER,
-  "data_consulta" timestamp NOT NULL
+CREATE TABLE "Appointment" (
+  "id" uuid PRIMARY KEY NOT NULL DEFAULT uuid_generate_v4(),
+  "id_doctor" uuid,
+  "id_patient" uuid,
+  "appointment_date" timestamp NOT NULL
 );
 
-CREATE TABLE "Dosagem" (
-  "id" uuid PRIMARY KEY NOT NULL default generate_uuid_v4(),
-  "id_paciente" INTEGER,
-  "id_medicamento" INTEGER,
-  "quantidade" TEXT NOT NULL,
-  "horario_inicial" timestamp,
-  "frequencia" timestamp,
-  "data_final" timestamp
+CREATE TABLE "Dosage" (
+  "id" uuid PRIMARY KEY NOT NULL DEFAULT uuid_generate_v4(),
+  "id_patient" uuid,
+  "id_medicine" uuid,
+  "quantity" TEXT NOT NULL,
+  "initial_hour" timestamp,
+  "frequency" timestamp,
+  "final_date" timestamp
 );
 
-CREATE TABLE "Medicamento" (
-  "id" uuid PRIMARY KEY NOT NULL default generate_uuid_v4(),
-  "nome" TEXT NOT NULL,
-  "bula" TEXT
+CREATE TABLE "Medicine" (
+  "id" uuid PRIMARY KEY NOT NULL DEFAULT uuid_generate_v4(),
+  "name" TEXT NOT NULL,
+  "leaflet" TEXT
 );
 
-CREATE TABLE "Incompatibilidade" (
-  "id" uuid PRIMARY KEY NOT NULL default generate_uuid_v4(),
-  "id_medicamento" INTEGER,
-  "id_medicamento_inc" INTEGER,
-  "severidade" TEXT,
-  "descricao" TEXT
+CREATE TABLE "Incompatibility" (
+  "id" uuid PRIMARY KEY NOT NULL DEFAULT uuid_generate_v4(),
+  "id_medicine" uuid,
+  "id_medicine_inc" uuid,
+  "severity" TEXT,
+  "description" TEXT
 );
 
-CREATE TABLE "Exame" (
-  "id" uuid PRIMARY KEY NOT NULL default generate_uuid_v4(),
-  "descricao" TEXT,
-  "data_exame" timestamp NOT NULL,
-  "realizado" BOOLEAN,
-  "id_paciente" INTEGER
+CREATE TABLE "Exam" (
+  "id" uuid PRIMARY KEY NOT NULL DEFAULT uuid_generate_v4(),
+  "description" TEXT,
+  "exam_date" timestamp NOT NULL,
+  "is_done" BOOLEAN,
+  "id_patient" uuid
 );
 
-CREATE TABLE "Postagem" (
-  "id" uuid PRIMARY KEY NOT NULL default generate_uuid_v4(),
-  "conteudo" TEXT,
-  "data_criacao" timestamp NOT NULL,
-  "id_paciente" INTEGER,
-  "main" BOOLEAN NOT NULL,
-  "id_postagem_mae" INTEGER
+CREATE TABLE "Post" (
+  "id" uuid PRIMARY KEY NOT NULL DEFAULT uuid_generate_v4(),
+  "content" TEXT,
+  "creation_date" timestamp NOT NULL,
+  "id_patient" uuid,
+  "is_main" BOOLEAN NOT NULL,
+  "id_post" uuid
 );
 
-CREATE TABLE "Votacao" (
-  "id" uuid PRIMARY KEY NOT NULL default generate_uuid_v4(),
-  "tipo" BOOLEAN NOT NULL,
-  "id_postagem" INTEGER NOT NULL,
-  "id_paciente" INTEGER
+CREATE TABLE "Vote" (
+  "id" uuid PRIMARY KEY NOT NULL DEFAULT uuid_generate_v4(),
+  "is_like" bool NOT NULL,
+  "id_post" uuid NOT NULL,
+  "id_patient" uuid
 );
 
-ALTER TABLE "Medico" ADD FOREIGN KEY ("id") REFERENCES "Usuario" ("id");
+ALTER TABLE "Doctor" ADD FOREIGN KEY ("id") REFERENCES "User" ("id");
 
-ALTER TABLE "Paciente" ADD FOREIGN KEY ("id") REFERENCES "Usuario" ("id");
+ALTER TABLE "Patient" ADD FOREIGN KEY ("id") REFERENCES "User" ("id");
 
-ALTER TABLE "MedicoPaciente" ADD FOREIGN KEY ("id_medico") REFERENCES "Medico" ("id");
+ALTER TABLE "DoctorPatient" ADD FOREIGN KEY ("id_doctor") REFERENCES "Doctor" ("id");
 
-ALTER TABLE "MedicoPaciente" ADD FOREIGN KEY ("id_paciente") REFERENCES "Paciente" ("id");
+ALTER TABLE "DoctorPatient" ADD FOREIGN KEY ("id_patient") REFERENCES "Patient" ("id");
 
-ALTER TABLE "Consulta" ADD FOREIGN KEY ("id_medico") REFERENCES "Medico" ("id");
+ALTER TABLE "Appointment" ADD FOREIGN KEY ("id_doctor") REFERENCES "Doctor" ("id");
 
-ALTER TABLE "Informacao" ADD FOREIGN KEY ("id_medico") REFERENCES "Medico" ("id");
+ALTER TABLE "Information" ADD FOREIGN KEY ("id_doctor") REFERENCES "Doctor" ("id");
 
-ALTER TABLE "Consulta" ADD FOREIGN KEY ("id_paciente") REFERENCES "Paciente" ("id");
+ALTER TABLE "Appointment" ADD FOREIGN KEY ("id_patient") REFERENCES "Patient" ("id");
 
-ALTER TABLE "Dosagem" ADD FOREIGN KEY ("id_paciente") REFERENCES "Paciente" ("id");
+ALTER TABLE "Dosage" ADD FOREIGN KEY ("id_patient") REFERENCES "Patient" ("id");
 
-ALTER TABLE "Dosagem" ADD FOREIGN KEY ("id_medicamento") REFERENCES "Medicamento" ("id");
+ALTER TABLE "Dosage" ADD FOREIGN KEY ("id_medicine") REFERENCES "Medicine" ("id");
 
-ALTER TABLE "Incompatibilidade" ADD FOREIGN KEY ("id_medicamento") REFERENCES "Medicamento" ("id");
+ALTER TABLE "Incompatibility" ADD FOREIGN KEY ("id_medicine") REFERENCES "Medicine" ("id");
 
-ALTER TABLE "Incompatibilidade" ADD FOREIGN KEY ("id_medicamento_inc") REFERENCES "Medicamento" ("id");
+ALTER TABLE "Incompatibility" ADD FOREIGN KEY ("id_medicine_inc") REFERENCES "Medicine" ("id");
 
-ALTER TABLE "Exame" ADD FOREIGN KEY ("id_paciente") REFERENCES "Paciente" ("id");
+ALTER TABLE "Exam" ADD FOREIGN KEY ("id_patient") REFERENCES "Patient" ("id");
 
-ALTER TABLE "Postagem" ADD FOREIGN KEY ("id_paciente") REFERENCES "Paciente" ("id");
+ALTER TABLE "Post" ADD FOREIGN KEY ("id_patient") REFERENCES "Patient" ("id");
 
-ALTER TABLE "Votacao" ADD FOREIGN KEY ("id_postagem") REFERENCES "Postagem" ("id");
+ALTER TABLE "Vote" ADD FOREIGN KEY ("id_post") REFERENCES "Post" ("id");
 
-ALTER TABLE "Votacao" ADD FOREIGN KEY ("id_paciente") REFERENCES "Paciente" ("id");
+ALTER TABLE "Vote" ADD FOREIGN KEY ("id_patient") REFERENCES "Patient" ("id");
+
+ALTER TABLE "DoctorHealthPlan" ADD FOREIGN KEY ("id_health_plan") REFERENCES "HealthPlan" ("id");
+
+ALTER TABLE "DoctorHealthPlan" ADD FOREIGN KEY ("id_doctor") REFERENCES "Doctor" ("id");
