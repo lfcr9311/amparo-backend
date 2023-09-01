@@ -97,14 +97,14 @@ fabric.properties
 # Android studio 3.1+ serialized cache file
 .idea/caches/build_file_checksums.ser
 .idea/**
-.vscode/*
-!.vscode/settings.json
-!.vscode/tasks.json
-!.vscode/launch.json
-!.vscode/extensions.json
 *.code-workspace
+.vscode
 
 # Local History for Visual Studio Code
 .history/
+
+.gradle/
+
+build/
 
 # End of https://mrkandreev.name/snippets/gitignore-generator/#Java,Intellij,VisualStudioCode
