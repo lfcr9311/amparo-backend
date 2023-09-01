@@ -29,7 +29,6 @@ dependencies {
 	implementation group: 'io.springfox', name: 'springfox-swagger2', version: '3.0.0'
 	implementation group: 'org.mapstruct', name: 'mapstruct', version: '1.5.5.Final'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
-	implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.1'
 
 	runtimeOnly 'org.postgresql:postgresql'
 
