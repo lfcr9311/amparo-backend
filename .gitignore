@@ -93,13 +93,17 @@ fabric.properties
 
 # Editor-based Rest Client
 .idea/httpRequests
-
+bin/
 # Android studio 3.1+ serialized cache file
 .idea/caches/build_file_checksums.ser
 .idea/**
 *.code-workspace
+<<<<<<< HEAD
 .vscode
 
+=======
+.gradle/
+>>>>>>> 9d449fb9b1d08d16b97ceb2bcab48bfe8bfc834c
 # Local History for Visual Studio Code
 .history/
 
