@@ -19,23 +19,22 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public boolean alreadyExistsEmail(final String email) {
-<<<<<<< HEAD
-
-        return userRepository.findByEmail(email).isPresent();
-=======
         UserDetails user = userRepository.findByEmail(email);
         return user != null;
     }
+
+    @Override
+    public boolean alreadyExistsId(UUID id) {
+        return false;
+    }
+
+    @Override
+    public Optional<User> findByName(String name) {
+        return Optional.empty();
+    }
+
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         return userRepository.findByEmail(username);
->>>>>>> 9d449fb9b1d08d16b97ceb2bcab48bfe8bfc834c
     }
-    public Optional<User> findByName(String name) {
-
-        return userRepository.findByName(name);
-    }
-    public boolean alreadyExistsId(UUID id) {
-         return userRepository.findById(id).isPresent();
-        }
 }
