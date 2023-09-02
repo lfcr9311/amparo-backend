@@ -1,14 +1,11 @@
 package br.com.amparo.backend.configuration;
 
-<<<<<<< HEAD
 import br.com.amparo.backend.service.CryptographyService;
 import br.com.amparo.backend.service.impl.CryptographyServiceImpl;
-=======
 import br.com.amparo.backend.configuration.security.AmparoSecurityConfiguration;
 import br.com.amparo.backend.repository.UserTokenRepository;
 import br.com.amparo.backend.service.security.AuthService;
 import br.com.amparo.backend.service.security.TokenService;
->>>>>>> 9d449fb9b1d08d16b97ceb2bcab48bfe8bfc834c
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
