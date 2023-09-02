@@ -2,6 +2,7 @@ package br.com.amparo.backend.domain.entity;
 
 import br.com.amparo.backend.configuration.security.domain.ApiUser;
 import br.com.amparo.backend.configuration.security.domain.TokenUser;
+import br.com.amparo.backend.domain.record.SaltedPassword;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import java.nio.charset.StandardCharsets;
@@ -15,17 +16,13 @@ public record UserTokenEntity(String id,
                               String salt,
                               String profilePicture,
                               String cellphone,
-                              boolean isDoctor,
-                              boolean isPatient) {
+                              List<String> roles) {
 
-    public byte[] getBytePassword() {
-        return this.password.getBytes(StandardCharsets.UTF_8);
+    public SaltedPassword getSaltedPassword() {
+        return new SaltedPassword(salt, password);
     }
 
     public TokenUser toTokenUser() {
-        List<String> roles = new ArrayList<>();
-        if (isDoctor) roles.add("ROLE_DOCTOR");
-        if (isPatient) roles.add("ROLE_PATIENT");
-        return new TokenUser(id, email, roles);
+        return new TokenUser(id, email, profilePicture, roles);
     }
 }

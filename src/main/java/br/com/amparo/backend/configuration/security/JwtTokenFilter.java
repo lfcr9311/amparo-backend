@@ -27,13 +27,9 @@ public class JwtTokenFilter extends OncePerRequestFilter {
         var token = recoverToken(request);
         if (token != null) {
             ApiUser apiUser = tokenService.validateToken(token);
-
-
             var authentication = new UsernamePasswordAuthenticationToken(apiUser, null, apiUser.getAuthorities());
             SecurityContextHolder.getContext().setAuthentication(authentication);
-
         }
-
         filterChain.doFilter(request, response);
 
     }
@@ -43,7 +39,6 @@ public class JwtTokenFilter extends OncePerRequestFilter {
         if (authHeader == null) {
             return null;
         }
-
         return authHeader.replace("Bearer ", "");
     }
 }

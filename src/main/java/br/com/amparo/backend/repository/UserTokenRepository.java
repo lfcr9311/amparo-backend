@@ -8,6 +8,8 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -27,9 +29,9 @@ public class UserTokenRepository {
                         password, salt,
                         (d.crm is not null) as is_doctor,
                         (p.cpf is not null) as is_patient
-                    FROM User u
-                        left join Doctor d on u.id = d.id
-                        left join Patient p on p.id = u.id
+                    FROM "User" u
+                        left join "Doctor" d on u.id = d.id
+                        left join "Patient" p on p.id = u.id
                     WHERE u.email = :email;
                     """;
             MapSqlParameterSource parameterSource = new MapSqlParameterSource(Map.of("email", email));
@@ -42,6 +44,7 @@ public class UserTokenRepository {
 
     private RowMapper<UserTokenEntity> buildRowMapper() {
         return (rs, rowNumber) -> {
+            List<String> roles = new ArrayList<>();
             String id = rs.getString("id");
             String email = rs.getString("email");
             String name = rs.getString("name");
@@ -51,7 +54,9 @@ public class UserTokenRepository {
             String cellphone = rs.getString("cellphone");
             boolean isDoctor = rs.getBoolean("is_doctor");
             boolean isPatient = rs.getBoolean("is_patient");
-            return new UserTokenEntity(id, email, name, password, salt, profilePicture, cellphone, isDoctor, isPatient);
+            if (isDoctor) roles.add("ROLE_DOCTOR");
+            if (isPatient) roles.add("ROLE_PATIENT");
+            return new UserTokenEntity(id, email, name, password, salt, profilePicture, cellphone, roles);
         };
     }
 }

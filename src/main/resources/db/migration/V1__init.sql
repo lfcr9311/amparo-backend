@@ -5,7 +5,7 @@ CREATE TABLE "User" (
   "password" TEXT NOT NULL,
   "salt" TEXT NOT NULL,
   "name" TEXT NOT NULL,
-  "cellphone" LONG NOT NULL,
+  "cellphone" TEXT NOT NULL,
   "profile_picture" TEXT,
   "is_anonymous" BOOL
 );

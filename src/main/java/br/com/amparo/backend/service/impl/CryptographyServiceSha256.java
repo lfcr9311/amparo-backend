@@ -1,5 +1,6 @@
 package br.com.amparo.backend.service.impl;
 
+import br.com.amparo.backend.domain.entity.Patient;
 import br.com.amparo.backend.domain.record.SaltedPassword;
 import br.com.amparo.backend.service.CryptographyService;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -9,12 +10,12 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 
-public class CryptographyServiceImpl implements CryptographyService {
+public class CryptographyServiceSha256 implements CryptographyService {
 
     public static final int SALT_LENGTH = 16;
     private final MessageDigest sha256Digestor;
 
-    public CryptographyServiceImpl() {
+    public CryptographyServiceSha256() {
         try {
             this.sha256Digestor = MessageDigest.getInstance("SHA-256");
         } catch (NoSuchAlgorithmException e) {
@@ -23,11 +24,11 @@ public class CryptographyServiceImpl implements CryptographyService {
     }
 
     @Override
-    public Boolean compare(String inputPassword, String encryptedPassword, String salt) {
-        var inputPass = inputPassword + salt;
+    public Boolean compare(String inputPassword, SaltedPassword saltedPassword) {
+        var inputPass = inputPassword + saltedPassword.salt();
         var encodedInputPassword = sha256Digestor.digest(inputPass.getBytes(StandardCharsets.UTF_8));
 
-        return Arrays.equals(encodedInputPassword, encryptedPassword.getBytes(StandardCharsets.UTF_8));
+        return Arrays.equals(encodedInputPassword, saltedPassword.getBytesPassword());
     }
 
     @Override

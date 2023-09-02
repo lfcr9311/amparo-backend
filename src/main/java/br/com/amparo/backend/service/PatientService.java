@@ -1,9 +1,8 @@
 package br.com.amparo.backend.service;
 
 
-import br.com.amparo.backend.domain.record.PatientRegistrationData;
-
+import br.com.amparo.backend.domain.entity.Patient;
 
 public interface PatientService {
-    PatientRegistrationData saveNewPatient(PatientRegistrationData patientRegistrationData);
+    Patient saveNewPatient(Patient patient);
 }

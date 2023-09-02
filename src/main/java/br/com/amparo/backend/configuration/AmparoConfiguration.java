@@ -2,11 +2,13 @@ package br.com.amparo.backend.configuration;
 
 import br.com.amparo.backend.configuration.security.AmparoSecurityConfiguration;
 import br.com.amparo.backend.repository.UserTokenRepository;
+import br.com.amparo.backend.service.impl.CryptographyServicePlain;
 import br.com.amparo.backend.service.security.AuthService;
 import br.com.amparo.backend.service.security.TokenService;
 import br.com.amparo.backend.service.CryptographyService;
-import br.com.amparo.backend.service.impl.CryptographyServiceImpl;
+import br.com.amparo.backend.service.impl.CryptographyServiceSha256;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Conditional;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -18,7 +20,7 @@ import java.security.NoSuchAlgorithmException;
 public class AmparoConfiguration {
     @Bean
     public CryptographyService cryptographyService() {
-        return new CryptographyServiceImpl();
+        return new CryptographyServicePlain();
     }
 
     @Bean
@@ -27,8 +29,8 @@ public class AmparoConfiguration {
     }
 
     @Bean
-    public AuthService loginService(TokenService tokenService, UserTokenRepository userTokenRepository)
-            throws NoSuchAlgorithmException {
-        return new AuthService(tokenService, userTokenRepository);
+    public AuthService loginService(TokenService tokenService, UserTokenRepository userTokenRepository,
+                                    CryptographyService cryptographyService) {
+        return new AuthService(tokenService, userTokenRepository, cryptographyService);
     }
 }

@@ -1,8 +1,14 @@
 package br.com.amparo.backend.controllers;
 
 import br.com.amparo.backend.DTO.LoginRequest;
-import br.com.amparo.backend.repository.UserRepository;
+import br.com.amparo.backend.controllers.dto.ErrorMessage;
+import br.com.amparo.backend.controllers.dto.LoginTokenResponse;
 import br.com.amparo.backend.service.security.AuthService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirements;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -22,9 +28,14 @@ public class AuthenticationController {
     @Autowired
     private AuthService authService;
 
-    @Autowired
-    private UserRepository repository;
-
+    @Operation(operationId = "login", description = "Generate token for user",
+    responses = {
+            @ApiResponse(responseCode = "200", description = "Generated Bearer token for the user",
+            content = @Content(schema = @Schema(implementation = LoginTokenResponse.class))),
+            @ApiResponse(responseCode = "401", description = "email or password invalid",
+                    content = @Content(schema = @Schema(implementation = ErrorMessage.class)))
+    })
+    @SecurityRequirements
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
         return authService.login(loginRequest)

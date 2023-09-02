@@ -22,7 +22,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableMethodSecurity
 @Configuration
 public class AmparoSecurityConfiguration {
-    private static final String[] ALLOWED_ENDPOINTS = {"/actuator/**", "/login"};
+    private static final String[] ALLOWED_ENDPOINTS = {"/actuator/**", "/auth/**", "/swagger/**"};
 
     @Autowired
     private JwtTokenFilter filter;
