@@ -1,6 +1,7 @@
 package br.com.amparo.backend.repository;
 
 import br.com.amparo.backend.domain.entity.UserTokenEntity;
+import br.com.amparo.backend.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataAccessException;
@@ -39,6 +40,29 @@ public class UserTokenRepository {
         } catch (DataAccessException ex) {
             log.error("Error trying to get tokeUser for email: " + email, ex);
             return Optional.empty();
+        }
+    }
+
+    public boolean save(UserTokenEntity user){
+        try {
+            String sql = """
+                    INSERT INTO "User" (email, name, password, salt, profile_picture, cellphone)
+                    VALUES (:id, :email, :name, :password, :salt, :profile_picture, :cellphone);
+                    """;
+            MapSqlParameterSource parameterSource = new MapSqlParameterSource(Map.of(
+                    "email", user.email(),
+                    "name", user.name(),
+                    "password", user.getSaltedPassword(),
+                    "salt", user.getSaltedPassword().salt(),
+                    "profile_picture", user.profilePicture(),
+                    "cellphone", user.cellphone()
+            ));
+            jdbcTemplate.update(sql, parameterSource);
+            return true;
+
+        } catch (DataAccessException ex) {
+            log.error("Error trying to save user: " + user, ex);
+            return false;
         }
     }
 

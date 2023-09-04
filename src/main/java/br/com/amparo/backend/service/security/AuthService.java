@@ -1,13 +1,16 @@
 package br.com.amparo.backend.service.security;
 
 import br.com.amparo.backend.DTO.LoginRequest;
+import br.com.amparo.backend.domain.entity.UserTokenEntity;
 import br.com.amparo.backend.domain.record.SaltedPassword;
 import br.com.amparo.backend.repository.UserTokenRepository;
 import br.com.amparo.backend.service.CryptographyService;
 
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 public class AuthService {
@@ -35,5 +38,30 @@ public class AuthService {
                         return Optional.empty();
                     }
                 });
+    }
+
+    public boolean register(UserTokenEntity userRequest) {
+        if (userTokenRepository.findUserByEmail(userRequest.email()).isPresent()) {
+            return false;
+        }
+
+        SaltedPassword saltedPassword = cryptographicService.encrypt(userRequest.password());
+
+        List<String> roles = new ArrayList<>();
+        roles.add("PATIENT");
+
+        UserTokenEntity newUser = new UserTokenEntity(
+                null,
+                userRequest.email(),
+                userRequest.name(),
+                saltedPassword.toString(),
+                saltedPassword.salt(),
+                null,
+                userRequest.cellphone(),
+                roles
+        );
+        userTokenRepository.save(newUser);
+
+        return true;
     }
 }

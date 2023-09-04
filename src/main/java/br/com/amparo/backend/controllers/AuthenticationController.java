@@ -3,6 +3,7 @@ package br.com.amparo.backend.controllers;
 import br.com.amparo.backend.DTO.LoginRequest;
 import br.com.amparo.backend.controllers.dto.ErrorMessage;
 import br.com.amparo.backend.controllers.dto.LoginTokenResponse;
+import br.com.amparo.backend.domain.entity.UserTokenEntity;
 import br.com.amparo.backend.service.security.AuthService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -44,4 +45,19 @@ public class AuthenticationController {
                         Map.of("message", "email or password invalid"), HttpStatus.UNAUTHORIZED)
                 );
     }
+
+    @PostMapping("/register")
+    public ResponseEntity<?> register(@RequestBody UserTokenEntity user) {
+        System.out.println("user = " + user);
+        boolean registrationSuccessful = authService.register(user);
+        if (registrationSuccessful) {
+            return new ResponseEntity<>(HttpStatus.CREATED);
+        } else {
+            return new ResponseEntity<>(
+                    Map.of("message", "Registration failed"), HttpStatus.BAD_REQUEST
+            );
+        }
+    }
+
+
 }

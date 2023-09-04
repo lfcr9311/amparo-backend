@@ -12,6 +12,10 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class TestRouteController {
 
+    @GetMapping("/hello")
+    public String hello() {
+        return "Olá, Postman!";
+    }
     @PreAuthorize("hasRole('PATIENT')")
     @GetMapping("/patient")
     public ResponseEntity<?> patient() {
