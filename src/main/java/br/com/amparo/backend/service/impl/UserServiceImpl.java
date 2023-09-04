@@ -4,7 +4,6 @@ import br.com.amparo.backend.domain.entity.User;
 import br.com.amparo.backend.repository.UserRepository;
 import br.com.amparo.backend.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
@@ -19,7 +18,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public boolean alreadyExistsEmail(final String email) {
-        UserDetails user = userRepository.findByEmail(email);
+        Optional<User> user = userRepository.findByEmail(email);
         return user != null;
     }
 
@@ -34,7 +33,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    public Optional<User> loadUserByUsername(String username) throws UsernameNotFoundException {
         return userRepository.findByEmail(username);
     }
 }

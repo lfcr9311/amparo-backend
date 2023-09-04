@@ -1,6 +1,5 @@
 package br.com.amparo.backend.service;
 import br.com.amparo.backend.domain.entity.User;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import java.util.Optional;
@@ -13,6 +12,6 @@ public interface UserService {
 
     Optional<User> findByName(String name);
 
-    UserDetails loadUserByUsername(String username) throws UsernameNotFoundException;
+    Optional<User> loadUserByUsername(String username) throws UsernameNotFoundException;
 }
 
