@@ -20,7 +20,7 @@ import java.security.NoSuchAlgorithmException;
 public class AmparoConfiguration {
     @Bean
     public CryptographyService cryptographyService() {
-        return new CryptographyServicePlain();
+        return new CryptographyServiceSha256();
     }
 
     @Bean
