@@ -9,12 +9,14 @@ import br.com.amparo.backend.dto.CreateUserRequest;
 import br.com.amparo.backend.dto.LoginRequest;
 import br.com.amparo.backend.domain.entity.UserTokenEntity;
 import br.com.amparo.backend.domain.record.SaltedPassword;
+import br.com.amparo.backend.exception.PatientCreationException;
 import br.com.amparo.backend.exception.UserAlreadyExistsException;
 import br.com.amparo.backend.repository.PatientRepository;
 import br.com.amparo.backend.repository.UserRepository;
 import br.com.amparo.backend.repository.UserTokenRepository;
 import br.com.amparo.backend.service.CryptographyService;
 import org.springframework.data.mapping.callback.EntityCallbacks;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,12 +31,14 @@ public class AuthService {
     private UserRepository userRepository;
     private PatientRepository patientRepository;
 
-
     public AuthService(TokenService tokenService, UserTokenRepository userTokenRepository,
-                       CryptographyService cryptographicService) {
+                       CryptographyService cryptographicService, UserRepository userRepository,
+                       PatientRepository patientRepository) {
         this.tokenService = tokenService;
         this.userTokenRepository = userTokenRepository;
         this.cryptographicService = cryptographicService;
+        this.userRepository = userRepository;
+        this.patientRepository = patientRepository;
     }
 
     public Optional<String> login(LoginRequest loginRequest) {
@@ -49,6 +53,7 @@ public class AuthService {
                 });
     }
 
+    @Transactional
     public User register(CreateUserRequest userRequest) {
         return switch (userRequest.getUserType()) {
             case PATIENT -> registerPatient((CreatePatientRequest) userRequest);
@@ -65,7 +70,9 @@ public class AuthService {
         SaltedPassword password = this.cryptographicService.encrypt(patient.getPassword());
         String id = userRepository.create(patient, password);
         patient.setId(id);
-        return patientRepository.create(patient);
+        boolean created = patientRepository.create(patient);
+        if (!created) throw new PatientCreationException(patient.getCpf());
+        return patient;
     }
 
     private Doctor registerDoctor(CreateDoctorRequest userRequest) {

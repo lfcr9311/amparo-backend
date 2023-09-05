@@ -32,12 +32,12 @@ public class AuthenticationController {
     private AuthService authService;
 
     @Operation(operationId = "login", description = "Generate token for user",
-    responses = {
-            @ApiResponse(responseCode = "200", description = "Generated Bearer token for the user",
-            content = @Content(schema = @Schema(implementation = LoginTokenResponse.class))),
-            @ApiResponse(responseCode = "401", description = "email or password invalid",
-                    content = @Content(schema = @Schema(implementation = ErrorMessage.class)))
-    })
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Generated Bearer token for the user",
+                            content = @Content(schema = @Schema(implementation = LoginTokenResponse.class))),
+                    @ApiResponse(responseCode = "401", description = "email or password invalid",
+                            content = @Content(schema = @Schema(implementation = ErrorMessage.class)))
+            })
     @SecurityRequirements
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
@@ -50,15 +50,12 @@ public class AuthenticationController {
 
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody CreateUserRequest createUserRequest) {
-        boolean registrationSuccessful = authService.register(createUserRequest);
-        if (registrationSuccessful) {
-            return new ResponseEntity<>(HttpStatus.CREATED);
-        } else {
+        try {
+            return new ResponseEntity<>(authService.register(createUserRequest), HttpStatus.CREATED);
+        } catch (RuntimeException e) {
             return new ResponseEntity<>(
                     Map.of("message", "Registration failed"), HttpStatus.BAD_REQUEST
             );
         }
     }
-
-
 }

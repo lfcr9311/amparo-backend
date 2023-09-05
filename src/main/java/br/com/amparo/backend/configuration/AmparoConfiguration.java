@@ -1,6 +1,8 @@
 package br.com.amparo.backend.configuration;
 
 import br.com.amparo.backend.configuration.security.AmparoSecurityConfiguration;
+import br.com.amparo.backend.repository.PatientRepository;
+import br.com.amparo.backend.repository.UserRepository;
 import br.com.amparo.backend.repository.UserTokenRepository;
 import br.com.amparo.backend.service.impl.CryptographyServicePlain;
 import br.com.amparo.backend.service.security.AuthService;
@@ -20,7 +22,7 @@ import java.security.NoSuchAlgorithmException;
 public class AmparoConfiguration {
     @Bean
     public CryptographyService cryptographyService() {
-        return new CryptographyServicePlain();
+        return new CryptographyServiceSha256();
     }
 
     @Bean
@@ -29,8 +31,20 @@ public class AmparoConfiguration {
     }
 
     @Bean
+    public PatientRepository patientRepository(NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
+        return new PatientRepository(namedParameterJdbcTemplate);
+    }
+
+    @Bean
+    public UserRepository userRepository(NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
+        return new UserRepository(namedParameterJdbcTemplate);
+    }
+
+    @Bean
     public AuthService loginService(TokenService tokenService, UserTokenRepository userTokenRepository,
-                                    CryptographyService cryptographyService) {
-        return new AuthService(tokenService, userTokenRepository, cryptographyService);
+                                    CryptographyService cryptographyService, UserRepository userRepository,
+                                    PatientRepository patientRepository){
+        return new AuthService(tokenService, userTokenRepository, cryptographyService,
+                userRepository, patientRepository);
     }
 }
