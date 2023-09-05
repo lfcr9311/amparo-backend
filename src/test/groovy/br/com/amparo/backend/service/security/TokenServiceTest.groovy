@@ -40,7 +40,7 @@ class TokenServiceTest extends Specification {
 
     def "should validate token"() {
         given:
-        def token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJhbXBhcm8tYXBpIiwic3ViIjoidXNlcm5hbWUiLCJyb2xlcyI6WyJST0xFIl0sImVtYWlsIjoidXNlckBlbWFpbC5jb20iLCJleHAiOjE2OTM4NzYyMTl9.DktHj4j-DwmF5WazCCw74PCswR4_piuY-H2PvetLrmw"
+        def token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJhbXBhcm8tYXBpIiwic3ViIjoidXNlcm5hbWUiLCJyb2xlcyI6WyJST0xFIl0sImVtYWlsIjoidXNlckBlbWFpbC5jb20iLCJuYW1lIjoicHJvZmlsZVBpY3R1cmUiLCJleHAiOjMxNTczODkxMjQ5MjJ9.1Yf7ekR8oYocRRftRLKBgJhbQap8jMoJgxuUCBQJN84"
 
         when:
         def res = service.validateToken(token)
