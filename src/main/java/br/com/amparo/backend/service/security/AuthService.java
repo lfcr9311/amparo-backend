@@ -41,37 +41,17 @@ public class AuthService {
     }
 
     public boolean register(CreateUserRequest userRequest) {
+        return switch (userRequest.getUserType()) {
+            case PATIENT -> registerPatient((CreatePatientRequest) userRequest);
+            case DOCTOR -> registerDoctor((CreateDoctorRequest) userRequest);
+        };
+    }
+
+    private boolean registerDoctor(CreateDoctorRequest userRequest) {
         return false;
     }
 
-    public boolean register(CreateDoctorRequest userRequest) {
+    private boolean registerPatient(CreatePatientRequest userRequest) {
         return true;
     }
-
-
-
-
-
-        /*    if (userTokenRepository.findUserByEmail(userRequest.email()).isPresent()) {
-            return false;
-        }
-
-        SaltedPassword saltedPassword = cryptographicService.encrypt(userRequest.password());
-
-        List<String> roles = new ArrayList<>();
-        roles.add("PATIENT");
-
-        UserTokenEntity newUser = new UserTokenEntity(
-                null,
-                userRequest.email(),
-                userRequest.name(),
-                saltedPassword.toString(),
-                saltedPassword.salt(),
-                null,
-                userRequest.cellphone(),
-                roles
-        );
-        userTokenRepository.save(newUser);
-
-        return true;*/
 }

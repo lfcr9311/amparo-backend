@@ -10,7 +10,8 @@ import lombok.NoArgsConstructor;
 )
 @JsonSubTypes(
         value = {
-                @JsonSubTypes.Type(value = CreatePatientRequest.class, name = "PATIENT")
+                @JsonSubTypes.Type(value = CreatePatientRequest.class, name = "PATIENT"),
+                @JsonSubTypes.Type(value = CreateDoctorRequest.class, name = "DOCTOR")
         }
 )
 @Getter
