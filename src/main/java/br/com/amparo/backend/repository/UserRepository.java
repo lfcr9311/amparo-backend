@@ -3,6 +3,8 @@ package br.com.amparo.backend.repository;
 import br.com.amparo.backend.domain.entity.Patient;
 import br.com.amparo.backend.domain.entity.User;
 import br.com.amparo.backend.domain.record.SaltedPassword;
+import br.com.amparo.backend.exception.UserCreationException;
+import lombok.extern.java.Log;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.RowMapper;
@@ -13,6 +15,7 @@ import java.util.Map;
 import java.util.Optional;
 
 @Slf4j
+@Log
 public class UserRepository {
     private NamedParameterJdbcTemplate jdbcTemplate;
 
@@ -66,9 +69,8 @@ public class UserRepository {
             ));
             return jdbcTemplate.queryForObject(sql, param, String.class);
         } catch (Exception e) {
-            log.error("error creating user", e);
-            //@Todo, melhor essa exception
-            throw new RuntimeException(e);
+        log.warning("Error trying to create user: " + user.getEmail());
+            throw new UserCreationException(user.getEmail(), user.getName(), user.getCellphone());
         }
     }
 
