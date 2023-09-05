@@ -9,6 +9,7 @@ import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
+import java.util.Base64;
 
 public class CryptographyServiceSha256 implements CryptographyService {
 
@@ -26,9 +27,9 @@ public class CryptographyServiceSha256 implements CryptographyService {
     @Override
     public Boolean compare(String inputPassword, SaltedPassword saltedPassword) {
         var inputPass = inputPassword + saltedPassword.salt();
-        var encodedInputPassword = sha256Digestor.digest(inputPass.getBytes(StandardCharsets.UTF_8));
-
-        return Arrays.equals(encodedInputPassword, saltedPassword.getBytesPassword());
+        var hashedInputPassword = sha256Digestor.digest(inputPass.getBytes(StandardCharsets.UTF_8));
+        var encodedInputPassword = Base64.getEncoder().encodeToString(hashedInputPassword);
+        return encodedInputPassword.equals(saltedPassword.encryptedPassword());
     }
 
     @Override
@@ -36,8 +37,7 @@ public class CryptographyServiceSha256 implements CryptographyService {
         var salt = generateSalt();
         var inputPass = plainText + salt;
         var encodedInputPassword = sha256Digestor.digest(inputPass.getBytes(StandardCharsets.UTF_8));
-        var encodedPassword = new String(encodedInputPassword, StandardCharsets.UTF_8);
-
+        var encodedPassword = Base64.getEncoder().encodeToString(encodedInputPassword);
         return new SaltedPassword(salt, encodedPassword);
     }
 
