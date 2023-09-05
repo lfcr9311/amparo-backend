@@ -17,11 +17,11 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 public abstract class CreateUserRequest{
-    private String email;
-    private String name;
-    private String password;
-    private String profilePicture;
-    private String cellphone;
+    protected String email;
+    protected String name;
+    protected String password;
+    protected String profilePicture;
+    protected String cellphone;
     private UserType userType;
 
     public CreateUserRequest(UserType userType) {

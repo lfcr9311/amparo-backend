@@ -1,16 +1,14 @@
 package br.com.amparo.backend.domain.entity;
 
-import jakarta.persistence.*;
-import lombok.*;
-
-import java.io.Serializable;
-import java.util.UUID;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.With;
 
 @Getter
-@Setter
-@NoArgsConstructor
 @AllArgsConstructor
 public class User {
+    @Setter
     private String id;
     private String email;
     private String password;

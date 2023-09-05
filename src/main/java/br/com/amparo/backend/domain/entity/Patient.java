@@ -3,7 +3,6 @@ package br.com.amparo.backend.domain.entity;
 import lombok.*;
 
 @Getter
-@Setter
 public class Patient extends User {
     private String cpf;
 
