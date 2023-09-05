@@ -2,6 +2,7 @@ package br.com.amparo.backend.service.security;
 
 import br.com.amparo.backend.dto.CreateDoctorRequest;
 import br.com.amparo.backend.dto.CreatePatientRequest;
+import br.com.amparo.backend.dto.CreateUserRequest;
 import br.com.amparo.backend.dto.LoginRequest;
 import br.com.amparo.backend.domain.entity.UserTokenEntity;
 import br.com.amparo.backend.domain.record.SaltedPassword;
@@ -39,7 +40,7 @@ public class AuthService {
                 });
     }
 
-    public boolean register(CreatePatientRequest userRequest) {
+    public boolean register(CreateUserRequest userRequest) {
         return false;
     }
 

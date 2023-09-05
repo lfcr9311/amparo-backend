@@ -1,5 +1,8 @@
 package br.com.amparo.backend.dto;
 
+import lombok.Getter;
+
+@Getter
 public class CreateDoctorRequest extends CreateUserRequest{
     private String crm;
     private String uf;
@@ -8,11 +11,4 @@ public class CreateDoctorRequest extends CreateUserRequest{
         super(UserType.DOCTOR);
     }
 
-    public String getCrm() {
-        return crm;
-    }
-
-    public String getUf() {
-        return uf;
-    }
 }
