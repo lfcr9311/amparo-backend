@@ -25,7 +25,7 @@ public class UserTokenRepository {
     public Optional<UserTokenEntity> findUserByEmail(String email) {
         try {
             String sql = """
-                    SELECT u.id, u.email, u.name, u.profile_picture, u.cellphone,
+                    SELECT u.id, u.email, u.name,
                         password, salt,
                         (d.crm is not null) as is_doctor,
                         (p.cpf is not null) as is_patient
@@ -50,13 +50,11 @@ public class UserTokenRepository {
             String name = rs.getString("name");
             String password = rs.getString("password");
             String salt = rs.getString("salt");
-            String profilePicture = rs.getString("profile_picture");
-            String cellphone = rs.getString("cellphone");
             boolean isDoctor = rs.getBoolean("is_doctor");
             boolean isPatient = rs.getBoolean("is_patient");
             if (isDoctor) roles.add("ROLE_DOCTOR");
             if (isPatient) roles.add("ROLE_PATIENT");
-            return new UserTokenEntity(id, email, name, password, salt, profilePicture, cellphone, roles);
+            return new UserTokenEntity(id, email, name, password, salt, roles);
         };
     }
 }

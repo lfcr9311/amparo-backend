@@ -14,8 +14,6 @@ public record UserTokenEntity(String id,
                               String name,
                               String password,
                               String salt,
-                              String profilePicture,
-                              String cellphone,
                               List<String> roles) {
 
     public SaltedPassword getSaltedPassword() {
@@ -23,6 +21,6 @@ public record UserTokenEntity(String id,
     }
 
     public TokenUser toTokenUser() {
-        return new TokenUser(id, email, profilePicture, roles);
+        return new TokenUser(id, email, name, roles);
     }
 }

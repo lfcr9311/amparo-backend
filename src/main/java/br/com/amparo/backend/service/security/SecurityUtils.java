@@ -5,7 +5,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 
 public class SecurityUtils {
 
-    private static ApiUser getApiUser() {
+    public static ApiUser getApiUser() {
         return ((ApiUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
     }
 }

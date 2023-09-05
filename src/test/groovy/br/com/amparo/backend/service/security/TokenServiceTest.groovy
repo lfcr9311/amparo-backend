@@ -10,8 +10,7 @@ class TokenServiceTest extends Specification {
     TokenService service
 
     def setup() {
-        service = new TokenService()
-        service.setSecret("secret")
+        service = new TokenService("secret")
     }
 
     def "should generate a token with valid user data"() {
