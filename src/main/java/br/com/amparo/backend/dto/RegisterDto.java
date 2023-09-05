@@ -1,4 +1,4 @@
-package br.com.amparo.backend.DTO;
+package br.com.amparo.backend.dto;
 
 import br.com.amparo.backend.configuration.security.domain.UserRoles;
 

@@ -1,6 +1,8 @@
 package br.com.amparo.backend.controllers;
 
-import br.com.amparo.backend.DTO.LoginRequest;
+import br.com.amparo.backend.dto.CreatePatientRequest;
+import br.com.amparo.backend.dto.CreateUserRequest;
+import br.com.amparo.backend.dto.LoginRequest;
 import br.com.amparo.backend.controllers.dto.ErrorMessage;
 import br.com.amparo.backend.controllers.dto.LoginTokenResponse;
 import br.com.amparo.backend.domain.entity.UserTokenEntity;
@@ -47,9 +49,8 @@ public class AuthenticationController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<?> register(@RequestBody UserTokenEntity user) {
-        System.out.println("user = " + user);
-        boolean registrationSuccessful = authService.register(user);
+    public ResponseEntity<?> register(@RequestBody CreateUserRequest createUserRequest) {
+        boolean registrationSuccessful = authService.register(createUserRequest);
         if (registrationSuccessful) {
             return new ResponseEntity<>(HttpStatus.CREATED);
         } else {
