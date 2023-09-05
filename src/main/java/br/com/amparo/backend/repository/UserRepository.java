@@ -3,6 +3,7 @@ package br.com.amparo.backend.repository;
 import br.com.amparo.backend.domain.entity.Patient;
 import br.com.amparo.backend.domain.entity.User;
 import br.com.amparo.backend.domain.record.SaltedPassword;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -11,6 +12,7 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import java.util.Map;
 import java.util.Optional;
 
+@Slf4j
 public class UserRepository {
     private NamedParameterJdbcTemplate jdbcTemplate;
 
@@ -40,29 +42,34 @@ public class UserRepository {
     }
 
     public String create(User user, SaltedPassword password) {
-        String sql = """
-                INSERT INTO "User" ("email","password","salt","name","cellphone","profile_picture","is_anonymous")
+        try {
+
+            String sql = """
+                INSERT INTO "User" ("email","password","salt","name","cellphone","is_anonymous")
                 values (
                     :email,
                     :password,
                     :salt,
                     :name,
                     :cellphone,
-                    :profile_picture,
                     :is_anonymous
                 )
                 returning id
                 """;
-        MapSqlParameterSource param = new MapSqlParameterSource(Map.of(
-                "email",user.getEmail(),
-                "password",password.encryptedPassword(),
-                "salt",password.salt(),
-                "name",user.getName(),
-                "cellphone",user.getCellphone(),
-                "profile_picture",user.getProfilePicture(),
-                "is_anonnymous",false
-        ));
-        return jdbcTemplate.queryForObject(sql, param, String.class);
+            MapSqlParameterSource param = new MapSqlParameterSource(Map.of(
+                    "email",user.getEmail(),
+                    "password",password.encryptedPassword(),
+                    "salt",password.salt(),
+                    "name",user.getName(),
+                    "cellphone",user.getCellphone(),
+                    "is_anonymous",false
+            ));
+            return jdbcTemplate.queryForObject(sql, param, String.class);
+        } catch (Exception e) {
+            log.error("error creating user", e);
+            //@Todo, melhor essa exception
+            throw new RuntimeException(e);
+        }
     }
 
     private RowMapper<User> buildRowMapper() {

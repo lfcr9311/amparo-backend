@@ -6,6 +6,7 @@ import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 
 import java.util.Map;
+import java.util.UUID;
 
 public class PatientRepository {
     private NamedParameterJdbcTemplate jdbcTemplate;
@@ -24,13 +25,14 @@ public class PatientRepository {
                     )
                     """;
             MapSqlParameterSource param = new MapSqlParameterSource(Map.of(
-                    "id", patient.getId(),
+                    "id", UUID.fromString(patient.getId()),
                     "cpf", patient.getCpf()
 
             ));
             jdbcTemplate.update(sql, param);
             return true;
         } catch (DataAccessException e) {
+            //@Todo, adicionar log.
             return false;
         }
     }
