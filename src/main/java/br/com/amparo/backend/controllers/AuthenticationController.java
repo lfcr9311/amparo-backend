@@ -12,20 +12,22 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirements;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.validation.beanvalidation.SpringValidatorAdapter;
+import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 
 @RestController
 @RequestMapping("/auth")
 @RequiredArgsConstructor
+@ControllerAdvice
 public class AuthenticationController {
 
     @Autowired
@@ -49,7 +51,7 @@ public class AuthenticationController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<?> register(@RequestBody CreateUserRequest createUserRequest) {
+    public ResponseEntity<?> register(@RequestBody @Valid CreateUserRequest createUserRequest) {
         try {
             return new ResponseEntity<>(authService.register(createUserRequest), HttpStatus.CREATED);
         } catch (RuntimeException e) {
@@ -57,5 +59,11 @@ public class AuthenticationController {
                     Map.of("message", "Registration failed"), HttpStatus.BAD_REQUEST
             );
         }
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<?> handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
+        return ResponseEntity.badRequest()
+                .body(Map.of("message", e.getMessage()));
     }
 }
