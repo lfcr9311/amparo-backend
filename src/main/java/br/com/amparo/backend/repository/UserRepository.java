@@ -14,7 +14,6 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import java.util.Map;
 import java.util.Optional;
 
-@Slf4j
 @Log
 public class UserRepository {
     private NamedParameterJdbcTemplate jdbcTemplate;
