@@ -12,7 +12,7 @@ import springfox.documentation.service.ApiInfo;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 
-@EnableWebMvc  // Add this annotation to enable WebMvc
+@EnableWebMvc
 @Configuration
 public class SwaggerConfiguration implements WebMvcConfigurer {
 
