@@ -13,7 +13,7 @@ public class TestBackendAmparoApplication {
 	@Bean
 	@ServiceConnection
 	PostgreSQLContainer<?> postgresContainer() {
-		return new PostgreSQLContainer<>(DockerImageName.parse("postgres:latest"));
+		return new PostgreSQLContainer<>(DockerImageName.parse("postgres:12.3"));
 	}
 
 	public static void main(String[] args) {
