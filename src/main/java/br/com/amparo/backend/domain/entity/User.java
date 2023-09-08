@@ -3,7 +3,6 @@ package br.com.amparo.backend.domain.entity;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.With;
 
 @Getter
 @AllArgsConstructor

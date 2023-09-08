@@ -6,8 +6,7 @@ import br.com.amparo.backend.domain.entity.User;
 import br.com.amparo.backend.dto.CreateDoctorRequest;
 import br.com.amparo.backend.dto.CreatePatientRequest;
 import br.com.amparo.backend.dto.CreateUserRequest;
-import br.com.amparo.backend.dto.LoginRequest;
-import br.com.amparo.backend.domain.entity.UserTokenEntity;
+
 import br.com.amparo.backend.domain.record.SaltedPassword;
 import br.com.amparo.backend.exception.PatientCreationException;
 import br.com.amparo.backend.exception.UserAlreadyExistsException;
@@ -15,11 +14,9 @@ import br.com.amparo.backend.repository.PatientRepository;
 import br.com.amparo.backend.repository.UserRepository;
 import br.com.amparo.backend.repository.UserTokenRepository;
 import br.com.amparo.backend.service.CryptographyService;
-import org.springframework.data.mapping.callback.EntityCallbacks;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
+import br.com.amparo.backend.DTO.LoginRequest;
 import java.util.Optional;
 
 public class AuthService {

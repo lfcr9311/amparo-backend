@@ -9,15 +9,19 @@ import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
+import java.util.Base64;
+import java.util.Random;
 
 public class CryptographyServiceSha256 implements CryptographyService {
 
     public static final int SALT_LENGTH = 16;
     private final MessageDigest sha256Digestor;
+    private final Random random;
 
-    public CryptographyServiceSha256() {
+    public CryptographyServiceSha256(Random random) {
         try {
             this.sha256Digestor = MessageDigest.getInstance("SHA-256");
+            this.random = random;
         } catch (NoSuchAlgorithmException e) {
             throw new RuntimeException(e);
         }
@@ -26,9 +30,9 @@ public class CryptographyServiceSha256 implements CryptographyService {
     @Override
     public Boolean compare(String inputPassword, SaltedPassword saltedPassword) {
         var inputPass = inputPassword + saltedPassword.salt();
-        var encodedInputPassword = sha256Digestor.digest(inputPass.getBytes(StandardCharsets.UTF_8));
-
-        return Arrays.equals(encodedInputPassword, saltedPassword.getBytesPassword());
+        var hashedInputPassword = sha256Digestor.digest(inputPass.getBytes(StandardCharsets.UTF_8));
+        var encodedInputPassword = Base64.getEncoder().encodeToString(hashedInputPassword);
+        return encodedInputPassword.equals(saltedPassword.encryptedPassword());
     }
 
     @Override
@@ -36,8 +40,7 @@ public class CryptographyServiceSha256 implements CryptographyService {
         var salt = generateSalt();
         var inputPass = plainText + salt;
         var encodedInputPassword = sha256Digestor.digest(inputPass.getBytes(StandardCharsets.UTF_8));
-        var encodedPassword = new String(encodedInputPassword, StandardCharsets.UTF_8);
-
+        var encodedPassword = Base64.getEncoder().encodeToString(encodedInputPassword);
         return new SaltedPassword(salt, encodedPassword);
     }
 
@@ -45,6 +48,7 @@ public class CryptographyServiceSha256 implements CryptographyService {
         boolean saltHasLetters = true;
         boolean saltHasNumbers = false;
 
-        return RandomStringUtils.random(SALT_LENGTH, saltHasLetters, saltHasNumbers);
+        //Required to control results on tests
+        return RandomStringUtils.random(SALT_LENGTH, 0,0,saltHasLetters, saltHasNumbers, null, random);
     }
 }

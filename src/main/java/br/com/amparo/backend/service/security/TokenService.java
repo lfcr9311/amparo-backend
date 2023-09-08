@@ -15,12 +15,12 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.List;
-
-@Service
 public class TokenService {
-
-    @Value("${api.security.token.secret}")
     private String secret;
+
+    public TokenService(String secret) {
+        this.secret = secret;
+    }
     public String generateToken(TokenUser apiUser) {
         try {
             Algorithm algorithm = Algorithm.HMAC256(secret);
@@ -30,6 +30,7 @@ public class TokenService {
                     .withSubject(apiUser.subject())
                     .withClaim("roles", apiUser.roles())
                     .withClaim("email", apiUser.email())
+                    .withClaim("name", apiUser.name())
                     .withExpiresAt(genExpirationDate())
                     .sign(algorithm);
         } catch (JWTCreationException e) {
@@ -42,10 +43,11 @@ public class TokenService {
             Algorithm algorithm = Algorithm.HMAC256(secret);
             DecodedJWT decodedJWT =  JWT.require(algorithm).build().verify(token);
             String id = decodedJWT.getSubject();
+            String name = decodedJWT.getClaim("name").asString();
             String email = decodedJWT.getClaim("email").asString();
             List<String> authorities = decodedJWT.getClaim("roles").asList(String.class);
 
-            return new ApiUser(id, email, token, authorities.stream().map(SimpleGrantedAuthority::new).toList());
+            return new ApiUser(id, email, name, token, authorities.stream().map(SimpleGrantedAuthority::new).toList());
         } catch (JWTVerificationException e) {
             throw new RuntimeException("Error while validating token", e);
         }

@@ -1,7 +1,6 @@
 package br.com.amparo.backend.repository;
 
 import br.com.amparo.backend.domain.entity.UserTokenEntity;
-import br.com.amparo.backend.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataAccessException;
@@ -26,7 +25,7 @@ public class UserTokenRepository {
     public Optional<UserTokenEntity> findUserByEmail(String email) {
         try {
             String sql = """
-                    SELECT u.id, u.email, u.name, u.profile_picture, u.cellphone,
+                    SELECT u.id, u.email, u.name,
                         password, salt,
                         (d.crm is not null) as is_doctor,
                         (p.cpf is not null) as is_patient
@@ -38,31 +37,8 @@ public class UserTokenRepository {
             MapSqlParameterSource parameterSource = new MapSqlParameterSource(Map.of("email", email));
             return Optional.ofNullable(jdbcTemplate.queryForObject(sql, parameterSource, buildRowMapper()));
         } catch (DataAccessException ex) {
-            log.error("Error trying to get tokeUser for email: " + email + " Error: ", ex);
+            log.error("Error trying to get tokeUser for email: " + email, ex);
             return Optional.empty();
-        }
-    }
-
-    public boolean save(UserTokenEntity user){
-        try {
-            String sql = """
-                    INSERT INTO "User" (email, name, password, salt, profile_picture, cellphone)
-                    VALUES (:id, :email, :name, :password, :salt, :profile_picture, :cellphone);
-                    """;
-            MapSqlParameterSource parameterSource = new MapSqlParameterSource(Map.of(
-                    "email", user.email(),
-                    "name", user.name(),
-                    "password", user.getSaltedPassword(),
-                    "salt", user.getSaltedPassword().salt(),
-                    "profile_picture", user.profilePicture(),
-                    "cellphone", user.cellphone()
-            ));
-            jdbcTemplate.update(sql, parameterSource);
-            return true;
-
-        } catch (DataAccessException ex) {
-            log.error("Error trying to save user: " + user + " Error: ", ex);
-            return false;
         }
     }
 
@@ -74,13 +50,11 @@ public class UserTokenRepository {
             String name = rs.getString("name");
             String password = rs.getString("password");
             String salt = rs.getString("salt");
-            String profilePicture = rs.getString("profile_picture");
-            String cellphone = rs.getString("cellphone");
             boolean isDoctor = rs.getBoolean("is_doctor");
             boolean isPatient = rs.getBoolean("is_patient");
             if (isDoctor) roles.add("ROLE_DOCTOR");
             if (isPatient) roles.add("ROLE_PATIENT");
-            return new UserTokenEntity(id, email, name, password, salt, profilePicture, cellphone, roles);
+            return new UserTokenEntity(id, email, name, password, salt, roles);
         };
     }
 }

@@ -2,8 +2,6 @@ package br.com.amparo.backend.service.impl;
 
 import br.com.amparo.backend.domain.record.SaltedPassword;
 import br.com.amparo.backend.service.CryptographyService;
-import org.apache.commons.lang3.RandomStringUtils;
-
 public class CryptographyServicePlain implements CryptographyService {
     private static final String SALT = "SALT";
 

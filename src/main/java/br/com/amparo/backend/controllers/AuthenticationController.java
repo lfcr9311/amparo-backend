@@ -1,11 +1,9 @@
 package br.com.amparo.backend.controllers;
 
-import br.com.amparo.backend.dto.CreatePatientRequest;
-import br.com.amparo.backend.dto.CreateUserRequest;
-import br.com.amparo.backend.dto.LoginRequest;
+import br.com.amparo.backend.dto.CreateUserRequest;;
 import br.com.amparo.backend.controllers.dto.ErrorMessage;
 import br.com.amparo.backend.controllers.dto.LoginTokenResponse;
-import br.com.amparo.backend.domain.entity.UserTokenEntity;
+import br.com.amparo.backend.DTO.LoginRequest;
 import br.com.amparo.backend.service.security.AuthService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -17,11 +15,14 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.beanvalidation.SpringValidatorAdapter;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 import java.util.Map;
 
 @RestController
@@ -33,7 +34,7 @@ public class AuthenticationController {
     @Autowired
     private AuthService authService;
 
-    @Operation(operationId = "login", description = "Generate token for user", summary = "Generate token for user",
+    @Operation(operationId = "login", description = "Generate token for user",
             responses = {
                     @ApiResponse(responseCode = "200", description = "Generated Bearer token for the user",
                             content = @Content(schema = @Schema(implementation = LoginTokenResponse.class))),
@@ -49,7 +50,8 @@ public class AuthenticationController {
                         Map.of("message", "email or password invalid"), HttpStatus.UNAUTHORIZED)
                 );
     }
-@SecurityRequirements
+
+    @SecurityRequirements
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody @Valid CreateUserRequest createUserRequest) {
         try {
