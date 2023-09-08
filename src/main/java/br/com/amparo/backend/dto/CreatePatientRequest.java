@@ -11,9 +11,6 @@ public class CreatePatientRequest extends CreateUserRequest{
     @Pattern(regexp = "[0-9]{11}", message = "Cpf deve conter somente 11 números")
     private String cpf;
 
-    @NotNull
-
-
     public CreatePatientRequest() {
         super(UserType.PATIENT);
     }
