@@ -68,7 +68,7 @@ public class UserRepository {
             ));
             return jdbcTemplate.queryForObject(sql, param, String.class);
         } catch (Exception e) {
-        log.warning("Error trying to create user: " + user.getEmail());
+        log.warning("Error trying to create user: " + user.getEmail() + " Error: " + e.getMessage());
             throw new UserCreationException(user.getEmail(), user.getName(), user.getCellphone());
         }
     }

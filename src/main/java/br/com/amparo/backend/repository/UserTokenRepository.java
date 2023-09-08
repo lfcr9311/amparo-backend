@@ -38,7 +38,7 @@ public class UserTokenRepository {
             MapSqlParameterSource parameterSource = new MapSqlParameterSource(Map.of("email", email));
             return Optional.ofNullable(jdbcTemplate.queryForObject(sql, parameterSource, buildRowMapper()));
         } catch (DataAccessException ex) {
-            log.error("Error trying to get tokeUser for email: " + email, ex);
+            log.error("Error trying to get tokeUser for email: " + email + " Error: ", ex);
             return Optional.empty();
         }
     }
@@ -61,7 +61,7 @@ public class UserTokenRepository {
             return true;
 
         } catch (DataAccessException ex) {
-            log.error("Error trying to save user: " + user, ex);
+            log.error("Error trying to save user: " + user + " Error: ", ex);
             return false;
         }
     }
