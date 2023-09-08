@@ -33,7 +33,7 @@ public class AuthenticationController {
     @Autowired
     private AuthService authService;
 
-    @Operation(operationId = "login", description = "Generate token for user",
+    @Operation(operationId = "login", description = "Generate token for user", summary = "Generate token for user",
             responses = {
                     @ApiResponse(responseCode = "200", description = "Generated Bearer token for the user",
                             content = @Content(schema = @Schema(implementation = LoginTokenResponse.class))),
@@ -49,7 +49,7 @@ public class AuthenticationController {
                         Map.of("message", "email or password invalid"), HttpStatus.UNAUTHORIZED)
                 );
     }
-
+@SecurityRequirements
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody @Valid CreateUserRequest createUserRequest) {
         try {
