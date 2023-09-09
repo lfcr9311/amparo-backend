@@ -3,7 +3,7 @@ package br.com.amparo.backend.dto;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.Email;
+import io.swagger.v3.oas.annotations.media.SchemaProperty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import lombok.Getter;
@@ -22,9 +22,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public abstract class CreateUserRequest{
 
-    @NotNull
+    @Schema(example = "email@email.com.br")
     @Pattern(regexp = "^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$", message = "Invalid email")
-    @Schema (example="exemplo@exemplo.com.br")
     protected String email;
     @NotNull
     protected String name;
