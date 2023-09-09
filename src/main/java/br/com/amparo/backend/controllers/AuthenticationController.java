@@ -51,6 +51,13 @@ public class AuthenticationController {
                 );
     }
 
+    @Operation(operationId = "register", description = "Register a new user",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Generated Bearer token for the user",
+                            content = @Content(schema = @Schema(implementation = LoginTokenResponse.class))),
+                    @ApiResponse(responseCode = "401", description = "email or password invalid",
+                            content = @Content(schema = @Schema(implementation = ErrorMessage.class)))
+            })
     @SecurityRequirements
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody @Valid CreateUserRequest createUserRequest) {
