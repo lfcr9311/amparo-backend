@@ -25,8 +25,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class AuthenticationController {
 
-    @Autowired
-    private AuthService authService;
+    private final AuthService authService;
 
     @Operation(operationId = "login", description = "Generate token for user",
     responses = {
