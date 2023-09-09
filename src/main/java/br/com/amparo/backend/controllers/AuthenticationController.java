@@ -4,6 +4,7 @@ import br.com.amparo.backend.dto.CreateUserRequest;;
 import br.com.amparo.backend.controllers.dto.ErrorMessage;
 import br.com.amparo.backend.controllers.dto.LoginTokenResponse;
 import br.com.amparo.backend.dto.LoginRequest;
+import br.com.amparo.backend.dto.RegisterDto;
 import br.com.amparo.backend.service.security.AuthService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -53,9 +54,10 @@ public class AuthenticationController {
 
     @Operation(operationId = "register", description = "Register a new user",
             responses = {
-                    @ApiResponse(responseCode = "200", description = "Generated Bearer token for the user",
-                            content = @Content(schema = @Schema(implementation = LoginTokenResponse.class))),
-                    @ApiResponse(responseCode = "401", description = "email or password invalid",
+                    @ApiResponse(responseCode = "201", description = "User Created",
+                            content = @Content(schema = @Schema(implementation = RegisterDto.class))),
+
+                    @ApiResponse(responseCode = "400", description = "Registration failed",
                             content = @Content(schema = @Schema(implementation = ErrorMessage.class)))
             })
     @SecurityRequirements
