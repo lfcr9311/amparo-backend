@@ -26,6 +26,7 @@ public abstract class CreateUserRequest{
     @Pattern(regexp = "^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$", message = "Invalid email")
     protected String email;
     @NotNull
+    @Pattern(regexp = "[A-Z][a-z].* [A-Z][a-z].*")
     protected String name;
     @NotNull
     protected String password;
