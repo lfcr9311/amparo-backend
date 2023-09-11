@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.media.SchemaProperty;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import lombok.Getter;
@@ -23,16 +24,15 @@ import lombok.NoArgsConstructor;
 public abstract class CreateUserRequest{
 
     @Schema(example = "email@email.com.br")
-    @Pattern(regexp = "^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$", message = "Invalid email")
+    @Pattern(regexp = "^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$", message = "Invalid email pattern")
     protected String email;
-    @NotNull
-    @Pattern(regexp = "[A-Z][a-z].* [A-Z][a-z].*")
+    @NotBlank(message = "Name should not be blank")
     protected String name;
-    @NotNull
+    @NotBlank(message = "password is required")
     protected String password;
-    @NotNull
+    @NotBlank(message = "Cellphone is required")
     protected String cellphone;
-    @NotNull
+    @NotNull(message = "Required to know what type of user: PATIENT or DOCTOR")
     private UserType userType;
 
     protected String profilePicture;

@@ -14,7 +14,7 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import java.util.Map;
 import java.util.Optional;
 
-@Log
+@Slf4j
 public class UserRepository {
     private NamedParameterJdbcTemplate jdbcTemplate;
 
@@ -39,6 +39,7 @@ public class UserRepository {
             MapSqlParameterSource param = new MapSqlParameterSource("email", email);
             return Optional.ofNullable(jdbcTemplate.queryForObject(sql, param, buildRowMapper()));
         } catch (DataAccessException e) {
+            log.error("Error trying to get user with email: " + email);
             return Optional.empty();
         }
     }
@@ -67,9 +68,9 @@ public class UserRepository {
                     "is_anonymous",false
             ));
             return jdbcTemplate.queryForObject(sql, param, String.class);
-        } catch (Exception e) {
-        log.warning("Error trying to create user: " + user.getEmail() + " Error: " + e.getMessage());
-            throw new UserCreationException(user.getEmail(), user.getName(), user.getCellphone());
+        } catch (DataAccessException e) {
+            log.error("Error trying to create user: " + user.getEmail(), e);
+            throw new UserCreationException(user.getEmail(), user.getName(), user.getCellphone(), e);
         }
     }
 
