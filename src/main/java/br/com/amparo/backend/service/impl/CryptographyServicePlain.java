@@ -2,7 +2,6 @@ package br.com.amparo.backend.service.impl;
 
 import br.com.amparo.backend.domain.record.SaltedPassword;
 import br.com.amparo.backend.service.CryptographyService;
-
 public class CryptographyServicePlain implements CryptographyService {
     private static final String SALT = "SALT";
 

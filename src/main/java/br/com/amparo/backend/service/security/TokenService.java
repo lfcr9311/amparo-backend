@@ -7,7 +7,6 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTCreationException;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
-import lombok.Setter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
@@ -16,15 +15,12 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.List;
-
 public class TokenService {
-
     private String secret;
 
     public TokenService(String secret) {
         this.secret = secret;
     }
-
     public String generateToken(TokenUser apiUser) {
         try {
             Algorithm algorithm = Algorithm.HMAC256(secret);
@@ -47,8 +43,8 @@ public class TokenService {
             Algorithm algorithm = Algorithm.HMAC256(secret);
             DecodedJWT decodedJWT =  JWT.require(algorithm).build().verify(token);
             String id = decodedJWT.getSubject();
-            String email = decodedJWT.getClaim("email").asString();
             String name = decodedJWT.getClaim("name").asString();
+            String email = decodedJWT.getClaim("email").asString();
             List<String> authorities = decodedJWT.getClaim("roles").asList(String.class);
 
             return new ApiUser(id, email, name, token, authorities.stream().map(SimpleGrantedAuthority::new).toList());
