@@ -13,7 +13,7 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - "/tmp/pgdata-test:/var/lib/postgresql/data"
+      - ./db:/docker-entrypoint-initdb.d/
     environment:
       - POSTGRES_PASSWORD=amparo
       - POSTGRES_DB=amparo-db

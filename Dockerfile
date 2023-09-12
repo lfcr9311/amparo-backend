@@ -1,15 +1,11 @@
-from gradle:latest AS builder
-
+# Build stage
+FROM gradle:latest AS builder
 WORKDIR /app
+COPY . .
+RUN gradle clean build --no-daemon -x test
 
-copy . .
-
-run gradle clean build --no-daemon -x test
-
-from amazoncorretto:17-alpine3.18-jdk
-
+# Package stage
+FROM amazoncorretto:17-alpine3.18-jdk
 WORKDIR /app
-
-copy --from=builder /amparo-backend/build/libs/amparo-backend-0.0.1-SNAPSHOT.jar app.jar
-
+COPY --from=builder /app/build/libs/amparo-backend-0.0.1-SNAPSHOT.jar app.jar
 CMD java -jar app.jar
