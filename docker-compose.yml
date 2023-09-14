@@ -11,7 +11,7 @@ services:
   amparo-db:
     image: "postgres:12.3"
     ports:
-      - "5432:5432"
+      - "5435:5432"
     volumes:
       - ./db:/docker-entrypoint-initdb.d/
     environment:

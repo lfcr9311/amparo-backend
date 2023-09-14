@@ -27,7 +27,7 @@ public class PatientController {
     @GetMapping("/{cpf}")
     public ResponseEntity<?> findByCPF(@PathVariable String cpf) {
         return patientService.findPatientByCpf(cpf)
-                .map(token -> ResponseEntity.ok(Map.of("token", token)))
+                .map(ResponseEntity::ok)
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
