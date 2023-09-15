@@ -85,13 +85,4 @@ public class AuthenticationController {
             );
         }
     }
-
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<?> handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
-        List<FieldMappedError> errors = e.getBindingResult().getAllErrors()
-                .stream()
-                .map(it -> new FieldMappedError(it.getDefaultMessage()))
-                .toList();
-        return ResponseEntity.badRequest().body(new ObjectMappingError(errors));
-    }
 }
