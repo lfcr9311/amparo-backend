@@ -2,9 +2,11 @@ package br.com.amparo.backend.repository;
 
 import br.com.amparo.backend.domain.entity.Patient;
 import br.com.amparo.backend.dto.PatientResponse;
+import br.com.amparo.backend.exception.ApiErrorException;
 import br.com.amparo.backend.exception.PatientUpdateException;
 import lombok.extern.java.Log;
 import org.springframework.dao.DataAccessException;
+import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 
@@ -94,7 +96,7 @@ public class PatientRepository {
             return Optional.of(patientResponse);
         } catch (DataAccessException e) {
             log.warning("Error trying to find patient by cpf: " + cpf + " Error: " + e.getMessage());
-            return Optional.empty();
+            throw new ApiErrorException("Erro ao buscar paciente com cpf: " + cpf, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
