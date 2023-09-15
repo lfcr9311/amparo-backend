@@ -39,6 +39,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 @ControllerAdvice
 @Slf4j
+@CrossOrigin("*")
 public class AuthenticationController {
 
     @Autowired
