@@ -21,7 +21,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 @ControllerAdvice
 @Slf4j
-@PreAuthorize("hasRole('ROLE_PATIENT')")
+@PreAuthorize("hasRole('PATIENT')")
 public class PatientController {
 
     @Autowired
