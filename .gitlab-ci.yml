@@ -45,3 +45,11 @@
 #    - echo "Deploying application..."
 #    - echo "Application successfully deployed."
 #
+stages:
+  - build
+
+build-job:
+  stage: build
+  script:
+    - echo "Compiling the Spring Boot project..."
+    - ./gradlew build
