@@ -10,4 +10,6 @@ public interface PatientService {
     Patient saveNewPatient(Patient patient);
 
     Optional<PatientResponse> findPatientByCpf(String cpf);
+
+    boolean uploadProfilePicture(String cpf, String profilePicture);
 }

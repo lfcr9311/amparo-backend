@@ -39,4 +39,11 @@ public class PatientController {
                 .toList();
         return ResponseEntity.badRequest().body(new ObjectMappingError(errors));
     }
+
+    @PostMapping("/profilePicture")
+    public ResponseEntity<?> uploadProfilePicture(@RequestBody Map<String, String> body) {
+        return patientService.uploadProfilePicture(body.get("cpf"), body.get("profilePicture"))
+                ? ResponseEntity.ok().build()
+                : ResponseEntity.badRequest().build();
+    }
 }

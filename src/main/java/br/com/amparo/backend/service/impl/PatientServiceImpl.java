@@ -36,4 +36,13 @@ public class PatientServiceImpl implements PatientService {
     public Optional<PatientResponse> findPatientByCpf(String cpf) {
         return repository.findByCpf(cpf);
     }
+
+    @Override
+    public boolean uploadProfilePicture(String cpf, String profilePicture) {
+        Optional<PatientResponse> patient = repository.findByCpf(cpf);
+        if(patient.isPresent()) {
+          return repository.setUserProfilePicture(String.valueOf(patient.get().id()), profilePicture);
+        }
+        return false;
+    }
 }

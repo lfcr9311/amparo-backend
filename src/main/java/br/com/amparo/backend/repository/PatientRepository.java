@@ -40,6 +40,26 @@ public class PatientRepository {
         }
     }
 
+    public boolean setUserProfilePicture(String id, String profilePicture) {
+        try {
+            String sql = """
+                    UPDATE "User" AS u
+                    SET profile_picture = :profilePicture
+                    FROM "Patient" AS p
+                    WHERE u."id" = p."id";
+                    """;
+            MapSqlParameterSource param = new MapSqlParameterSource(Map.of(
+                    "id", id,
+                    "profilePicture", profilePicture
+            ));
+            jdbcTemplate.update(sql, param);
+            return true;
+        } catch (DataAccessException e) {
+            log.warning("Error trying to update patient profile picture: " + id + " Error: " + e.getMessage());
+            return false;
+        }
+    }
+
     public Optional<PatientResponse> findByCpf(String cpf) {
         try {
             String sql = """
