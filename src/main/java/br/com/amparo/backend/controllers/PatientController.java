@@ -20,6 +20,7 @@ import java.util.Map;
 @RequestMapping("/patient")
 @RequiredArgsConstructor
 @ControllerAdvice
+@CrossOrigin("*")
 @Slf4j
 @PreAuthorize("hasRole('PATIENT')")
 public class PatientController {
@@ -39,14 +40,5 @@ public class PatientController {
         return patientService.editPatient(patient)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
-    }
-
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<?> handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
-        List<FieldMappedError> errors = e.getBindingResult().getAllErrors()
-                .stream()
-                .map(it -> new FieldMappedError(it.getDefaultMessage()))
-                .toList();
-        return ResponseEntity.badRequest().body(new ObjectMappingError(errors));
     }
 }
