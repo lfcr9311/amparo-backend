@@ -31,15 +31,6 @@ public class PatientController {
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<?> handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
-        List<FieldMappedError> errors = e.getBindingResult().getAllErrors()
-                .stream()
-                .map(it -> new FieldMappedError(it.getDefaultMessage()))
-                .toList();
-        return ResponseEntity.badRequest().body(new ObjectMappingError(errors));
-    }
-
     @PostMapping("/profilePicture")
     public ResponseEntity<?> uploadProfilePicture(@RequestBody Map<String, String> body) {
         return patientService.uploadProfilePicture(body.get("cpf"), body.get("profilePicture"))
