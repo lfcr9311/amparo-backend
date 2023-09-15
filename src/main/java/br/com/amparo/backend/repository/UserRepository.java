@@ -4,6 +4,7 @@ import br.com.amparo.backend.domain.entity.Patient;
 import br.com.amparo.backend.domain.entity.User;
 import br.com.amparo.backend.domain.record.SaltedPassword;
 import br.com.amparo.backend.exception.UserCreationException;
+import br.com.amparo.backend.exception.UserUpdateException;
 import lombok.extern.java.Log;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessException;
@@ -71,6 +72,33 @@ public class UserRepository {
         } catch (DataAccessException e) {
             log.error("Error trying to create user: " + user.getEmail(), e);
             throw new UserCreationException(user.getEmail(), user.getName(), user.getCellphone(), e);
+        }
+    }
+
+    public String updateUser(User user){
+        try {
+            String sql = """
+                    UPDATE "User"
+                    SET name = :name,
+                        email = :email,
+                        password = :password,
+                        profile_picture = :profilePicture,
+                        cellphone = :cellphone
+                    WHERE "id" = :id
+                    returning id
+                    """;
+            MapSqlParameterSource param = new MapSqlParameterSource(Map.of(
+                    "id",user.getId(),
+                    "name",user.getName(),
+                    "email",user.getEmail(),
+                    "password",user.getPassword(),
+                    "profilePicture",user.getProfilePicture(),
+                    "cellphone",user.getCellphone()
+            ));
+            return jdbcTemplate.queryForObject(sql, param, String.class);
+        } catch (DataAccessException e) {
+            log.error("Error trying to update user: " + user.getId(), e);
+            throw new UserUpdateException(user.getEmail(), user.getName(), user.getCellphone(), e);
         }
     }
 

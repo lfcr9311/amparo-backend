@@ -2,6 +2,7 @@ package br.com.amparo.backend.repository;
 
 import br.com.amparo.backend.domain.entity.Patient;
 import br.com.amparo.backend.dto.PatientResponse;
+import br.com.amparo.backend.exception.PatientUpdateException;
 import lombok.extern.java.Log;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -40,23 +41,22 @@ public class PatientRepository {
         }
     }
 
-    public boolean setUserProfilePicture(String id, String profilePicture) {
+    public Optional<PatientResponse> updatePatient(Patient patient) {
         try {
             String sql = """
-                    UPDATE "User" AS u
-                    SET profile_picture = :profilePicture
-                    FROM "Patient" AS p
-                    WHERE u."id" = p."id";
+                    UPDATE "Patient"
+                    SET cpf = :cpf
+                    WHERE "id" = :id
                     """;
             MapSqlParameterSource param = new MapSqlParameterSource(Map.of(
-                    "id", id,
-                    "profilePicture", profilePicture
+                    "id", UUID.fromString(patient.getId()),
+                    "cpf", patient.getCpf()
             ));
             jdbcTemplate.update(sql, param);
-            return true;
+            return findByCpf(patient.getCpf());
         } catch (DataAccessException e) {
-            log.warning("Error trying to update patient profile picture: " + id + " Error: " + e.getMessage());
-            return false;
+            log.warning("Error trying to update patient: " + patient.getId() + " Error: " + e.getMessage());
+            throw new PatientUpdateException(patient.getEmail(), patient.getName(), patient.getCellphone(), e);
         }
     }
 
