@@ -1,7 +1,8 @@
 # Build stage
 FROM gradle:latest AS builder
 WORKDIR /app
-COPY . .
+COPY build.gradle settings.gradle ./
+copy src/ src/
 RUN gradle clean build --no-daemon -x test
 
 # Package stage
