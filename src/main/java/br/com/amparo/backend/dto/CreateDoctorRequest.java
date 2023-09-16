@@ -8,7 +8,6 @@ import lombok.Getter;
 @Getter
 public class CreateDoctorRequest extends CreateUserRequest{
     @NotNull
-    @Pattern(regexp = "[0-9]{4,6}", message = "CRM deve conter somente números")
     private int crm;
 
     @NotNull
