@@ -12,7 +12,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 import java.util.Map;
 
@@ -22,7 +21,7 @@ import java.util.Map;
 @ControllerAdvice
 @CrossOrigin("*")
 @Slf4j
-@PreAuthorize("hasRole('PATIENT')")
+
 public class PatientController {
 
     @Autowired
@@ -35,6 +34,7 @@ public class PatientController {
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
+    @PreAuthorize("hasRole('PATIENT')")
     @PutMapping("/editPatient")
     public ResponseEntity<?> editPatient(@RequestHeader Map<String, String> headers, @RequestBody PatientToUpdateRequest patient) {
         log.info("Headers: {}", headers);

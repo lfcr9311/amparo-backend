@@ -42,7 +42,6 @@ public class PatientRepository {
             return false;
         }
     }
-
     public Optional<PatientResponse> updatePatient(Patient patient) {
         try {
             String sql = """
@@ -100,4 +99,41 @@ public class PatientRepository {
         }
     }
 
+    public Optional<PatientResponse> findById(String id) {
+        try {
+            String sql = """
+                    SELECT p."id"            as "id",
+                           p.cpf             as "cpf",
+                           u."email"         as "email",
+                           u.name            as "name",
+                           u.cellphone       as "cellphone",
+                           u.profile_picture as "profilePicture",
+                           u.is_anonymous    as "isAnonymous"
+                    FROM "Patient" p
+                             LEFT JOIN "User" u ON u."id" = p."id"
+                    WHERE p.id = :id
+                    """;
+            MapSqlParameterSource param = new MapSqlParameterSource(Map.of(
+                    "id", id
+            ));
+            PatientResponse patientResponse = jdbcTemplate.queryForObject(sql, param, (rs, rowNum) -> new PatientResponse(
+                    UUID.fromString(rs.getString("id")),
+                    rs.getString("email"),
+                    rs.getString("name"),
+                    rs.getString("cellphone"),
+                    rs.getString("profilePicture"),
+                    rs.getBoolean("isAnonymous"),
+                    rs.getString("cpf")
+            ));
+
+            if (patientResponse == null) {
+                return Optional.empty();
+            }
+
+            return Optional.of(patientResponse);
+        } catch (DataAccessException e) {
+            log.warning("Error trying to find patient by id: " + id + " Error: " + e.getMessage());
+            throw new ApiErrorException("Erro ao buscar paciente com id: " + id, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 }

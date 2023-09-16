@@ -25,6 +25,10 @@ public class PatientServiceImpl implements PatientService {
 
     private final PatientRepository repository;
 
+    @Override
+    public Optional<PatientResponse> findPatientById(String id){
+        return repository.findById(id);
+    }
 
     @Override
     @Transactional
