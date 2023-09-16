@@ -2,91 +2,103 @@
 
 The backend api for amparo web app
 
-## Getting started
+## Requirements:
+- Java 17 JDK
+- Docker
 
-To make it easy for you to get started with GitLab, here's a list of recommended next steps.
+# FAQ:
+will be shown on the bottom of this page.
 
-Already a pro? Just edit this README.md and make it your own. Want to make it easy? [Use the template at the bottom](#editing-this-readme)!
+## Useful links:
 
-## Add your files
+- [x] [Spring Tutorial](https://spring.io/guides/gs/spring-boot/)
+- [x] [Docker](https://docs.docker.com/)
+  - [x] [Post Install](https://docs.docker.com/engine/install/linux-postinstall/)
+- [x] [Spock Testing](https://spockframework.org/spock/docs/2.3/index.html)
+  - [x] [Primer (the basic commands)](https://spockframework.org/spock/docs/2.3/spock_primer.html)
+  - [x] [Data Drive test](https://spockframework.org/spock/docs/2.3/data_driven_testing.html)
+  - [x] [Mocking/Stubbing](https://spockframework.org/spock/docs/2.3/interaction_based_testing.html)
+- [ ] Swagger documentation
+  - [x] [Springdocs](https://springdoc.org/)
+  - [x] [Local](http://localhost:8080/swagger/docs.html)
+    - Necessário estar rodando a aplicação.
+  - [ ] [Cloud](#useful-links)
 
-- [ ] [Create](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#create-a-file) or [upload](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#upload-a-file) files
-- [ ] [Add files using the command line](https://docs.gitlab.com/ee/gitlab-basics/add-file.html#add-a-file-using-the-command-line) or push an existing Git repository with the following command:
 
+### How to run the application:
+With all following versions, always do some of the commands (if you are with the source-code)
+```bash
+git pull origin master
 ```
-cd existing_repo
-git remote add origin https://tools.ages.pucrs.br/amparo/amparo-backend.git
-git branch -M main
-git push -uf origin main
+or
+```bash
+git pull origin dev
 ```
 
-## Integrate with your tools
+#### I'm just a front-end developer and just want to run the application to make what really matters to the stakeholders. 
+ To begin with, you can access the cloud web swagger and use it from there, but since the AGES III does not upload the
+ application, it's needed to run the application locally, so here we go:
+ 
+- #### Via Docker-compose.
+then execute the following commands:
+```bash
+docker compose build
+```
+after this, execute:
+```bash
+docker composen up 
+```
+And your application should be running.
 
-- [ ] [Set up project integrations](https://tools.ages.pucrs.br/amparo/amparo-backend/-/settings/integrations)
+- #### If you want to run locally to debug the application.  
+I'm sorry to say that, but you are beginning to following a no way back towards to becoming
+a full-stack developer or at least know something of the backstage of development.
+Só just follow the back-end tutorial.
 
-## Collaborate with your team
+#### I'm the back-end developer that need to make this application evolve.
 
-- [ ] [Invite team members and collaborators](https://docs.gitlab.com/ee/user/project/members/)
-- [ ] [Create a new merge request](https://docs.gitlab.com/ee/user/project/merge_requests/creating_merge_requests.html)
-- [ ] [Automatically close issues from merge requests](https://docs.gitlab.com/ee/user/project/issues/managing_issues.html#closing-issues-automatically)
-- [ ] [Enable merge request approvals](https://docs.gitlab.com/ee/user/project/merge_requests/approvals/)
-- [ ] [Automatically merge when pipeline succeeds](https://docs.gitlab.com/ee/user/project/merge_requests/merge_when_pipeline_succeeds.html)
+For those how choose these dark path, I shall show you the way to ease you from these hurtful way
 
-## Test and Deploy
+- #### To begin with all we need to generate the build executable file.
+So to do this, we are using the gradle as our dependencies' manager.
+to generate and install everything that we are going to need, we use these command.
+```bash
+./gradlew clean build
+```
+Ps: If the test are failing put the flag ```-x test``` at the end of the command.
+- #### docker-compose.
 
-Use the built-in continuous integration in GitLab.
+run the command:
+```bash
+docker compose -f docker-compose-db.yml up -d
+```
+This will start only the database of the application.
 
-- [ ] [Get started with GitLab CI/CD](https://docs.gitlab.com/ee/ci/quick_start/index.html)
-- [ ] [Analyze your code for known vulnerabilities with Static Application Security Testing(SAST)](https://docs.gitlab.com/ee/user/application_security/sast/)
-- [ ] [Deploy to Kubernetes, Amazon EC2, or Amazon ECS using Auto Deploy](https://docs.gitlab.com/ee/topics/autodevops/requirements.html)
-- [ ] [Use pull-based deployments for improved Kubernetes management](https://docs.gitlab.com/ee/user/clusters/agent/)
-- [ ] [Set up protected environments](https://docs.gitlab.com/ee/ci/environments/protected_environments.html)
+now to run application properly saying, you can do two ways.
 
-***
+running the command:
+```bash
+./gradlew bootrun
+```
+Or running the application via your most favorite IDE.
 
-# Editing this README
 
-When you're ready to make this README your own, just edit this file and use the handy template below (or feel free to structure it however you want - this is just a starting point!).  Thank you to [makeareadme.com](https://www.makeareadme.com/) for this template.
 
-## Suggestions for a good README
-Every project is different, so consider which of these sections apply to yours. The sections used in the template are suggestions for most open source projects. Also keep in mind that while a README can be too long and detailed, too long is better than too short. If you think your README is too long, consider utilizing another form of documentation rather than cutting out information.
-
-## Name
-Choose a self-explaining name for your project.
-
-## Description
-Let people know what your project can do specifically. Provide context and add a link to any reference visitors might be unfamiliar with. A list of Features or a Background subsection can also be added here. If there are alternatives to your project, this is a good place to list differentiating factors.
-
-## Badges
-On some READMEs, you may see small images that convey metadata, such as whether or not all the tests are passing for the project. You can use Shields to add some to your README. Many services also have instructions for adding a badge.
-
-## Visuals
-Depending on what you are making, it can be a good idea to include screenshots or even a video (you'll frequently see GIFs rather than actual videos). Tools like ttygif can help, but check out Asciinema for a more sophisticated method.
-
-## Installation
-Within a particular ecosystem, there may be a common way of installing things, such as using Yarn, NuGet, or Homebrew. However, consider the possibility that whoever is reading your README is a novice and would like more guidance. Listing specific steps helps remove ambiguity and gets people to using your project as quickly as possible. If it only runs in a specific context like a particular programming language version or operating system or has dependencies that have to be installed manually, also add a Requirements subsection.
-
-## Usage
-Use examples liberally, and show the expected output if you can. It's helpful to have inline the smallest example of usage that you can demonstrate, while providing links to more sophisticated examples if they are too long to reasonably include in the README.
-
-## Support
-Tell people where they can go to for help. It can be any combination of an issue tracker, a chat room, an email address, etc.
-
-## Roadmap
-If you have ideas for releases in the future, it is a good idea to list them in the README.
-
-## Contributing
-State if you are open to contributions and what your requirements are for accepting them.
-
-For people who want to make changes to your project, it's helpful to have some documentation on how to get started. Perhaps there is a script that they should run or some environment variables that they need to set. Make these steps explicit. These instructions could also be useful to your future self.
-
-You can also document commands to lint the code or run tests. These steps help to ensure high code quality and reduce the likelihood that the changes inadvertently break something. Having instructions for running tests is especially helpful if it requires external setup, such as starting a Selenium server for testing in a browser.
-
-## Authors and acknowledgment
-Show your appreciation to those who have contributed to the project.
-
-## License
-For open source projects, say how it is licensed.
-
-## Project status
-If you have run out of energy or time for your project, put a note at the top of the README saying that development has slowed down or stopped completely. Someone may choose to fork your project or volunteer to step in as a maintainer or owner, allowing your project to keep going. You can also make an explicit request for maintainers.
+### FAQ.
+- #### THE DATABASE IT'S NOT RUNNING... WHAT CAN I DO.
+  - Probably you have another application running at the port 5432 (most likely to be another postgresql)
+  so you can, or stop the application on port 5432, or change the following files:
+    - docker-compose.yml:
+      - service > amparo-db > ports > 5432:5432 change to 5433:5432
+      - service > amparo-back > environment > SPRING_DATASOURCE_URL=jdbc:postgresql://amparo-db:5432/amparo-db?user=amparo&password=amparo change the 5432 to 5433
+    - docker-compose-db.yml:
+      - service > amparo-db > ports > 5432:5432 change to 5433:5432
+    - application.properties:
+      - Change spring.datasource.url=jdbc:postgresql://localhost:5432/amparo-db?user=amparo&password=amparo to spring.datasource.url=jdbc:postgresql://localhost:5433/amparo-db?user=amparo&password=amparo
+- #### What is the path to the swagger?
+  - localhost:8080/swagger/docs.html
+- #### I have to add something on the base, a new table for example
+  - Go to src > resources > db.migration and add a new file like V2__operation.sql
+    - Look the last version and +1 so with the last file is V1__init.sql, the next will be V2__operation_that_you_will_be.sql
+- #### The application is not running even after the FAQ what can i do.
+  - Ask for help to your other AGES
