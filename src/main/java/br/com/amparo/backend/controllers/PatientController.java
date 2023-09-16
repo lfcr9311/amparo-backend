@@ -36,7 +36,9 @@ public class PatientController {
     }
 
     @PutMapping("/editPatient")
-    public ResponseEntity<?> editPatient(@RequestBody PatientToUpdateRequest patient) {
+    public ResponseEntity<?> editPatient(@RequestHeader Map<String, String> headers, @RequestBody PatientToUpdateRequest patient) {
+        log.info("Headers: {}", headers);
+        String token = headers.get("authorization");
         return patientService.editPatient(patient)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
