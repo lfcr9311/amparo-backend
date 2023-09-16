@@ -39,7 +39,7 @@ public class UserRepository {
             MapSqlParameterSource param = new MapSqlParameterSource("email", email);
             return Optional.ofNullable(jdbcTemplate.queryForObject(sql, param, buildRowMapper()));
         } catch (DataAccessException e) {
-            log.error("Error trying to get user with email: " + email);
+            log.error("Error trying to get user with email: ERROR: " + e.getMessage());
             return Optional.empty();
         }
     }

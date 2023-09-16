@@ -8,10 +8,11 @@ import lombok.Getter;
 @Getter
 public class CreateDoctorRequest extends CreateUserRequest{
     @NotNull
-    private int crm;
+    @Pattern(regexp = "\\d{4,6}", message = "CRM deve conter entre 4 a 6 dígitos")
+    private String crm;
 
     @NotNull
-    @Pattern(regexp = "[A-Z]{2}", message = "UF deve conter somente 2 letras")
+    @Pattern(regexp = "[A-Z]{2}", message = "UF deve conter somente 2 caracteres")
     private String uf;
 
     public CreateDoctorRequest() {

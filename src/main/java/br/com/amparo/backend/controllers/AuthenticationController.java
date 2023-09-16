@@ -63,7 +63,7 @@ public class AuthenticationController {
 
     @Operation(operationId = "register", description = "Register a new user",
             responses = {
-                    @ApiResponse(responseCode = "201", description = "Patient or Doctor* Created, Doctor not yet implemented",
+                    @ApiResponse(responseCode = "201", description = "Patient or Doctor Created",
                             content = @Content(schema = @Schema(oneOf = {Patient.class, Doctor.class}))
                     ),
                     @ApiResponse(responseCode = "500", description = "Registration failed",
