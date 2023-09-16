@@ -1,7 +1,5 @@
 package br.com.amparo.backend.controllers;
 
-import br.com.amparo.backend.controllers.dto.FieldMappedError;
-import br.com.amparo.backend.controllers.dto.ObjectMappingError;
 import br.com.amparo.backend.dto.PatientToUpdateRequest;
 import br.com.amparo.backend.service.PatientService;
 import lombok.RequiredArgsConstructor;
@@ -10,9 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
-import java.util.List;
+
 import java.util.Map;
 
 @RestController
@@ -30,6 +27,13 @@ public class PatientController {
     @GetMapping("/{cpf}")
     public ResponseEntity<?> findByCPF(@PathVariable String cpf) {
         return patientService.findPatientByCpf(cpf)
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<?> findById(@PathVariable String id) {
+        return patientService.findPatientById(id)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
