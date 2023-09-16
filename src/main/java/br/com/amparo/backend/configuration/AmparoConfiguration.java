@@ -1,17 +1,16 @@
 package br.com.amparo.backend.configuration;
 
 import br.com.amparo.backend.configuration.security.AmparoSecurityConfiguration;
+import br.com.amparo.backend.repository.DoctorRepository;
 import br.com.amparo.backend.repository.PatientRepository;
 import br.com.amparo.backend.repository.UserRepository;
 import br.com.amparo.backend.repository.UserTokenRepository;
-import br.com.amparo.backend.service.impl.CryptographyServicePlain;
 import br.com.amparo.backend.service.security.AuthService;
 import br.com.amparo.backend.service.security.TokenService;
 import br.com.amparo.backend.service.CryptographyService;
 import br.com.amparo.backend.service.impl.CryptographyServiceSha256;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Conditional;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -43,6 +42,11 @@ public class AmparoConfiguration {
     }
 
     @Bean
+    public DoctorRepository doctorRepository(NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
+        return new DoctorRepository(namedParameterJdbcTemplate);
+    }
+
+    @Bean
     public UserRepository userRepository(NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
         return new UserRepository(namedParameterJdbcTemplate);
     }
@@ -50,8 +54,9 @@ public class AmparoConfiguration {
     @Bean
     public AuthService loginService(TokenService tokenService, UserTokenRepository userTokenRepository,
                                     CryptographyService cryptographyService, UserRepository userRepository,
-                                    PatientRepository patientRepository) {
+                                    PatientRepository patientRepository, DoctorRepository doctorRepository) {
+
         return new AuthService(tokenService, userTokenRepository, cryptographyService,
-                userRepository, patientRepository);
+                userRepository, patientRepository, doctorRepository);
     }
 }

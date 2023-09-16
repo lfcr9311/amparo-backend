@@ -1,7 +1,6 @@
 package br.com.amparo.backend.domain.entity;
 
-import lombok.Builder;
-import lombok.Getter;
+import lombok.*;
 
 @Getter
 public class Doctor extends User {

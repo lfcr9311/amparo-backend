@@ -7,6 +7,7 @@ import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 
 import java.util.Map;
+import java.util.UUID;
 
 @Log
 public class DoctorRepository {
@@ -18,18 +19,22 @@ public class DoctorRepository {
     public boolean create(Doctor doctor) {
         try {
             String sql = """
-                    INSERT INTO "Doctor" ("uf", "crm")
+                    INSERT INTO "Doctor" ("id", "crm", "uf")
                     values (
-                        :uf,
-                        :crm
+                        :id,
+                        :crm,
+                        :uf
                     )
                     """;
             MapSqlParameterSource param = new MapSqlParameterSource(Map.of(
-                    "uf", doctor.getUf(),
-                    "crm", doctor.getCrm()
+                    "id", UUID.fromString(doctor.getId()),
+                    "crm", doctor.getCrm(),
+                    "uf", doctor.getUf()
             ));
+
             jdbcTemplate.update(sql, param);
             return true;
+
         } catch (DataAccessException e) {
             log.warning("Error trying to create doctor: " +
                     doctor.getId() + " Error: " + e.getMessage());
