@@ -1,12 +1,16 @@
 package br.com.amparo.backend.repository;
 
 import br.com.amparo.backend.domain.entity.Doctor;
+import br.com.amparo.backend.domain.entity.User;
+import br.com.amparo.backend.exception.DoctorCreationException;
 import lombok.extern.java.Log;
 import org.springframework.dao.DataAccessException;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 
 @Log
@@ -38,7 +42,7 @@ public class DoctorRepository {
         } catch (DataAccessException e) {
             log.warning("Error trying to create doctor: " +
                     doctor.getId() + " Error: " + e.getMessage());
-            return false;
+            throw new DoctorCreationException(doctor.getEmail(), doctor.getCrm(), doctor.getUf());
         }
     }
 }

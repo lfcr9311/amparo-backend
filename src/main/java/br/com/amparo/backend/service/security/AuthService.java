@@ -9,6 +9,7 @@ import br.com.amparo.backend.dto.CreateUserRequest;
 
 import br.com.amparo.backend.domain.record.SaltedPassword;
 import br.com.amparo.backend.dto.LoginRequest;
+import br.com.amparo.backend.exception.DoctorCreationException;
 import br.com.amparo.backend.exception.PatientCreationException;
 import br.com.amparo.backend.exception.UserAlreadyExistsException;
 import br.com.amparo.backend.repository.DoctorRepository;
@@ -85,7 +86,7 @@ public class AuthService {
         String id = userRepository.create(doctor, passwordDoctor);
         doctor.setId(id);
         boolean created = doctorRepository.create(doctor);
-        if (!created) throw new PatientCreationException(doctor.getEmail());
+        if (!created) throw new DoctorCreationException(userRequest.getEmail(),userRequest.getCrm(),userRequest.getUf());
         return doctor;
     }
 }
