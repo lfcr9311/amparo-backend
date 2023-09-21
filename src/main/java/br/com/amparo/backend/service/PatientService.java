@@ -1,7 +1,5 @@
 package br.com.amparo.backend.service;
 
-
-import br.com.amparo.backend.domain.entity.Patient;
 import br.com.amparo.backend.dto.PatientResponse;
 import br.com.amparo.backend.dto.PatientToUpdateRequest;
 

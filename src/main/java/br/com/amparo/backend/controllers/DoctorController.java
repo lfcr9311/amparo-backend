@@ -2,7 +2,9 @@ package br.com.amparo.backend.controllers;
 
 import br.com.amparo.backend.controllers.dto.FieldMappedError;
 import br.com.amparo.backend.controllers.dto.ObjectMappingError;
+import br.com.amparo.backend.dto.DoctorToUpdateRequest;
 import br.com.amparo.backend.dto.PatientToUpdateRequest;
+import br.com.amparo.backend.service.DoctorService;
 import br.com.amparo.backend.service.PatientService;
 import br.com.amparo.backend.service.security.SecurityUtils;
 import lombok.RequiredArgsConstructor;
@@ -19,44 +21,36 @@ import java.util.Objects;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/patient")
+@RequestMapping("/doctor")
 @RequiredArgsConstructor
 @ControllerAdvice
 @Slf4j
-@PreAuthorize("hasRole('PATIENT')")
-public class PatientController {
+@PreAuthorize("hasRole('DOCTOR')")
+public class DoctorController {
 
     @Autowired
-    PatientService patientService;
-
-    @GetMapping("/{cpf}")
-    public ResponseEntity<?> findByCPF(@PathVariable String cpf) {
-        return patientService.findPatientByCpf(cpf)
-                .map(ResponseEntity::ok)
-                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
-    }
+    DoctorService doctorService;
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> findById(@PathVariable UUID id) {
+    public ResponseEntity<?> findDoctorById(@PathVariable UUID id) {
         if(id == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         else if (!Objects.equals(SecurityUtils.getApiUser().getId(), id.toString())) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         } else {
-            return patientService.findPatientById(id.toString())
+            return doctorService.findDoctorById(id.toString())
                     .map(ResponseEntity::ok)
                     .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
         }
     }
-
-    @PreAuthorize("hasRole('PATIENT')")
+    @PreAuthorize("hasRole('DOCTOR')")
     @PutMapping()
-    public ResponseEntity<?> editPatient(@RequestBody PatientToUpdateRequest patient) {
-        if (!patient.isValid()) {
+    public ResponseEntity<?> editDoctor(@RequestBody DoctorToUpdateRequest doctor) {
+        if (!doctor.isValid()) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        return patientService.editPatient(patient, SecurityUtils.getApiUser().getId())
+        return doctorService.editDoctor(doctor, SecurityUtils.getApiUser().getId())
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }

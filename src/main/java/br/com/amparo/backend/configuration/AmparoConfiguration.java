@@ -6,9 +6,11 @@ import br.com.amparo.backend.repository.PatientRepository;
 import br.com.amparo.backend.repository.UserRepository;
 import br.com.amparo.backend.repository.UserTokenRepository;
 import br.com.amparo.backend.service.CryptographyService;
+import br.com.amparo.backend.service.DoctorService;
 import br.com.amparo.backend.service.PatientService;
 import br.com.amparo.backend.service.UserService;
 import br.com.amparo.backend.service.impl.CryptographyServiceSha256;
+import br.com.amparo.backend.service.impl.DoctorServiceImpl;
 import br.com.amparo.backend.service.impl.PatientServiceImpl;
 import br.com.amparo.backend.service.security.AuthService;
 import br.com.amparo.backend.service.security.TokenService;
@@ -40,6 +42,11 @@ public class AmparoConfiguration {
     @Bean
     public PatientService patientService(UserService userService, PatientRepository patientRepository) {
         return new PatientServiceImpl(userService, patientRepository);
+    }
+
+    @Bean
+    public DoctorService doctorService(UserService userService, DoctorRepository doctorRepository) {
+        return new DoctorServiceImpl(userService, doctorRepository);
     }
 
     @Bean
