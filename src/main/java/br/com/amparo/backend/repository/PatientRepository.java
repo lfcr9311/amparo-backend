@@ -111,10 +111,10 @@ public class PatientRepository {
                            u.is_anonymous    as "isAnonymous"
                     FROM "Patient" p
                              LEFT JOIN "User" u ON u."id" = p."id"
-                    WHERE p.id = :id
+                    WHERE p."id" = :id
                     """;
             MapSqlParameterSource param = new MapSqlParameterSource(Map.of(
-                    "id", id
+                    "id", UUID.fromString(id)
             ));
             PatientResponse patientResponse = jdbcTemplate.queryForObject(sql, param, (rs, rowNum) -> new PatientResponse(
                     UUID.fromString(rs.getString("id")),
