@@ -1,6 +1,7 @@
 package br.com.amparo.backend.configuration;
 
 import br.com.amparo.backend.configuration.security.AmparoSecurityConfiguration;
+import br.com.amparo.backend.repository.DoctorRepository;
 import br.com.amparo.backend.repository.PatientRepository;
 import br.com.amparo.backend.repository.UserRepository;
 import br.com.amparo.backend.repository.UserTokenRepository;
@@ -52,6 +53,11 @@ public class AmparoConfiguration {
     }
 
     @Bean
+    public DoctorRepository doctorRepository(NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
+        return new DoctorRepository(namedParameterJdbcTemplate);
+    }
+
+    @Bean
     public UserRepository userRepository(NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
         return new UserRepository(namedParameterJdbcTemplate);
     }
@@ -59,8 +65,9 @@ public class AmparoConfiguration {
     @Bean
     public AuthService loginService(TokenService tokenService, UserTokenRepository userTokenRepository,
                                     CryptographyService cryptographyService, UserRepository userRepository,
-                                    PatientRepository patientRepository) {
+                                    PatientRepository patientRepository, DoctorRepository doctorRepository) {
+
         return new AuthService(tokenService, userTokenRepository, cryptographyService,
-                userRepository, patientRepository);
+                userRepository, patientRepository, doctorRepository);
     }
 }

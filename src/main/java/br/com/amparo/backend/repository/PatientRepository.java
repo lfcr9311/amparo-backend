@@ -14,7 +14,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
-@Log
+@Slf4j
 public class PatientRepository {
     private final NamedParameterJdbcTemplate jdbcTemplate;
 
@@ -38,7 +38,8 @@ public class PatientRepository {
             jdbcTemplate.update(sql, param);
             return true;
         } catch (DataAccessException e) {
-            log.warning("Error trying to create patient: " + patient.getId() + " Error: " + e.getMessage());
+            log.error("Error trying to create patient: " +
+                    patient.getId() + " Error: " + e.getMessage());
             return false;
         }
     }

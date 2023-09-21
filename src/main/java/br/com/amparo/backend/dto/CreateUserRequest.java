@@ -3,7 +3,6 @@ package br.com.amparo.backend.dto;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.media.SchemaProperty;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
@@ -27,6 +26,7 @@ public abstract class CreateUserRequest{
     @Pattern(regexp = "^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$", message = "Invalid email pattern")
     protected String email;
     @NotBlank(message = "Name should not be blank")
+    @Pattern(regexp = "^[a-zA-Z-'\\s]{2,}$", message = "Invalid name pattern")
     protected String name;
     @NotBlank(message = "password is required")
     protected String password;

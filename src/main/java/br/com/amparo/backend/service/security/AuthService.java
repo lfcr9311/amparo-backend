@@ -9,8 +9,10 @@ import br.com.amparo.backend.dto.CreateUserRequest;
 
 import br.com.amparo.backend.domain.record.SaltedPassword;
 import br.com.amparo.backend.dto.LoginRequest;
+import br.com.amparo.backend.exception.DoctorCreationException;
 import br.com.amparo.backend.exception.PatientCreationException;
 import br.com.amparo.backend.exception.UserAlreadyExistsException;
+import br.com.amparo.backend.repository.DoctorRepository;
 import br.com.amparo.backend.repository.PatientRepository;
 import br.com.amparo.backend.repository.UserRepository;
 import br.com.amparo.backend.repository.UserTokenRepository;
@@ -20,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Optional;
 
 public class AuthService {
+    private DoctorRepository doctorRepository;
     private TokenService tokenService;
 
     private UserTokenRepository userTokenRepository;
@@ -30,12 +33,13 @@ public class AuthService {
 
     public AuthService(TokenService tokenService, UserTokenRepository userTokenRepository,
                        CryptographyService cryptographicService, UserRepository userRepository,
-                       PatientRepository patientRepository) {
+                       PatientRepository patientRepository, DoctorRepository doctorRepository) {
         this.tokenService = tokenService;
         this.userTokenRepository = userTokenRepository;
         this.cryptographicService = cryptographicService;
         this.userRepository = userRepository;
         this.patientRepository = patientRepository;
+        this.doctorRepository = doctorRepository;
     }
 
     public Optional<String> login(LoginRequest loginRequest) {
@@ -64,8 +68,8 @@ public class AuthService {
             throw new UserAlreadyExistsException(userRequest.getEmail());
         }
         Patient patient = userRequest.toPatient();
-        SaltedPassword password = this.cryptographicService.encrypt(patient.getPassword());
-        String id = userRepository.create(patient, password);
+        SaltedPassword passwordPatient = this.cryptographicService.encrypt(patient.getPassword());
+        String id = userRepository.create(patient, passwordPatient);
         patient.setId(id);
         boolean created = patientRepository.create(patient);
         if (!created) throw new PatientCreationException(patient.getCpf());
@@ -73,6 +77,16 @@ public class AuthService {
     }
 
     private Doctor registerDoctor(CreateDoctorRequest userRequest) {
-        return null;
+        Optional<User> userOptional = userRepository.findByEmail(userRequest.getEmail());
+        if (userOptional.isPresent()) {
+            throw new UserAlreadyExistsException(userRequest.getEmail());
+        }
+        Doctor doctor = userRequest.toDoctor();
+        SaltedPassword passwordDoctor = this.cryptographicService.encrypt(doctor.getPassword());
+        String id = userRepository.create(doctor, passwordDoctor);
+        doctor.setId(id);
+        boolean created = doctorRepository.create(doctor);
+        if (!created) throw new DoctorCreationException(userRequest.getEmail(),userRequest.getCrm(),userRequest.getUf());
+        return doctor;
     }
 }
