@@ -36,21 +36,12 @@ public class PatientController {
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<?> findById(@PathVariable UUID id) {
-        if(id == null) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-        else if (!Objects.equals(SecurityUtils.getApiUser().getId(), id.toString())) {
-            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-        } else {
-            return patientService.findPatientById(id.toString())
-                    .map(ResponseEntity::ok)
-                    .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
-        }
+    @GetMapping()
+    public ResponseEntity<?> findById() {
+        return patientService.findPatientById(SecurityUtils.getApiUser().getId())
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
-
-
 
     @PreAuthorize("hasRole('PATIENT')")
     @PutMapping()
