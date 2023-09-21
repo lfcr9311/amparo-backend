@@ -27,4 +27,8 @@ public record PatientToUpdateRequest(String id, String name, String email, Strin
                 .cpf(this.cpf)
                 .build();
     }
+
+    public boolean isValid() {
+        return this.name != null && this.email != null && this.password != null && this.cellphone != null && this.cpf != null;
+    }
 }

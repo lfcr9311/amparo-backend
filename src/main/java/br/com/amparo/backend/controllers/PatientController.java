@@ -37,10 +37,12 @@ public class PatientController {
     @PreAuthorize("hasRole('PATIENT')")
     @PutMapping()
     public ResponseEntity<?> editPatient(@RequestBody PatientToUpdateRequest patient) {
+        if (!patient.isValid()) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
         return patientService.editPatient(patient, SecurityUtils.getApiUser().getId())
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
-
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
