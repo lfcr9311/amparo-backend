@@ -107,7 +107,7 @@ public class PatientRepository {
                            u."email"         as "email",
                            u.name            as "name",
                            u.cellphone       as "cellphone",
-                           u.profile_picture as "profilePicture",
+                           u.profile_picture  as "profilePicture",
                            u.is_anonymous    as "isAnonymous"
                     FROM "Patient" p
                              LEFT JOIN "User" u ON u."id" = p."id"
