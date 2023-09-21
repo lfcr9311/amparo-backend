@@ -2,6 +2,7 @@ package br.com.amparo.backend.repository;
 
 import br.com.amparo.backend.domain.entity.Patient;
 import lombok.extern.java.Log;;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -9,7 +10,7 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import java.util.Map;
 import java.util.UUID;
 
-@Log
+@Slf4j
 public class PatientRepository {
     private NamedParameterJdbcTemplate jdbcTemplate;
 
@@ -33,7 +34,8 @@ public class PatientRepository {
             jdbcTemplate.update(sql, param);
             return true;
         } catch (DataAccessException e) {
-            log.warning("Error trying to create patient: " + patient.getId() + " Error: " + e.getMessage());
+            log.error("Error trying to create patient: " +
+                    patient.getId() + " Error: " + e.getMessage());
             return false;
         }
     }
