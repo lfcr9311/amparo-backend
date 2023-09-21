@@ -1,11 +1,9 @@
 package br.com.amparo.backend.repository;
 
-import br.com.amparo.backend.domain.entity.Patient;
 import br.com.amparo.backend.domain.entity.User;
 import br.com.amparo.backend.domain.record.SaltedPassword;
 import br.com.amparo.backend.exception.UserCreationException;
 import br.com.amparo.backend.exception.UserUpdateException;
-import lombok.extern.java.Log;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.RowMapper;
@@ -14,6 +12,7 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 
 import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 
 @Slf4j
 public class UserRepository {
@@ -40,7 +39,29 @@ public class UserRepository {
             MapSqlParameterSource param = new MapSqlParameterSource("email", email);
             return Optional.ofNullable(jdbcTemplate.queryForObject(sql, param, buildRowMapper()));
         } catch (DataAccessException e) {
-            log.error("Error trying to get user with email: " + email);
+            log.error("Error trying to get user with email: " + email + " Error: "+ e.getMessage());
+            return Optional.empty();
+        }
+    }
+
+    public Optional<User> findUserById (String id) {
+        try {
+            String sql = """
+                    SELECT "id",
+                        "email",
+                        "password",
+                        "salt",
+                        "name",
+                        "cellphone",
+                        "profile_picture",
+                        "is_anonymous"
+                    FROM "User"
+                    WHERE id = :id
+                    """;
+            MapSqlParameterSource param = new MapSqlParameterSource("id", UUID.fromString(id));
+            return Optional.ofNullable(jdbcTemplate.queryForObject(sql, param, buildRowMapper()));
+        } catch (DataAccessException e) {
+            log.error("Error trying to get user with id: " + id + " Error: " + e.getMessage());
             return Optional.empty();
         }
     }
@@ -75,7 +96,7 @@ public class UserRepository {
         }
     }
 
-    public String updateUser(User user){
+    public Optional<User> updateUser(User user){
         try {
             String sql = """
                     UPDATE "User"
@@ -85,17 +106,17 @@ public class UserRepository {
                         profile_picture = :profilePicture,
                         cellphone = :cellphone
                     WHERE "id" = :id
-                    returning id
                     """;
             MapSqlParameterSource param = new MapSqlParameterSource(Map.of(
-                    "id",user.getId(),
+                    "id",UUID.fromString(user.getId()),
                     "name",user.getName(),
                     "email",user.getEmail(),
                     "password",user.getPassword(),
-                    "profilePicture",user.getProfilePicture(),
                     "cellphone",user.getCellphone()
             ));
-            return jdbcTemplate.queryForObject(sql, param, String.class);
+            param.addValue("profilePicture", user.getProfilePicture());
+            jdbcTemplate.update(sql, param);
+            return findUserById(user.getId());
         } catch (DataAccessException e) {
             log.error("Error trying to update user: " + user.getId(), e);
             throw new UserUpdateException(user.getEmail(), user.getName(), user.getCellphone(), e);
@@ -110,7 +131,7 @@ public class UserRepository {
             String salt = rs.getString("salt");
             String name = rs.getString("name");
             String cellphone = rs.getString("cellphone");
-            String profile_picture = rs.getNString("profile_picture");
+            String profile_picture = rs.getString("profile_picture");
             boolean is_anonymous = rs.getBoolean("is_anonymous");
             return new User(id, email, password, salt, name, cellphone, profile_picture, is_anonymous);
         };

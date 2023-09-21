@@ -1,6 +1,7 @@
 package br.com.amparo.backend.service.impl;
 
 import br.com.amparo.backend.domain.entity.Patient;
+import br.com.amparo.backend.domain.entity.User;
 import br.com.amparo.backend.dto.PatientResponse;
 import br.com.amparo.backend.dto.PatientToUpdateRequest;
 import br.com.amparo.backend.exception.ApiErrorException;
@@ -46,12 +47,12 @@ public class PatientServiceImpl implements PatientService {
     }
 
     @Override
-    public Optional<PatientResponse> editPatient(PatientToUpdateRequest patientToUpdateRequest) {
-        if (repository.findByCpf(patientToUpdateRequest.cpf()).isEmpty()) {
-            throw new ApiErrorException("Paciente não encontrado", BAD_REQUEST);
+    public Optional<PatientResponse> editPatient(PatientToUpdateRequest patientToUpdateRequest, String id) {
+        if (repository.findById(id).isEmpty() || userService.findById(id).isEmpty()) {
+            return Optional.empty();
         } else {
-            userService.updateUser(patientToUpdateRequest.toPatient());
-            return repository.updatePatient(patientToUpdateRequest.toPatient());
+            userService.updateUser(patientToUpdateRequest.toPatient(id));
+            return repository.updatePatient(patientToUpdateRequest.toPatient(id));
         }
     }
 }

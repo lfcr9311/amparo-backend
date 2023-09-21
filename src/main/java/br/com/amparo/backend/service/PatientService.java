@@ -12,6 +12,5 @@ public interface PatientService {
 
     Optional<PatientResponse> findPatientByCpf(String cpf);
 
-    Optional<PatientResponse> editPatient(PatientToUpdateRequest patientToUpdateRequest);
-    Optional<PatientResponse> findPatientById(String id);
+    Optional<PatientResponse> editPatient(PatientToUpdateRequest patientToUpdateRequest, String id);
 }

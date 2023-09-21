@@ -1,13 +1,12 @@
 package br.com.amparo.backend.service.impl;
 
-import br.com.amparo.backend.domain.entity.Patient;
+import br.com.amparo.backend.domain.entity.User;
 import br.com.amparo.backend.repository.UserRepository;
 import br.com.amparo.backend.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -19,13 +18,19 @@ public class UserServiceImpl implements UserService {
     public boolean alreadyExistsEmail(final String email) {
         return email != null;
     }
+
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return null;
+    public Optional<User> updateUser(User user) {
+        return repository.updateUser(user);
     }
 
     @Override
-    public String updateUser(Patient patient) {
-        return repository.updateUser(patient);
+    public Optional<User> findById(String id) {
+        return repository.findUserById(id);
+    }
+
+    @Override
+    public Optional<User> findByEmail(String email) {
+        return repository.findByEmail(email);
     }
 }
