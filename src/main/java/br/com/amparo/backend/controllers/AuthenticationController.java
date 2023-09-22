@@ -39,6 +39,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 @ControllerAdvice
 @Slf4j
+@CrossOrigin("*")
 public class AuthenticationController {
 
     @Autowired
@@ -83,14 +84,5 @@ public class AuthenticationController {
                     Map.of("message", "Registration failed"), HttpStatus.INTERNAL_SERVER_ERROR
             );
         }
-    }
-
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<?> handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
-        List<FieldMappedError> errors = e.getBindingResult().getAllErrors()
-                .stream()
-                .map(it -> new FieldMappedError(it.getDefaultMessage()))
-                .toList();
-        return ResponseEntity.badRequest().body(new ObjectMappingError(errors));
     }
 }

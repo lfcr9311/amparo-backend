@@ -35,7 +35,7 @@ public class AmparoSecurityConfiguration {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(ALLOWED_ENDPOINTS).permitAll()
-                        .requestMatchers("/**").authenticated()
+                        .anyRequest().authenticated()
                 )
                 .addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class)
                 .build();
