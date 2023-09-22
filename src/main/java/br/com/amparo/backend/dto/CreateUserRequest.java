@@ -26,7 +26,7 @@ public abstract class CreateUserRequest{
     @Pattern(regexp = "^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$", message = "Invalid email pattern")
     protected String email;
     @NotBlank(message = "Name should not be blank")
-    @Pattern(regexp = "^[a-zA-Z-'\\s]{2,}$", message = "Invalid name pattern")
+    @Pattern(regexp = "^[a-zA-ZÀ-ÖØ-öø-ÿ\\s]{2,100}$", message = "Invalid name pattern")
     protected String name;
     @NotBlank(message = "password is required")
     protected String password;
