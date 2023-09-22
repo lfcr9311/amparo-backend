@@ -29,4 +29,9 @@ public class PatientServiceImpl implements PatientService {
             return repository.updatePatient(patientToUpdateRequest.toPatient(id));
         }
     }
+
+    @Override
+    public Optional<PatientResponse> findPatientById(String id) {
+        return repository.findById(id);
+    }
 }

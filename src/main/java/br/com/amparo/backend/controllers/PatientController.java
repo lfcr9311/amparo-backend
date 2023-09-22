@@ -15,6 +15,8 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Objects;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/patient")
@@ -30,6 +32,13 @@ public class PatientController {
     @GetMapping("/{cpf}")
     public ResponseEntity<?> findByCPF(@PathVariable String cpf) {
         return patientService.findPatientByCpf(cpf)
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    }
+
+    @GetMapping()
+    public ResponseEntity<?> findById() {
+        return patientService.findPatientById(SecurityUtils.getApiUser().getId())
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
