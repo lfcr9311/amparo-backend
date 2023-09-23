@@ -1,5 +1,6 @@
 package br.com.amparo.backend.domain.security;
 
+import br.com.amparo.backend.dto.UserType;
 import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
@@ -12,29 +13,29 @@ public class ApiUser extends User {
     private String id;
     @Getter
     private String name;
-    private List<UserRoles> roles;
+    private List<UserType> roles;
 
     public ApiUser(String id, String email, String name, String token,
                    Collection<? extends GrantedAuthority> authorities) {
         super(email, token, authorities);
         this.roles = authorities.stream()
                 .map(GrantedAuthority::getAuthority)
-                .filter(UserRoles::hasRole)
-                .map(UserRoles::fromRole)
+                .filter(UserType::hasRole)
+                .map(UserType::fromRole)
                 .toList();
         this.id = id;
         this.name = name;
     }
 
-    public boolean hasRole(UserRoles role) {
+    public boolean hasRole(UserType role) {
         return roles.contains(role);
     }
 
     public boolean isDoctor() {
-        return hasRole(UserRoles.DOCTOR);
+        return hasRole(UserType.DOCTOR);
     }
 
     public boolean isPatient() {
-        return hasRole(UserRoles.PATIENT);
+        return hasRole(UserType.PATIENT);
     }
 }

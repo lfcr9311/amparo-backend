@@ -1,7 +1,7 @@
 package br.com.amparo.backend.repository;
 
 import br.com.amparo.backend.domain.entity.UserTokenEntity;
-import br.com.amparo.backend.domain.security.UserRoles;
+import br.com.amparo.backend.dto.UserType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataAccessException;
@@ -53,8 +53,8 @@ public class UserTokenRepository {
             String salt = rs.getString("salt");
             boolean isDoctor = rs.getBoolean("is_doctor");
             boolean isPatient = rs.getBoolean("is_patient");
-            if (isDoctor) roles.add(UserRoles.DOCTOR.getRoleName());
-            if (isPatient) roles.add(UserRoles.PATIENT.getRoleName());
+            if (isDoctor) roles.add(UserType.DOCTOR.getRoleName());
+            if (isPatient) roles.add(UserType.PATIENT.getRoleName());
             return new UserTokenEntity(id, email, name, password, salt, roles);
         };
     }
