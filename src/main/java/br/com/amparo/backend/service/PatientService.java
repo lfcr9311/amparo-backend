@@ -7,7 +7,6 @@ import java.util.Optional;
 
 public interface PatientService {
     Optional<PatientResponse> findPatientByCpf(String cpf);
-
     Optional<PatientResponse> findPatientById(String id);
     Optional<PatientResponse> editPatient(PatientToUpdateRequest patientToUpdateRequest, String id);
 }

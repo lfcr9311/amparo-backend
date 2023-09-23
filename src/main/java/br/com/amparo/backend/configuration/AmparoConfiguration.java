@@ -4,6 +4,7 @@ import br.com.amparo.backend.configuration.security.AmparoSecurityConfiguration;
 import br.com.amparo.backend.repository.*;
 import br.com.amparo.backend.service.*;
 import br.com.amparo.backend.service.impl.DoctorServiceImpl;
+import br.com.amparo.backend.service.impl.ExamServiceImpl;
 import br.com.amparo.backend.service.impl.MedicineServiceImpl;
 import br.com.amparo.backend.service.impl.PatientServiceImpl;
 import br.com.amparo.backend.service.impl.UserServiceImpl;
@@ -63,6 +64,16 @@ public class AmparoConfiguration {
     @Bean
     public PatientRepository patientRepository(NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
         return new PatientRepository(namedParameterJdbcTemplate);
+    }
+
+    @Bean
+    public ExamService examService(ExamRepository examRepository, PatientRepository patientRepository) {
+        return new ExamServiceImpl(examRepository, patientRepository);
+    }
+
+    @Bean
+    public ExamRepository examRepository(NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
+        return new ExamRepository(namedParameterJdbcTemplate);
     }
 
     @Bean

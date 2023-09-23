@@ -36,8 +36,7 @@ public class PatientRepository {
             jdbcTemplate.update(sql, param);
             return true;
         } catch (DataAccessException e) {
-            log.error("Error trying to create patient: " +
-                    patient.getId() + " Error: " + e.getMessage());
+            log.error("Error trying to create patient: " + patient.getId() + " Error: " + e.getMessage());
             return false;
         }
     }
