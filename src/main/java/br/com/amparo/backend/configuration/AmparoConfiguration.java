@@ -1,15 +1,10 @@
 package br.com.amparo.backend.configuration;
 
 import br.com.amparo.backend.configuration.security.AmparoSecurityConfiguration;
-import br.com.amparo.backend.repository.DoctorRepository;
-import br.com.amparo.backend.repository.PatientRepository;
-import br.com.amparo.backend.repository.UserRepository;
-import br.com.amparo.backend.repository.UserTokenRepository;
-import br.com.amparo.backend.service.CryptographyService;
-import br.com.amparo.backend.service.DoctorService;
-import br.com.amparo.backend.service.PatientService;
-import br.com.amparo.backend.service.UserService;
+import br.com.amparo.backend.repository.*;
+import br.com.amparo.backend.service.*;
 import br.com.amparo.backend.service.impl.DoctorServiceImpl;
+import br.com.amparo.backend.service.impl.ExamServiceImpl;
 import br.com.amparo.backend.service.impl.PatientServiceImpl;
 import br.com.amparo.backend.service.impl.UserServiceImpl;
 import br.com.amparo.backend.service.security.AuthService;
@@ -63,6 +58,16 @@ public class AmparoConfiguration {
     @Bean
     public PatientRepository patientRepository(NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
         return new PatientRepository(namedParameterJdbcTemplate);
+    }
+
+    @Bean
+    public ExamService examService(ExamRepository examRepository, PatientRepository patientRepository) {
+        return new ExamServiceImpl(examRepository, patientRepository);
+    }
+
+    @Bean
+    public ExamRepository examRepository(NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
+        return new ExamRepository(namedParameterJdbcTemplate);
     }
 
     @Bean
