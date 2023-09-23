@@ -1,13 +1,10 @@
 package br.com.amparo.backend.repository;
 
 import br.com.amparo.backend.domain.entity.Patient;
-import br.com.amparo.backend.dto.PatientResponse;
-import br.com.amparo.backend.exception.ApiErrorException;
-import br.com.amparo.backend.exception.PatientUpdateException;
-import lombok.extern.java.Log;
+import br.com.amparo.backend.dto.patient.PatientResponse;
+import br.com.amparo.backend.exception.PatientOperationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessException;
-import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 
@@ -59,7 +56,7 @@ public class PatientRepository {
             return findByCpf(patient.getCpf());
         } catch (DataAccessException e) {
             log.error("Error trying to update patient: " + patient.getId() + " Error: " + e.getMessage());
-            throw new PatientUpdateException(patient.getEmail(), patient.getName(), patient.getCellphone(), e);
+            throw new PatientOperationException(patient.getEmail(), patient.getCpf(), e);
         }
     }
 
@@ -81,7 +78,7 @@ public class PatientRepository {
                     "cpf", cpf
             ));
             PatientResponse patientResponse = jdbcTemplate.queryForObject(sql, param, (rs, rowNum) -> new PatientResponse(
-                    UUID.fromString(rs.getString("id")),
+                    rs.getString("id"),
                     rs.getString("email"),
                     rs.getString("name"),
                     rs.getString("cellphone"),
@@ -90,14 +87,10 @@ public class PatientRepository {
                     rs.getString("cpf")
             ));
 
-            if (patientResponse == null) {
-                return Optional.empty();
-            }
-
-            return Optional.of(patientResponse);
+            return Optional.ofNullable(patientResponse);
         } catch (DataAccessException e) {
             log.error("Error trying to find patient by cpf: " + cpf + " Error: " + e.getMessage());
-            throw new ApiErrorException("Erro ao buscar paciente com cpf: " + cpf, HttpStatus.INTERNAL_SERVER_ERROR);
+            return Optional.empty();
         }
     }
 
@@ -119,7 +112,7 @@ public class PatientRepository {
                     "id", UUID.fromString(id)
             ));
             PatientResponse patientResponse = jdbcTemplate.queryForObject(sql, param, (rs, rowNum) -> new PatientResponse(
-                    UUID.fromString(rs.getString("id")),
+                    rs.getString("id"),
                     rs.getString("email"),
                     rs.getString("name"),
                     rs.getString("cellphone"),
@@ -128,14 +121,10 @@ public class PatientRepository {
                     rs.getString("cpf")
             ));
 
-            if (patientResponse == null) {
-                return Optional.empty();
-            }
-
-            return Optional.of(patientResponse);
+            return Optional.ofNullable(patientResponse);
         } catch (DataAccessException e) {
             log.error("Error trying to find patient by id: " + id + " Error: " + e.getMessage());
-            throw new ApiErrorException("Erro ao buscar paciente com id: " + id, HttpStatus.INTERNAL_SERVER_ERROR);
+            return Optional.empty();
         }
     }
 }

@@ -1,4 +1,4 @@
-package br.com.amparo.backend.dto;
+package br.com.amparo.backend.dto.doctor;
 
 import br.com.amparo.backend.domain.entity.Doctor;
 

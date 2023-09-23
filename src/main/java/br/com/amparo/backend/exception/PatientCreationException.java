@@ -1,11 +1,7 @@
 package br.com.amparo.backend.exception;
 
-import lombok.Getter;
-
-@Getter
-public class PatientCreationException extends RuntimeException {
-    public String cpf;
+public class PatientCreationException extends CreationException {
     public PatientCreationException(String cpf) {
-        this.cpf = cpf;
+        super(cpf);
     }
 }

@@ -1,6 +1,5 @@
-package br.com.amparo.backend.service.impl;
+package br.com.amparo.backend.service.security;
 
-import br.com.amparo.backend.domain.entity.Patient;
 import br.com.amparo.backend.domain.record.SaltedPassword;
 import br.com.amparo.backend.service.CryptographyService;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -8,7 +7,6 @@ import org.apache.commons.lang3.RandomStringUtils;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.Arrays;
 import java.util.Base64;
 import java.util.Random;
 

@@ -1,7 +1,7 @@
 package br.com.amparo.backend.service;
 
-import br.com.amparo.backend.dto.PatientResponse;
-import br.com.amparo.backend.dto.PatientToUpdateRequest;
+import br.com.amparo.backend.dto.patient.PatientResponse;
+import br.com.amparo.backend.dto.patient.PatientToUpdateRequest;
 
 import java.util.Optional;
 

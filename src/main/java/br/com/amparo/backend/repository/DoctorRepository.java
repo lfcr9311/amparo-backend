@@ -1,18 +1,10 @@
 package br.com.amparo.backend.repository;
 
 import br.com.amparo.backend.domain.entity.Doctor;
-import br.com.amparo.backend.domain.entity.Patient;
-import br.com.amparo.backend.domain.entity.User;
-import br.com.amparo.backend.dto.DoctorResponse;
-import br.com.amparo.backend.dto.PatientResponse;
-import br.com.amparo.backend.exception.ApiErrorException;
-import br.com.amparo.backend.exception.DoctorCreationException;
-import br.com.amparo.backend.exception.PatientUpdateException;
-import lombok.extern.java.Log;
+import br.com.amparo.backend.dto.doctor.DoctorResponse;
+import br.com.amparo.backend.exception.DoctorOperationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessException;
-import org.springframework.http.HttpStatus;
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 
@@ -48,7 +40,7 @@ public class DoctorRepository {
 
         } catch (DataAccessException e) {
             log.error("Error trying to create doctor: " + doctor.getId(), e);
-            throw new DoctorCreationException(doctor.getEmail(), doctor.getCrm(), doctor.getUf());
+            throw new DoctorOperationException(doctor.getEmail(), doctor.getCrm(), doctor.getUf(), e);
         }
 
 
@@ -69,7 +61,7 @@ public class DoctorRepository {
             return findDoctorById(doctor.getId());
         } catch (DataAccessException e) {
             log.error("Error trying to update doctor: " + doctor.getId() + " Error: " + e.getMessage());
-            throw new PatientUpdateException(doctor.getEmail(), doctor.getName(), doctor.getCellphone(), e);
+            throw new DoctorOperationException(doctor.getEmail(), doctor.getCrm(), doctor.getUf(), e);
         }
     }
 
@@ -101,15 +93,10 @@ public class DoctorRepository {
                     rs.getString("crm"),
                     rs.getString("uf")
             ));
-
-            if (doctorResponse == null) {
-                return Optional.empty();
-            }
-
-            return Optional.of(doctorResponse);
+            return Optional.ofNullable(doctorResponse);
         } catch (DataAccessException e) {
             log.error("Error trying to find doctor by id: " + id + " Error: " + e.getMessage());
-            throw new ApiErrorException("Erro ao buscar médico com id: " + id, HttpStatus.INTERNAL_SERVER_ERROR);
+            return Optional.empty();
         }
     }
 }

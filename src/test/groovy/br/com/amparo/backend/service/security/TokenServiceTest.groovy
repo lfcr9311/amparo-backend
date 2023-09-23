@@ -1,17 +1,11 @@
 package br.com.amparo.backend.service.security
 
-import br.com.amparo.backend.configuration.security.domain.TokenUser
+import br.com.amparo.backend.domain.security.TokenUser
 import com.auth0.jwt.JWT
-import spock.lang.Shared
 import spock.lang.Specification
 
 class TokenServiceTest extends Specification {
-    @Shared
-    TokenService service
-
-    def setup() {
-        service = new TokenService("secret")
-    }
+    private TokenService service = new TokenService("secret")
 
     def "should generate a token with valid user data"() {
         given:

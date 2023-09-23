@@ -1,6 +1,8 @@
 package br.com.amparo.backend.domain.entity;
 
-import lombok.*;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
 
 @Getter
 @Setter
