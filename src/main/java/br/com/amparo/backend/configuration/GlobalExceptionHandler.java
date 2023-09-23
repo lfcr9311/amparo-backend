@@ -3,8 +3,8 @@ package br.com.amparo.backend.configuration;
 import br.com.amparo.backend.controllers.dto.FieldMappedError;
 import br.com.amparo.backend.controllers.dto.ObjectMappingError;
 import br.com.amparo.backend.domain.exception.ErrorResponse;
-import br.com.amparo.backend.exception.ApiErrorException;
-import br.com.amparo.backend.exception.PatientUpdateException;
+import br.com.amparo.backend.exception.CreationException;
+import br.com.amparo.backend.exception.PatientOperationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -25,23 +25,22 @@ public class GlobalExceptionHandler {
         return ResponseEntity.badRequest().body(new ObjectMappingError(errors));
     }
 
-    @ExceptionHandler(ApiErrorException.class)
-    public ResponseEntity<ErrorResponse> handleApiErrorException(ApiErrorException e) {
-        HttpStatus httpStatus = e.getHttpStatus();
-        String errorMessage = e.getMessage();
-
-        ErrorResponse errorResponse = new ErrorResponse(errorMessage);
-        return new ResponseEntity<>(errorResponse, httpStatus);
-    }
-
-    @ExceptionHandler(PatientUpdateException.class)
-    public ResponseEntity<ErrorResponse> handlePatientUpdateException(PatientUpdateException e) {
-        String errorMessage = "Erro ao atualizar paciente com os seguintes detalhes: " +
+    @ExceptionHandler(PatientOperationException.class)
+    public ResponseEntity<ErrorResponse> handlePatientUpdateException(PatientOperationException e) {
+        String errorMessage = "Erro ao modificar paciente " +
                 "Email: " + e.email +
                 ", Nome: " + e.name +
                 ", Celular: " + e.cellphone;
 
         ErrorResponse errorResponse = new ErrorResponse(errorMessage);
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(CreationException.class)
+    public ResponseEntity<ErrorResponse> handleCreationException(CreationException e) {
+        String errorMessage = "Erro ao criar entidade com identificador: " + e.getIdentifier();
+
+        ErrorResponse errorResponse = new ErrorResponse(errorMessage);
+        return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

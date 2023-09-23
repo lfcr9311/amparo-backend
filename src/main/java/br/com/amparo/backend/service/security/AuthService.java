@@ -3,12 +3,11 @@ package br.com.amparo.backend.service.security;
 import br.com.amparo.backend.domain.entity.Doctor;
 import br.com.amparo.backend.domain.entity.Patient;
 import br.com.amparo.backend.domain.entity.User;
-import br.com.amparo.backend.dto.CreateDoctorRequest;
-import br.com.amparo.backend.dto.CreatePatientRequest;
-import br.com.amparo.backend.dto.CreateUserRequest;
-
 import br.com.amparo.backend.domain.record.SaltedPassword;
-import br.com.amparo.backend.dto.LoginRequest;
+import br.com.amparo.backend.dto.CreateUserRequest;
+import br.com.amparo.backend.dto.doctor.CreateDoctorRequest;
+import br.com.amparo.backend.dto.login.LoginRequest;
+import br.com.amparo.backend.dto.patient.CreatePatientRequest;
 import br.com.amparo.backend.exception.DoctorCreationException;
 import br.com.amparo.backend.exception.PatientCreationException;
 import br.com.amparo.backend.exception.UserAlreadyExistsException;
@@ -65,7 +64,7 @@ public class AuthService {
     private Patient registerPatient(CreatePatientRequest userRequest) {
         Optional<User> userOpt = userRepository.findByEmail(userRequest.getEmail());
         if (userOpt.isPresent()) {
-            throw new UserAlreadyExistsException(userRequest.getEmail());
+            throw new UserAlreadyExistsException();
         }
         Patient patient = userRequest.toPatient();
         SaltedPassword passwordPatient = this.cryptographicService.encrypt(patient.getPassword());
@@ -79,14 +78,14 @@ public class AuthService {
     private Doctor registerDoctor(CreateDoctorRequest userRequest) {
         Optional<User> userOptional = userRepository.findByEmail(userRequest.getEmail());
         if (userOptional.isPresent()) {
-            throw new UserAlreadyExistsException(userRequest.getEmail());
+            throw new UserAlreadyExistsException();
         }
         Doctor doctor = userRequest.toDoctor();
         SaltedPassword passwordDoctor = this.cryptographicService.encrypt(doctor.getPassword());
         String id = userRepository.create(doctor, passwordDoctor);
         doctor.setId(id);
         boolean created = doctorRepository.create(doctor);
-        if (!created) throw new DoctorCreationException(userRequest.getEmail(),userRequest.getCrm(),userRequest.getUf());
+        if (!created) throw new DoctorCreationException(userRequest.getCrm(),userRequest.getUf());
         return doctor;
     }
 }

@@ -9,10 +9,11 @@ import br.com.amparo.backend.service.CryptographyService;
 import br.com.amparo.backend.service.DoctorService;
 import br.com.amparo.backend.service.PatientService;
 import br.com.amparo.backend.service.UserService;
-import br.com.amparo.backend.service.impl.CryptographyServiceSha256;
 import br.com.amparo.backend.service.impl.DoctorServiceImpl;
 import br.com.amparo.backend.service.impl.PatientServiceImpl;
+import br.com.amparo.backend.service.impl.UserServiceImpl;
 import br.com.amparo.backend.service.security.AuthService;
+import br.com.amparo.backend.service.security.CryptographyServiceSha256;
 import br.com.amparo.backend.service.security.TokenService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -37,6 +38,11 @@ public class AmparoConfiguration {
     @Bean
     public CryptographyService cryptographyService() {
         return new CryptographyServiceSha256(new Random());
+    }
+
+    @Bean
+    public UserService userService(UserRepository userRepository) {
+        return new UserServiceImpl(userRepository);
     }
 
     @Bean
