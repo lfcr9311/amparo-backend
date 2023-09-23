@@ -56,7 +56,7 @@ public class PatientRepository {
             return findByCpf(patient.getCpf());
         } catch (DataAccessException e) {
             log.error("Error trying to update patient: " + patient.getId() + " Error: " + e.getMessage());
-            throw new PatientOperationException(patient.getEmail(), patient.getName(), patient.getCellphone(), e);
+            throw new PatientOperationException(patient.getEmail(), patient.getCpf(), e);
         }
     }
 

@@ -1,14 +1,15 @@
 package br.com.amparo.backend.exception;
 
-public class PatientOperationException extends RuntimeException{
-    public String email;
-    public String name;
-    public String cellphone;
+import lombok.Getter;
 
-    public PatientOperationException(String email, String name, String cellphone, Exception e) {
+@Getter
+public class PatientOperationException extends RuntimeException{
+    private String email;
+    private String cpf;
+
+    public PatientOperationException(String email, String cpf, Exception e) {
         super(e);
         this.email = email;
-        this.name = name;
-        this.cellphone = cellphone;
+        this.cpf = cpf;
     }
 }
