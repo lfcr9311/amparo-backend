@@ -19,6 +19,6 @@ class CryptographyServiceSha256Test extends Specification {
 
     def 'should compare password'() {
         expect:
-        cryptographyService.compare('batata', expectedPass)
+        cryptographyService.compare('batata'kkkk, expectedPass)
     }
 }

@@ -1,29 +1,37 @@
 package br.com.amparo.backend.service.impl;
 
-import br.com.amparo.backend.domain.entity.Patient;
-import br.com.amparo.backend.exception.ApiErrorException;
+import br.com.amparo.backend.dto.PatientResponse;
+import br.com.amparo.backend.dto.PatientToUpdateRequest;
+import br.com.amparo.backend.repository.PatientRepository;
 import br.com.amparo.backend.service.PatientService;
 import br.com.amparo.backend.service.UserService;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
 
-import static br.com.amparo.backend.exception.ApiError.EMAIL_JA_EXISTE;
-import static org.springframework.http.HttpStatus.BAD_REQUEST;
+import java.util.Optional;
 
-@Service
 @RequiredArgsConstructor
 public class PatientServiceImpl implements PatientService {
     private final UserService userService;
 
+    private final PatientRepository repository;
 
     @Override
-    @Transactional
-    public Patient saveNewPatient(Patient patientRegistrationData) {
-        if (userService.alreadyExistsEmail(patientRegistrationData.getEmail())) {
-            throw new ApiErrorException(EMAIL_JA_EXISTE.getMessage(), BAD_REQUEST);
-        }
+    public Optional<PatientResponse> findPatientByCpf(String cpf) {
+        return repository.findByCpf(cpf);
+    }
 
-        return patientRegistrationData;
+    @Override
+    public Optional<PatientResponse> editPatient(PatientToUpdateRequest patientToUpdateRequest, String id) {
+        if (repository.findById(id).isEmpty()) {
+            return Optional.empty();
+        } else {
+            userService.updateUser(patientToUpdateRequest.toPatient(id));
+            return repository.updatePatient(patientToUpdateRequest.toPatient(id));
+        }
+    }
+
+    @Override
+    public Optional<PatientResponse> findPatientById(String id) {
+        return repository.findById(id);
     }
 }

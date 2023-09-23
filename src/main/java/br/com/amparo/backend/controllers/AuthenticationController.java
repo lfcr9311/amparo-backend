@@ -39,6 +39,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 @ControllerAdvice
 @Slf4j
+@CrossOrigin("*")
 public class AuthenticationController {
 
     @Autowired
@@ -63,7 +64,7 @@ public class AuthenticationController {
 
     @Operation(operationId = "register", description = "Register a new user",
             responses = {
-                    @ApiResponse(responseCode = "201", description = "Patient or Doctor* Created, Doctor not yet implemented",
+                    @ApiResponse(responseCode = "201", description = "Patient or Doctor Created",
                             content = @Content(schema = @Schema(oneOf = {Patient.class, Doctor.class}))
                     ),
                     @ApiResponse(responseCode = "500", description = "Registration failed",
@@ -83,14 +84,5 @@ public class AuthenticationController {
                     Map.of("message", "Registration failed"), HttpStatus.INTERNAL_SERVER_ERROR
             );
         }
-    }
-
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<?> handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
-        List<FieldMappedError> errors = e.getBindingResult().getAllErrors()
-                .stream()
-                .map(it -> new FieldMappedError(it.getDefaultMessage()))
-                .toList();
-        return ResponseEntity.badRequest().body(new ObjectMappingError(errors));
     }
 }

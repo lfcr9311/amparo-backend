@@ -13,7 +13,7 @@ services:
   amparo-db:
     image: "postgres:12.3"
     ports:
-      - "5432:5432"
+      - "5435:5432"
     volumes:
       - db-amparo-volume:/var/lib/postgresql/data
     environment:
