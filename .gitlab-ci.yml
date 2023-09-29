@@ -20,6 +20,9 @@ stages:
   - test
   - deploy
 
+services:
+  - docker:dind
+
 before_script:
   - docker login -u $CI_DOCKER_REGISTRY_USERNAME -p $CI_DOCKER_REGISTRY_PASS
 
