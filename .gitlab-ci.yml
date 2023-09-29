@@ -51,4 +51,4 @@ update-container-job:
     - docker rm amparo-api || true
   script:
     - docker pull $CI_DOCKER_REGISTRY_USERNAME/amparo-api
-    - docker run -d --restart always --name=amparo-api -p 8080:8080 --env-file ./deploy/application.hlg.env $CI_DOCKER_REGISTRY_USERNAME/amparo-api
+    - docker run -d --network amparo-net --name=amparo-api -p 8080:8080 --env-file ./deploy/application.hlg.env $CI_DOCKER_REGISTRY_USERNAME/amparo-api
