@@ -23,9 +23,6 @@ stages:
 services:
   - docker:dind
 
-before_script:
-  - docker login -u $CI_DOCKER_REGISTRY_USERNAME -p $CI_DOCKER_REGISTRY_PASS
-
 build-job:
   image: amazoncorretto:17-alpine3.18-jdk # This job runs in the build stage, which runs first.
   stage: build
@@ -41,6 +38,8 @@ test-job:
 deploy-job:
   stage: deploy
   when: manual
+  before_script:
+    - docker login -u $CI_DOCKER_REGISTRY_USERNAME -p $CI_DOCKER_REGISTRY_PASS
   #only:
   #  - dev
   script:
@@ -52,6 +51,7 @@ update-container-job:
   needs:
     - deploy-job
   before_script:
+    - docker login -u $CI_DOCKER_REGISTRY_USERNAME -p $CI_DOCKER_REGISTRY_PASS
     - docker stop amparo-api || true
     - docker rm amparo-api || true
   script:
