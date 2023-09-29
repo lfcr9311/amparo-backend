@@ -2,8 +2,7 @@ package br.com.amparo.backend.repository;
 
 import br.com.amparo.backend.domain.entity.User;
 import br.com.amparo.backend.domain.record.SaltedPassword;
-import br.com.amparo.backend.exception.UserCreationException;
-import br.com.amparo.backend.exception.UserUpdateException;
+import br.com.amparo.backend.exception.UserOperationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.RowMapper;
@@ -92,7 +91,7 @@ public class UserRepository {
             return jdbcTemplate.queryForObject(sql, param, String.class);
         } catch (DataAccessException e) {
             log.error("Error trying to create user: " + user.getEmail(), e);
-            throw new UserCreationException(user.getEmail(), user.getName(), user.getCellphone(), e);
+            throw new UserOperationException(user.getEmail(), user.getName(), user.getCellphone(), e);
         }
     }
 
@@ -102,7 +101,6 @@ public class UserRepository {
                     UPDATE "User"
                     SET name = :name,
                         email = :email,
-                        password = :password,
                         profile_picture = :profilePicture,
                         cellphone = :cellphone
                     WHERE "id" = :id
@@ -111,7 +109,6 @@ public class UserRepository {
                     "id",UUID.fromString(user.getId()),
                     "name",user.getName(),
                     "email",user.getEmail(),
-                    "password",user.getPassword(),
                     "cellphone",user.getCellphone()
             ));
             param.addValue("profilePicture", user.getProfilePicture());
@@ -119,7 +116,7 @@ public class UserRepository {
             return findUserById(user.getId());
         } catch (DataAccessException e) {
             log.error("Error trying to update user: " + user.getId(), e);
-            throw new UserUpdateException(user.getEmail(), user.getName(), user.getCellphone(), e);
+            throw new UserOperationException(user.getEmail(), user.getName(), user.getCellphone(), e);
         }
     }
 

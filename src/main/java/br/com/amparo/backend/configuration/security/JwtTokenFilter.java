@@ -1,6 +1,6 @@
 package br.com.amparo.backend.configuration.security;
 
-import br.com.amparo.backend.configuration.security.domain.ApiUser;
+import br.com.amparo.backend.domain.security.ApiUser;
 import br.com.amparo.backend.service.security.TokenService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

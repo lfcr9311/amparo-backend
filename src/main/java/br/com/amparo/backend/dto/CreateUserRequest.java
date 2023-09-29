@@ -1,5 +1,7 @@
 package br.com.amparo.backend.dto;
 
+import br.com.amparo.backend.dto.doctor.CreateDoctorRequest;
+import br.com.amparo.backend.dto.patient.CreatePatientRequest;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -26,6 +28,7 @@ public abstract class CreateUserRequest{
     @Pattern(regexp = "^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$", message = "Invalid email pattern")
     protected String email;
     @NotBlank(message = "Name should not be blank")
+    @Schema(example = "Theo")
     @Pattern(regexp = "^[a-zA-ZÀ-ÖØ-öø-ÿ\\s]{2,100}$", message = "Invalid name pattern")
     protected String name;
     @NotBlank(message = "password is required")
