@@ -26,12 +26,14 @@ services:
 before_script:
   - docker login -u $CI_DOCKER_REGISTRY_USERNAME -p $CI_DOCKER_REGISTRY_PASS
 
-build-job: # This job runs in the build stage, which runs first.
+build-job:
+  image: amazoncorretto:17-alpine3.18-jdk # This job runs in the build stage, which runs first.
   stage: build
   script:
     - ./gradlew clean build -x test
 
 test-job:
+  image: amazoncorretto:17-alpine3.18-jdk
   stage: test
   script:
     - ./gradlew test
