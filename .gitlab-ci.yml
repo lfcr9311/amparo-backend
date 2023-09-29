@@ -38,11 +38,10 @@ test-job:
 deploy-job:
   stage: deploy
   when: manual
-  before_script:
-    - docker login -u $CI_DOCKER_REGISTRY_USERNAME -p $CI_DOCKER_REGISTRY_PASS
   #only:
   #  - dev
   script:
+    - docker login -u $CI_DOCKER_REGISTRY_USERNAME -p $CI_DOCKER_REGISTRY_PASS
     - docker build -f DockerfileJarCi -t $CI_DOCKER_REGISTRY_USERNAME/amparo-api
     - docker push $CI_DOCKER_REGISTRY_USERNAME/amparo-api
 
@@ -50,10 +49,9 @@ update-container-job:
   stage: deploy
   needs:
     - deploy-job
-  before_script:
+  script:
     - docker login -u $CI_DOCKER_REGISTRY_USERNAME -p $CI_DOCKER_REGISTRY_PASS
     - docker stop amparo-api || true
     - docker rm amparo-api || true
-  script:
     - docker pull $CI_DOCKER_REGISTRY_USERNAME/amparo-api
     - docker run -d --network amparo-net --name=amparo-api -p 8080:8080 --env-file ./deploy/application.hlg.env $CI_DOCKER_REGISTRY_USERNAME/amparo-api
