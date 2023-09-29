@@ -1,11 +1,12 @@
 package br.com.amparo.backend.service.impl;
 
-import br.com.amparo.backend.dto.DoctorResponse;
-import br.com.amparo.backend.dto.DoctorToUpdateRequest;
+import br.com.amparo.backend.dto.doctor.DoctorResponse;
+import br.com.amparo.backend.dto.doctor.DoctorToUpdateRequest;
 import br.com.amparo.backend.repository.DoctorRepository;
 import br.com.amparo.backend.service.DoctorService;
 import br.com.amparo.backend.service.UserService;
 import lombok.RequiredArgsConstructor;
+
 import java.util.Optional;
 
 @RequiredArgsConstructor

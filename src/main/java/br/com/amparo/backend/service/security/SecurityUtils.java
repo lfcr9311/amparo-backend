@@ -1,6 +1,6 @@
 package br.com.amparo.backend.service.security;
 
-import br.com.amparo.backend.configuration.security.domain.ApiUser;
+import br.com.amparo.backend.domain.security.ApiUser;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 public class SecurityUtils {

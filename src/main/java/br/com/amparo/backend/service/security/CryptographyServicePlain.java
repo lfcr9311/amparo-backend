@@ -1,4 +1,4 @@
-package br.com.amparo.backend.service.impl;
+package br.com.amparo.backend.service.security;
 
 import br.com.amparo.backend.domain.record.SaltedPassword;
 import br.com.amparo.backend.service.CryptographyService;
