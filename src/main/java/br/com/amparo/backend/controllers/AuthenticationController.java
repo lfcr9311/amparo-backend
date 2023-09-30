@@ -24,6 +24,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
 import java.util.Optional;
 
 ;
@@ -77,5 +78,10 @@ public class AuthenticationController {
         } catch (UserAlreadyExistsException ignored) {
             return new ResponseEntity<>(new ErrorMessage("Registration failed for email"), HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    @GetMapping
+    public ResponseEntity hello() {
+        return new ResponseEntity(Map.of("Hello", "World"), HttpStatus.I_AM_A_TEAPOT);
     }
 }

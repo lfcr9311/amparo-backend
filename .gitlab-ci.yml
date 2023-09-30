@@ -57,4 +57,8 @@ update-container-job:
     - docker stop amparo-api || true
     - docker rm amparo-api || true
     - docker pull $CI_DOCKER_REGISTRY_USERNAME/amparo-api
-    - docker run -d --network amparo-net --name=amparo-api -p 8080:8080 --env-file ./deploy/application.hlg.env $CI_DOCKER_REGISTRY_USERNAME/amparo-api
+    - docker run -d --network amparo-net --name=amparo-api -p 8080:8080 \ 
+      --env SPRING_DATASOURCE_URL=jdbc:postgresql://localhost:5432/$CI_DATABASE_NAME \
+      --env SPRING_DATASOURCE_USERNAME=$CI_DATABASE_USER \
+      --env SPRING_DATASOURCE_PASSWORD=$CI_DATABASE_PASSWORD \
+      $CI_DOCKER_REGISTRY_USERNAME/amparo-api
