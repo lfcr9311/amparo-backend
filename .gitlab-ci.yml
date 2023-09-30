@@ -16,8 +16,9 @@
 ####
 cache:
   paths:
+    - build/
     - .gradle/caches
-  
+
 stages:
   - build
   - test
@@ -29,9 +30,6 @@ services:
 build-job:
   image: amazoncorretto:17-alpine3.18-jdk # This job runs in the build stage, which runs first.
   stage: build
-  cache:
-    paths:
-      - build/
   script:
     - ./gradlew clean build -x test
 
