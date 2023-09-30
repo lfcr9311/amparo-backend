@@ -29,5 +29,4 @@ public class LinkController {
         return new ResponseEntity<>(linkService.linkDoctorToPatient(
                 SecurityUtils.getCurrentUserId(), patientId), HttpStatus.OK);
     }
-
 }
