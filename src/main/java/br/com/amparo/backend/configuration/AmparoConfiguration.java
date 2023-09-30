@@ -3,6 +3,7 @@ package br.com.amparo.backend.configuration;
 import br.com.amparo.backend.configuration.security.AmparoSecurityConfiguration;
 import br.com.amparo.backend.repository.*;
 import br.com.amparo.backend.service.*;
+import br.com.amparo.backend.service.impl.*;
 import br.com.amparo.backend.service.impl.DoctorServiceImpl;
 import br.com.amparo.backend.service.impl.ExamServiceImpl;
 import br.com.amparo.backend.service.impl.MedicineServiceImpl;
@@ -12,6 +13,7 @@ import br.com.amparo.backend.service.impl.UserServiceImpl;
 import br.com.amparo.backend.service.security.AuthService;
 import br.com.amparo.backend.service.security.CryptographyServiceSha256;
 import br.com.amparo.backend.service.security.TokenService;
+import io.swagger.v3.oas.models.links.Link;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -90,6 +92,16 @@ public class AmparoConfiguration {
     @Bean
     public MedicineRepository medicineRepository(NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
         return new MedicineRepository(namedParameterJdbcTemplate);
+    }
+
+    @Bean
+    public LinkRepository linkRepository(NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
+        return new LinkRepository(namedParameterJdbcTemplate);
+    }
+
+    @Bean
+    public LinkService linkService(LinkRepository linkRepository) {
+        return new LinkServiceImpl(linkRepository);
     }
 
     @Bean
