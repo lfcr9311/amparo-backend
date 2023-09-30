@@ -1,6 +1,5 @@
 package br.com.amparo.backend.service.impl;
 
-import br.com.amparo.backend.repository.DoctorRepository;
 import br.com.amparo.backend.repository.LinkRepository;
 import br.com.amparo.backend.service.LinkService;
 import lombok.RequiredArgsConstructor;
@@ -9,7 +8,8 @@ import lombok.RequiredArgsConstructor;
 public class LinkServiceImpl implements LinkService {
     private final LinkRepository linkRepository;
 
-    Boolean linkDoctorToPatient(String doctorId, String patientId){
+    public Boolean linkDoctorToPatient(String doctorId, String patientId){
+        return linkRepository.linkDoctorToPatient(doctorId, patientId);
 
     }
 }
