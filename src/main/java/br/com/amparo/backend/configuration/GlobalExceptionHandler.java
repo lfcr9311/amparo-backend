@@ -5,6 +5,7 @@ import br.com.amparo.backend.controllers.dto.ObjectMappingError;
 import br.com.amparo.backend.domain.exception.ErrorResponse;
 import br.com.amparo.backend.exception.CreationException;
 import br.com.amparo.backend.exception.DoctorOperationException;
+import br.com.amparo.backend.exception.MedicineOperationException;
 import br.com.amparo.backend.exception.PatientOperationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -42,6 +43,17 @@ public class GlobalExceptionHandler {
                 "Email: " + e.getEmail() +
                 ", CRM: " + e.getCrm() +
                 ", UF: " + e.getUf();
+
+        ErrorResponse errorResponse = new ErrorResponse(errorMessage);
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(MedicineOperationException.class)
+    public ResponseEntity<ErrorResponse> handleMedicineFindException(MedicineOperationException e) {
+        String errorMessage = "Erro ao modificar medicamento " +
+                "Id: " + e.getId() +
+                ", Nome: " + e.getName() +
+                ", Bula: " + e.getLeaflet();
 
         ErrorResponse errorResponse = new ErrorResponse(errorMessage);
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
