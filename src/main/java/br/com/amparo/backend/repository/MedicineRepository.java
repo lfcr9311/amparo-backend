@@ -1,6 +1,5 @@
 package br.com.amparo.backend.repository;
 
-import br.com.amparo.backend.domain.entity.Medicine;
 import br.com.amparo.backend.dto.medicine.MedicineResponse;
 import br.com.amparo.backend.exception.MedicineOperationException;
 import lombok.extern.slf4j.Slf4j;
