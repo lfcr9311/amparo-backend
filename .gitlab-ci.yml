@@ -17,7 +17,6 @@
 cache:
   paths:
     - build/
-    - .gradle/caches
 
 stages:
   - build
@@ -30,6 +29,13 @@ services:
 build-job:
   image: amazoncorretto:17-alpine3.18-jdk # This job runs in the build stage, which runs first.
   stage: build
+  cache:
+    key:
+      files:
+        - gradle/wrapper/gradle-wrapper.properties
+    paths:
+      - cache/caches/
+      - cache/wrapper/
   script:
     - ./gradlew clean build -x test
 
@@ -39,7 +45,7 @@ test-job:
   script:
     - ./gradlew test
 
-deploy-job:
+package-job:
   stage: deploy
   when: manual
   #only:
@@ -52,7 +58,7 @@ deploy-job:
 update-container-job:
   stage: deploy
   needs:
-    - deploy-job
+    - package-job
   script:
     - docker login -u $CI_DOCKER_REGISTRY_USERNAME -p $CI_DOCKER_REGISTRY_PASS
     - docker stop amparo-api || true
