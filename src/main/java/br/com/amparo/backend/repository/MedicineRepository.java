@@ -26,7 +26,7 @@ public class MedicineRepository {
             String sql = """
                     SELECT  m."id" as "id",
                             m."name" as "name",
-                    
+                            m."leaflet" as "leaflet"
                     FROM "Medicine" m
                     WHERE m."id" = :id
                     """;
@@ -50,7 +50,7 @@ public class MedicineRepository {
             String sql = """
                     SELECT  m."id" as "id",
                             m."name" as "name",
-                    
+                            m."leaflet" as "leaflet"
                     FROM "Medicine" m
                     WHERE m."name" = :name
                     """;
