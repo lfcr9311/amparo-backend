@@ -1,17 +1,15 @@
 package br.com.amparo.backend.service.impl;
 
-import br.com.amparo.backend.dto.doctor.DoctorResponse;
-import br.com.amparo.backend.dto.doctor.DoctorToUpdateRequest;
 import br.com.amparo.backend.dto.medicine.MedicineResponse;
-import br.com.amparo.backend.repository.DoctorRepository;
 import br.com.amparo.backend.repository.MedicineRepository;
 import br.com.amparo.backend.service.MedicineService;
-import br.com.amparo.backend.service.UserService;
+import lombok.RequiredArgsConstructor;
 
+import java.util.List;
 import java.util.Optional;
 
-public class MedicineServiceImpl extends MedicineService {
-    private final MedicineService medicineService;
+@RequiredArgsConstructor
+public class MedicineServiceImpl implements MedicineService {
 
     private final MedicineRepository repository;
 
@@ -23,5 +21,9 @@ public class MedicineServiceImpl extends MedicineService {
     @Override
     public Optional<MedicineResponse> findMedicineByName(String name) {
         return repository.findMedicineByName(name);
+    }
+
+    public List<MedicineResponse> findAllMedicines(int pageNumber, int pageSize) {
+        return repository.findAllMedicines(pageNumber, pageSize);
     }
 }
