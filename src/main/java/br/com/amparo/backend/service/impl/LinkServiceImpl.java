@@ -12,4 +12,9 @@ public class LinkServiceImpl implements LinkService {
         return linkRepository.linkDoctorToPatient(doctorId, patientId);
 
     }
+
+    @Override
+    public Boolean checkConnection(String doctorId, String patientId) {
+        return linkRepository.checkConnection(doctorId, patientId);
+    }
 }

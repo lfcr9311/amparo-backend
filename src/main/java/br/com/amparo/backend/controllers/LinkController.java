@@ -1,8 +1,13 @@
 package br.com.amparo.backend.controllers;
 
 
+import br.com.amparo.backend.controllers.dto.ObjectMappingError;
 import br.com.amparo.backend.service.LinkService;
 import br.com.amparo.backend.service.security.SecurityUtils;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,10 +28,25 @@ public class LinkController {
     @Autowired
     private LinkService linkService;
 
+    @Operation(operationId = "link", description = "Link a doctor to a patient",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Doctor and patient linked"
+                    ),
+                    @ApiResponse(responseCode = "500", description = "Linking failed",
+                            content = @Content(schema = @Schema(implementation = ObjectMappingError.class))
+                    ),
+                    @ApiResponse(responseCode = "409", description = "Link already exists"
+                    )
+            })
     @PreAuthorize("hasRole('DOCTOR')")
-    @PostMapping()
-    public ResponseEntity<Boolean> linkDoctorToPatient(@RequestParam("id") String patientId) {
-        return new ResponseEntity<>(linkService.linkDoctorToPatient(
-                SecurityUtils.getCurrentUserId(), patientId), HttpStatus.OK);
+    @PostMapping("/{id}")
+    public ResponseEntity<?> linkDoctorToPatient(@PathVariable String id) {
+         if (linkService.checkConnection(SecurityUtils.getApiUser().getId(), id)) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).build();
+        }
+
+        return linkService.linkDoctorToPatient(SecurityUtils.getApiUser().getId(), id)
+                ? ResponseEntity.ok().build()
+                : ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
     }
 }
