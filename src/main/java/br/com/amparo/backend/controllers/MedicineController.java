@@ -21,11 +21,17 @@ public class MedicineController {
     @Autowired
     MedicineService medicineService;
 
-    @GetMapping("/{medicine}")
+    @GetMapping("/{id}")
     @PreAuthorize("hasRole('PATIENT') or hasRole('DOCTOR')")
     public ResponseEntity<?> findById(@PathVariable String id) {
         return medicineService.findMedicineById(id)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    }
+
+    @GetMapping("/all")
+    @PreAuthorize("hasRole('PATIENT') or hasRole('DOCTOR')")
+    public ResponseEntity<?> findAllMedicines(@RequestParam int pageNumber, @RequestParam int pageSize) {
+        return ResponseEntity.ok(medicineService.findAllMedicines(pageNumber, pageSize));
     }
 }
