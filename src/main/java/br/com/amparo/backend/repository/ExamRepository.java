@@ -26,12 +26,14 @@ public class ExamRepository {
     public Optional<ExamResponse> addExam(CreateExamRequest exam, String id) {
         try {
             String sql = """
-                INSERT INTO "Exam" ("id_patient", "exam_date", "description", "is_done")
+                INSERT INTO "Exam" ("id_patient", "exam_date", "description", "is_done", "exam_image", "exam_file")
                 VALUES (
                     :id_patient,
                     :exam_date,
                     :description,
-                    :is_done
+                    :is_done,
+                    :exam_image,
+                    :exam_file
                 )
                 RETURNING "id";
                 """;
@@ -39,7 +41,9 @@ public class ExamRepository {
                     "id_patient", UUID.fromString(id),
                     "exam_date", exam.examDate(),
                     "description", exam.description(),
-                    "is_done", exam.isDone()
+                    "is_done", exam.isDone(),
+                    "exam_image", exam.image(),
+                    "exam_file", exam.file()
             ));
 
             UUID examId = jdbcTemplate.queryForObject(sql, param, UUID.class);
@@ -58,7 +62,9 @@ public class ExamRepository {
                            e."description"   as "description",
                            e."exam_date"     as "examDate",
                            e."is_done"       as "isDone",
-                           e."id_patient"    as "patientId"
+                           e."id_patient"    as "patientId",
+                           e."exam_image"    as "image",
+                           e."exam_file"     as "file"
                     FROM "Exam" e
                     WHERE e."id" = :id
                     """;
@@ -71,7 +77,9 @@ public class ExamRepository {
                     rs.getString("description"),
                     rs.getTimestamp("examDate").toLocalDateTime(),
                     rs.getBoolean("isDone"),
-                    rs.getString("patientId")
+                    rs.getString("patientId"),
+                    rs.getString("image"),
+                    rs.getString("file")
             ));
             if (exam == null) {
                 return Optional.empty();
@@ -93,7 +101,9 @@ public class ExamRepository {
                        e."description"   as "description",
                        e."exam_date"     as "examDate",
                        e."is_done"       as "isDone",
-                       e."id_patient"    as "patientId"
+                       e."id_patient"    as "patientId",
+                       e."exam_image"    as "image",
+                       e."exam_file"     as "file"
                 FROM "Exam" e
                 WHERE e."id_patient" = :id
                 AND e."is_done" = true
@@ -110,7 +120,9 @@ public class ExamRepository {
                     rs.getString("description"),
                     rs.getTimestamp("examDate").toLocalDateTime(),
                     rs.getBoolean("isDone"),
-                    rs.getString("patientId")
+                    rs.getString("patientId"),
+                    rs.getString("image"),
+                    rs.getString("file")
             ));
 
             return exams;
@@ -129,7 +141,9 @@ public class ExamRepository {
                        e."description"   as "description",
                        e."exam_date"     as "examDate",
                        e."is_done"       as "isDone",
-                       e."id_patient"    as "patientId"
+                       e."id_patient"    as "patientId",
+                       e."exam_image"    as "image",
+                       e."exam_file"     as "file"
                 FROM "Exam" e
                 WHERE e."id_patient" = :id
                 AND e."is_done" = false
@@ -146,7 +160,9 @@ public class ExamRepository {
                     rs.getString("description"),
                     rs.getTimestamp("examDate").toLocalDateTime(),
                     rs.getBoolean("isDone"),
-                    rs.getString("patientId")
+                    rs.getString("patientId"),
+                    rs.getString("image"),
+                    rs.getString("file")
             ));
 
             return exams;
@@ -163,7 +179,9 @@ public class ExamRepository {
                     UPDATE "Exam"
                     SET "description" = :description,
                         "exam_date" = :exam_date,
-                        "is_done" = :is_done
+                        "is_done" = :is_done,
+                        "exam_image" = :exam_image,
+                        "exam_file" = :exam_file
                     WHERE "id" = :id
                     """;
             MapSqlParameterSource param = new MapSqlParameterSource(Map.of(
@@ -172,6 +190,9 @@ public class ExamRepository {
                     "exam_date", examRequest.examDate(),
                     "is_done", examRequest.isDone()
             ));
+            param.addValue("exam_image", examRequest.image());
+            param.addValue("exam_file", examRequest.file());
+            jdbcTemplate.update(sql, param);
             return findExamById(id);
         } catch (DataAccessException e) {
             log.error("Error trying to edit exam with id: " + id + " Error: " + e.getMessage());
