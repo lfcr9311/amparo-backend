@@ -84,7 +84,7 @@ public class DoctorRepository {
                     "id", UUID.fromString(id)
             ));
             DoctorResponse doctorResponse = jdbcTemplate.queryForObject(sql, param, (rs, rowNum) -> new DoctorResponse(
-                    UUID.fromString(rs.getString("id")),
+                    rs.getString("id"),
                     rs.getString("email"),
                     rs.getString("name"),
                     rs.getString("cellphone"),
