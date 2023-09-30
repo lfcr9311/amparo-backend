@@ -21,5 +21,7 @@ public class MedicineServiceImpl extends MedicineService {
     }
 
     @Override
-    public
+    public Optional<MedicineResponse> findMedicineByName(String name) {
+        return repository.findMedicineByName(name);
+    }
 }
