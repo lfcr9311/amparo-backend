@@ -15,7 +15,8 @@
 
 ####
 cache:
-  - build/
+  paths:
+    - build/
   
 stages:
   - build
