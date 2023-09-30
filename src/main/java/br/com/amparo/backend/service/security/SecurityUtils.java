@@ -8,4 +8,8 @@ public class SecurityUtils {
     public static ApiUser getApiUser() {
         return ((ApiUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
     }
+
+    public static String getCurrentUserId() {
+        return getApiUser().getId();
+    }
 }

@@ -25,11 +25,9 @@ public class LinkController {
 
     @PreAuthorize("hasRole('DOCTOR')")
     @PostMapping()
-    public ResponseEntity<String> linkDoctorToPatient(@RequestParam("id") String patientId) {
-
-            return linkService.linkDoctorToPatient(SecurityUtils.getApiUser().getId(), patientId)
-                    .map(ResponseEntity::ok)
-                    .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    public ResponseEntity<Boolean> linkDoctorToPatient(@RequestParam("id") String patientId) {
+        return new ResponseEntity<>(linkService.linkDoctorToPatient(
+                SecurityUtils.getCurrentUserId(), patientId), HttpStatus.OK);
     }
 
 }
