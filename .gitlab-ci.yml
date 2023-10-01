@@ -17,7 +17,7 @@
 cache:
   - key: build-jar
     paths:
-      - /build/amparo/amparo-backend/build/
+      - ./build/libs/amparo-backend*SNAPSHOT.jar
     policy: pull
 
 stages:
@@ -33,17 +33,19 @@ build-job:
   stage: build-test
   script:
     - ./gradlew clean build
-    - echo ls -a
+    - ls -a
   cache:
     key: build-jar
     paths:
-      - /build/amparo/amparo-backend/build/
+      - ./build/libs/amparo-backend*SNAPSHOT.jar
     policy: pull-push
 
 package-job:
   stage: package
-#  only:
-#    - dev
+  needs:
+    - build-job
+  #  only:
+  #    - dev
   script:
     - docker login -u $CI_DOCKER_REGISTRY_USERNAME -p $CI_DOCKER_REGISTRY_PASS
     - docker build -f DockerfileJarCi -t $CI_DOCKER_REGISTRY_USERNAME/amparo-api .
