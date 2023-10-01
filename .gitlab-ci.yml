@@ -17,7 +17,7 @@
 cache:
   - key: build-jar
     paths:
-      - amparo-backend/build/
+      - /build/amparo/amparo-backend/build/
     policy: pull
 
 stages:
@@ -33,10 +33,11 @@ build-job:
   stage: build-test
   script:
     - ./gradlew clean build
+    - echo ls -a
   cache:
     key: build-jar
     paths:
-      - amparo-backend/build/
+      - /build/amparo/amparo-backend/build/
     policy: pull-push
 
 package-job:
