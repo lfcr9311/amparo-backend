@@ -80,7 +80,7 @@ public class AuthenticationController {
         }
     }
 
-    @GetMapping
+    @GetMapping("/hello")
     public ResponseEntity hello() {
         return new ResponseEntity(Map.of("Hello", "World"), HttpStatus.I_AM_A_TEAPOT);
     }
