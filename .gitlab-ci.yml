@@ -34,8 +34,8 @@ build-n-test-job:
 
 package-job:
   stage: package
-  only:
-    - dev
+#  only:
+#    - dev
   script:
     - docker login -u $CI_DOCKER_REGISTRY_USERNAME -p $CI_DOCKER_REGISTRY_PASS
     - docker build -f DockerfileJarCi -t $CI_DOCKER_REGISTRY_USERNAME/amparo-api .
@@ -43,8 +43,6 @@ package-job:
 
 update-container-job:
   stage: deploy
-  only:
-    - dev
   needs:
     - package-job
   script:
