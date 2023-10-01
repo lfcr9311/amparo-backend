@@ -33,6 +33,7 @@ build-job:
   stage: build-test
   script:
     - ./gradlew clean build
+    - echo done
   cache:
     key: build-jar
     paths:
