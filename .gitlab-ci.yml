@@ -35,22 +35,19 @@ services:
   - docker:dind
 
 build-n-test-job:
-  image: amazoncorretto:17-alpine3.18-jdk # This job runs in the build stage, which runs first.
+  image: amazoncorretto:17-alpine3.18-jdk
   stage: build
   script:
     - ./gradlew assemble
-  only:
-    changes:
-      - "*.gradle"
-      - "gradle.properties"
   cache:
     key: cache-gradle
     paths:
       - .gradle/wrapper
       - .gradle/caches
-    policy: push
+    policy: pull-push
 
 check-job:
+  image: amazoncorretto:17-alpine3.18-jdk
   stage: check
   script: ./gradlew check
 
