@@ -37,6 +37,8 @@ package-job:
 
 update-container-job:
   stage: deploy
+  only:
+    - dev
   needs:
     - package-job
   script:
