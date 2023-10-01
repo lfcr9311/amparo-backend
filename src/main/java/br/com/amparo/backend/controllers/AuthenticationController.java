@@ -79,9 +79,4 @@ public class AuthenticationController {
             return new ResponseEntity<>(new ErrorMessage("Registration failed for email"), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-
-    @GetMapping("/teste3")
-    public ResponseEntity hello() {
-        return new ResponseEntity(Map.of("Hello", "World"), HttpStatus.I_AM_A_TEAPOT);
-    }
 }
