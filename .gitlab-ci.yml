@@ -14,33 +14,49 @@
 # For more information, see: https://docs.gitlab.com/ee/ci/yaml/index.html#stages
 
 ####
-stages:          # List of stages for jobs, and their order of execution
-  - build
-  - test
+cache:
+  key: build-jar
+  paths:
+    - ./build/libs/amparo-backend*SNAPSHOT.jar
+  policy: pull
+
+stages:
+  - build-test
+  - package
   - deploy
 
-build-job:       # This job runs in the build stage, which runs first.
-  stage: build
-  script:
-    - echo "Compiling the code..."
-    - echo "Compile complete."
+services:
+  - docker:dind
 
-unit-test-job:   # This job runs in the test stage.
-  stage: test    # It only starts when the job in the build stage completes successfully.
+build-job:
+  image: amazoncorretto:17-alpine3.18-jdk
+  stage: build-test
   script:
-    - echo "Running unit tests... "
-    - sleep 2
-    - echo "Code coverage is 90%"
+    - ./gradlew clean build
+  cache:
+    key: build-jar
+    paths:
+      - ./build/libs/amparo-backend*SNAPSHOT.jar
+    policy: pull-push
 
-lint-test-job:   # This job also runs in the test stage.
-  stage: test    # It can run at the same time as unit-test-job (in parallel).
+package-job:
+  stage: package
+  needs:
+    - build-job
+  only:
+    - dev
   script:
-    - echo "Linting code... "
-    - sleep 2
-    - echo "No lint issues found."
+    - docker login -u $CI_DOCKER_REGISTRY_USERNAME -p $CI_DOCKER_REGISTRY_PASS
+    - docker build -f DockerfileJarCi -t $CI_DOCKER_REGISTRY_USERNAME/amparo-api .
+    - docker push $CI_DOCKER_REGISTRY_USERNAME/amparo-api
 
-deploy-job:      # This job runs in the deploy stage.
-  stage: deploy  # It only runs when *both* jobs in the test stage complete successfully.
+update-container-job:
+  stage: deploy
+  needs:
+    - package-job
   script:
-    - echo "Deploying application..."
-    - echo "Application successfully deployed."
+    - docker login -u $CI_DOCKER_REGISTRY_USERNAME -p $CI_DOCKER_REGISTRY_PASS
+    - docker stop amparo-api || true
+    - docker rm amparo-api || true
+    - docker pull $CI_DOCKER_REGISTRY_USERNAME/amparo-api
+    - docker run -d --network amparo-net --name=amparo-api -p 8080:8080 --env SPRING_DATASOURCE_URL=jdbc:postgresql://amparo-database:5432/$CI_DATABASE_NAME --env SPRING_DATASOURCE_USERNAME=$CI_DATABASE_USER --env SPRING_DATASOURCE_PASSWORD=$CI_DATABASE_PASSWORD $CI_DOCKER_REGISTRY_USERNAME/amparo-api
