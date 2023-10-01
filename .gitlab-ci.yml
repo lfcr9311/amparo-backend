@@ -15,12 +15,19 @@
 
 ####
 cache:
-  paths:
-    - ./build/
-    - ~/.gradle/wrapper
+#  - key: build-jar
+#    paths:
+#      - amparo-backend/build/
+#    policy: pull
+  - key: cache-gradle
+    paths:
+      - .gradle/wrapper
+      - .gradle/caches
+    policy: pull
 
 stages:
   - build
+  - check
   - package
   - deploy
 
@@ -31,7 +38,21 @@ build-n-test-job:
   image: amazoncorretto:17-alpine3.18-jdk # This job runs in the build stage, which runs first.
   stage: build
   script:
-    - ./gradlew clean build
+    - ./gradlew assemble
+  only:
+    changes:
+      - "*.gradle"
+      - "gradle.properties"
+  cache:
+    key: cache-gradle
+    paths:
+      - .gradle/wrapper
+      - .gradle/caches
+    policy: push
+
+check-job:
+  stage: check
+  script: ./gradlew check
 
 package-job:
   stage: package
