@@ -15,6 +15,11 @@
 
 ####
 cache:
+  - key: cache-gradle
+    paths:
+      - .gradle/wrapper/
+      - .gradle/caches/
+    policy: pull
   - key: build-jar
     paths:
       - ./build/libs/amparo-backend*SNAPSHOT.jar
@@ -32,13 +37,18 @@ build-job:
   image: amazoncorretto:17-alpine3.18-jdk
   stage: build-test
   script:
-    - ./gradlew clean build
+    - ./gradlew --gradle-user-home cache/.gradle clean build
     - ls -a
   cache:
-    key: build-jar
-    paths:
-      - ./build/libs/amparo-backend*SNAPSHOT.jar
-    policy: pull-push
+    - key: build-jar
+      paths:
+        - ./build/libs/amparo-backend*SNAPSHOT.jar
+      policy: pull-push
+    - key: cache-gradle
+      paths:
+        - .gradle/wrapper/
+        - .gradle/caches/
+      policy: pull-push
 
 package-job:
   stage: package
