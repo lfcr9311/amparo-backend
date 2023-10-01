@@ -15,41 +15,29 @@
 
 ####
 cache:
-#  - key: build-jar
-#    paths:
-#      - amparo-backend/build/
-#    policy: pull
-  - key: cache-gradle
+  - key: build-jar
     paths:
-      - .gradle/wrapper
-      - .gradle/caches
+      - amparo-backend/build/
     policy: pull
 
 stages:
-  - build
-  - check
+  - build-test
   - package
   - deploy
 
 services:
   - docker:dind
 
-build-n-test-job:
+build-job:
   image: amazoncorretto:17-alpine3.18-jdk
-  stage: build
+  stage: build-test
   script:
-    - ./gradlew assemble
+    - ./gradlew clean build
   cache:
-    key: cache-gradle
+    key: build-jar
     paths:
-      - .gradle/wrapper
-      - .gradle/caches
+      - amparo-backend/build/
     policy: pull-push
-
-check-job:
-  image: amazoncorretto:17-alpine3.18-jdk
-  stage: check
-  script: ./gradlew check
 
 package-job:
   stage: package
