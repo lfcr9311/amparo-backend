@@ -20,36 +20,22 @@ cache:
 
 stages:
   - build
-  - test
+  - package
   - deploy
 
 services:
   - docker:dind
 
-build-job:
+build-n-test-job:
   image: amazoncorretto:17-alpine3.18-jdk # This job runs in the build stage, which runs first.
   stage: build
-  cache:
-    key:
-      files:
-        - gradle/wrapper/gradle-wrapper.properties
-    paths:
-      - cache/caches/
-      - cache/wrapper/
   script:
-    - ./gradlew clean build -x test
-
-test-job:
-  image: amazoncorretto:17-alpine3.18-jdk
-  stage: test
-  script:
-    - ./gradlew test
+    - ./gradlew clean build
 
 package-job:
-  stage: deploy
-  when: manual
-  #only:
-  #  - dev
+  stage: package
+  only:
+    - dev
   script:
     - docker login -u $CI_DOCKER_REGISTRY_USERNAME -p $CI_DOCKER_REGISTRY_PASS
     - docker build -f DockerfileJarCi -t $CI_DOCKER_REGISTRY_USERNAME/amparo-api .
@@ -57,6 +43,8 @@ package-job:
 
 update-container-job:
   stage: deploy
+  only:
+    - dev
   needs:
     - package-job
   script:
@@ -64,4 +52,4 @@ update-container-job:
     - docker stop amparo-api || true
     - docker rm amparo-api || true
     - docker pull $CI_DOCKER_REGISTRY_USERNAME/amparo-api
-    - docker run -d --network amparo-net --name=amparo-api -p 8080:8080 --env SPRING_DATASOURCE_URL=jdbc:postgresql://amparo-db:5432/$CI_DATABASE_NAME --env SPRING_DATASOURCE_USERNAME=$CI_DATABASE_USER --env SPRING_DATASOURCE_PASSWORD=$CI_DATABASE_PASSWORD $CI_DOCKER_REGISTRY_USERNAME/amparo-api
+    - docker run -d --network amparo-net --name=amparo-api -p 8080:8080 --env SPRING_DATASOURCE_URL=jdbc:postgresql://amparo-database:5432/$CI_DATABASE_NAME --env SPRING_DATASOURCE_USERNAME=$CI_DATABASE_USER --env SPRING_DATASOURCE_PASSWORD=$CI_DATABASE_PASSWORD $CI_DOCKER_REGISTRY_USERNAME/amparo-api
