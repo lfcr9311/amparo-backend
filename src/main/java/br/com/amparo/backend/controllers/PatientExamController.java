@@ -26,9 +26,7 @@ public class PatientExamController {
     @PreAuthorize("hasRole('PATIENT')")
     @PostMapping
     public ResponseEntity<?> addExam(@RequestBody CreateExamRequest exam, @PathVariable String id){
-        if (!exam.isValid()) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        } else if (!Objects.equals(id, SecurityUtils.getApiUser().getId())) {
+        if (!Objects.equals(id, SecurityUtils.getApiUser().getId())) {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
         return examService.addExam(exam, id)
@@ -68,8 +66,8 @@ public class PatientExamController {
 
     @PreAuthorize("hasRole('PATIENT')")
     @PutMapping("/{examId}")
-    public ResponseEntity<?> editExam(@RequestBody ExamToUpdateRequest exam, @PathVariable("examId") String examId, @PathVariable("id") String id){
-        if (!Objects.equals(id, SecurityUtils.getApiUser().getId()) && !exam.isValid() && (!Objects.equals(id, examService.findExamById(examId).get().id_patient()))) {
+    public ResponseEntity<?> editExam(@RequestBody ExamToUpdateRequest exam, @PathVariable("examId") String examId){
+        if (!Objects.equals(SecurityUtils.getApiUser().getId(), examService.findExamById(examId).get().id_patient())) {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
         return examService.editExam(exam,examId)
