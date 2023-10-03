@@ -51,6 +51,11 @@ public class AmparoConfiguration {
     }
 
     @Bean
+    public MedicineService medicineService(MedicineRepository medicineRepository) {
+        return new MedicineServiceImpl(medicineRepository);
+    }
+
+    @Bean
     public UserTokenRepository userTokenRepository(NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
         return new UserTokenRepository(namedParameterJdbcTemplate);
     }
@@ -78,6 +83,11 @@ public class AmparoConfiguration {
     @Bean
     public UserRepository userRepository(NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
         return new UserRepository(namedParameterJdbcTemplate);
+    }
+
+    @Bean
+    public MedicineRepository medicineRepository(NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
+        return new MedicineRepository(namedParameterJdbcTemplate);
     }
 
     @Bean
