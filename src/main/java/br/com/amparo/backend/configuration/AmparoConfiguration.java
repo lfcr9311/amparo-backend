@@ -90,11 +90,6 @@ public class AmparoConfiguration {
     }
 
     @Bean
-    public MedicineRepository medicineRepository(NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
-        return new MedicineRepository(namedParameterJdbcTemplate);
-    }
-
-    @Bean
     public LinkRepository linkRepository(NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
         return new LinkRepository(namedParameterJdbcTemplate);
     }
