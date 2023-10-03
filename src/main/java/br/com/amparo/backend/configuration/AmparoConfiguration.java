@@ -105,6 +105,11 @@ public class AmparoConfiguration {
     }
 
     @Bean
+    public MedicineRepository medicineRepository(NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
+        return new MedicineRepository(namedParameterJdbcTemplate);
+    }
+
+    @Bean
     public AuthService loginService(TokenService tokenService, UserTokenRepository userTokenRepository,
                                     CryptographyService cryptographyService, UserRepository userRepository,
                                     PatientRepository patientRepository, DoctorRepository doctorRepository) {
