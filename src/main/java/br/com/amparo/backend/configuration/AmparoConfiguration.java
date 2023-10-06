@@ -3,13 +3,16 @@ package br.com.amparo.backend.configuration;
 import br.com.amparo.backend.configuration.security.AmparoSecurityConfiguration;
 import br.com.amparo.backend.repository.*;
 import br.com.amparo.backend.service.*;
+import br.com.amparo.backend.service.impl.*;
 import br.com.amparo.backend.service.impl.DoctorServiceImpl;
+import br.com.amparo.backend.service.impl.ExamServiceImpl;
 import br.com.amparo.backend.service.impl.MedicineServiceImpl;
 import br.com.amparo.backend.service.impl.PatientServiceImpl;
 import br.com.amparo.backend.service.impl.UserServiceImpl;
 import br.com.amparo.backend.service.security.AuthService;
 import br.com.amparo.backend.service.security.CryptographyServiceSha256;
 import br.com.amparo.backend.service.security.TokenService;
+import io.swagger.v3.oas.models.links.Link;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -66,6 +69,16 @@ public class AmparoConfiguration {
     }
 
     @Bean
+    public ExamService examService(ExamRepository examRepository, PatientRepository patientRepository) {
+        return new ExamServiceImpl(examRepository, patientRepository);
+    }
+
+    @Bean
+    public ExamRepository examRepository(NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
+        return new ExamRepository(namedParameterJdbcTemplate);
+    }
+
+    @Bean
     public DoctorRepository doctorRepository(NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
         return new DoctorRepository(namedParameterJdbcTemplate);
     }
@@ -73,6 +86,16 @@ public class AmparoConfiguration {
     @Bean
     public UserRepository userRepository(NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
         return new UserRepository(namedParameterJdbcTemplate);
+    }
+
+    @Bean
+    public LinkRepository linkRepository(NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
+        return new LinkRepository(namedParameterJdbcTemplate);
+    }
+
+    @Bean
+    public LinkService linkService(LinkRepository linkRepository) {
+        return new LinkServiceImpl(linkRepository);
     }
 
     @Bean
