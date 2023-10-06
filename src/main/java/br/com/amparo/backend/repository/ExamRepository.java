@@ -39,18 +39,18 @@ public class ExamRepository {
                 """;
             MapSqlParameterSource param = new MapSqlParameterSource(Map.of(
                     "id_patient", UUID.fromString(id),
-                    "exam_date", exam.examDate(),
+                    "exam_date", exam.exam_date(),
                     "description", exam.description(),
-                    "is_done", exam.isDone(),
-                    "exam_image", exam.image(),
-                    "exam_file", exam.file()
+                    "is_done", exam.is_done()
             ));
+            param.addValue("exam_file", exam.file());
+            param.addValue("exam_image", exam.image());
 
             UUID examId = jdbcTemplate.queryForObject(sql, param, UUID.class);
             return findExamById(examId.toString());
         } catch (DataAccessException e) {
             log.error("Error trying to add exam to patient: " + id + " Error: " + e.getMessage());
-            throw new ExamCreationException(id, exam.description(), exam.examDate(), exam.isDone());
+            throw new ExamCreationException(id, exam.description(), exam.exam_date(), exam.is_done());
         }
     }
 
