@@ -1,0 +1,1 @@
+ALTER TABLE "Medicine" ALTER COLUMN id TYPE numeric;
