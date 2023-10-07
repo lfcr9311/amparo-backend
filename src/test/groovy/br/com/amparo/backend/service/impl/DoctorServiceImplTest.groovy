@@ -7,6 +7,8 @@ import br.com.amparo.backend.repository.DoctorRepository
 import br.com.amparo.backend.service.UserService
 import spock.lang.Specification
 
+import org.assertj.core.api.Assertions;
+
 class DoctorServiceImplTest extends Specification {
 
     UserService userService
@@ -32,14 +34,7 @@ class DoctorServiceImplTest extends Specification {
         def response = service.findDoctorById(id).get()
 
         then:
-        response.id() == "id"
-        response.email() == "user@email.com"
-        response.name() == "john doe"
-        response.cellphone() == "12345678912"
-        response.profilePicture() == "profilePicture_value"
-        response.isAnonymous()
-        response.crm() == "RS/123456"
-        response.uf() == "RS"
+        Assertions.assertThat(response).usingRecursiveComparison().isEqualTo(expectedResponse)
     }
 
     def "editDoctor must return empty when doctor doesnt exist"() {
@@ -53,7 +48,7 @@ class DoctorServiceImplTest extends Specification {
         def response = service.editDoctor(request, id)
 
         then:
-        response == Optional.empty()
+        Assertions.assertThat(response.isEmpty()).isTrue()
     }
 
     def "editDoctor with existing doctor"() {
@@ -67,14 +62,7 @@ class DoctorServiceImplTest extends Specification {
         def response = service.editDoctor(request, id).get()
 
         then:
-        response.id() == "id"
-        response.email() == "user@email.com"
-        response.name() == "john doe"
-        response.cellphone() == "12345678912"
-        response.profilePicture() == "profilePicture_value"
-        response.isAnonymous()
-        response.crm() == "RS/123456"
-        response.uf() == "RS"
+        Assertions.assertThat(response).usingRecursiveComparison().isEqualTo(mockDoctorResponse())
     }
 
     def mockDoctorToUpdateRequest() {
