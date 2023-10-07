@@ -52,7 +52,7 @@ class DoctorServiceImplTest extends Specification {
     }
 
     def "editDoctor with existing doctor"() {
-        given: "an existing doctor id and a doctor update request"
+        given:
         def id = "id"
         def request = mockDoctorToUpdateRequest()
 
