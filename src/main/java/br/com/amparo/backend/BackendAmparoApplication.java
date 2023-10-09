@@ -14,12 +14,11 @@ import org.springframework.context.annotation.Import;
 @SpringBootApplication
 @Import(AmparoConfiguration.class)
 @SecurityScheme(type = SecuritySchemeType.HTTP, name = "bearerToken", scheme = "bearer", bearerFormat = "jwt",
-		in = SecuritySchemeIn.HEADER)
+        in = SecuritySchemeIn.HEADER)
 @OpenAPIDefinition(info = @Info(title = "Amparo Api", version = "0.0.1"),
-		security = { @SecurityRequirement(name = "bearerToken") })
+        security = {@SecurityRequirement(name = "bearerToken")})
 public class BackendAmparoApplication {
-	public static void main(String[] args) {
-		SpringApplication.run
-				(BackendAmparoApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(BackendAmparoApplication.class, args);
+    }
 }

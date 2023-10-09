@@ -1,11 +1,13 @@
 package br.com.amparo.backend.domain.entity;
 
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
+@EqualsAndHashCode(callSuper = true)
 public class Patient extends User {
     private String cpf;
 
