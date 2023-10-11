@@ -9,7 +9,7 @@ services:
     depends_on:
       - amparo-db
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://amparo-db:5433/amparo-db?user=amparo&password=amparo
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://amparo-db:5432/amparo-db?user=amparo&password=amparo
   amparo-db:
     image: "postgres:12.3"
     ports:
