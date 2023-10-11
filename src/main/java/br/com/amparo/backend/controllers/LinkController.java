@@ -1,6 +1,5 @@
 package br.com.amparo.backend.controllers;
 
-
 import br.com.amparo.backend.controllers.dto.ObjectMappingError;
 import br.com.amparo.backend.service.LinkService;
 import br.com.amparo.backend.service.security.SecurityUtils;
@@ -22,7 +21,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @ControllerAdvice
 @Slf4j
-@Tag(name = "8. link controller")
+@Tag(name = "7. link controller")
 public class LinkController {
 
     @Autowired
@@ -39,7 +38,7 @@ public class LinkController {
                     )
             })
     @PreAuthorize("hasRole('PATIENT')")
-    @PostMapping("/{doctorId}")
+    @PostMapping("doctorId/{doctorId}")
     public ResponseEntity<?> requestDoctorToPatient(@PathVariable String doctorId) {
          if (linkService.checkConnection(doctorId, SecurityUtils.getApiUser().getId())) {
             return ResponseEntity.status(HttpStatus.CONFLICT).build();
@@ -51,7 +50,7 @@ public class LinkController {
     }
 
     @PreAuthorize("hasRole('DOCTOR')")
-    @PutMapping("/{patientId}")
+    @PutMapping("patientId/{patientId}")
     public ResponseEntity<?> linkDoctorToPatient(@PathVariable String patientId) {
         if (linkService.checkConnectionRequest(SecurityUtils.getApiUser().getId(), patientId)) {
             return ResponseEntity.status(HttpStatus.CONFLICT).build();
@@ -62,14 +61,14 @@ public class LinkController {
                 : ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
     }
     @PreAuthorize("hasRole('DOCTOR')")
-    @DeleteMapping ("remove/patient/{patientId}")
+    @DeleteMapping ("remove/patientId/{patientId}")
     public ResponseEntity<?> deleteLinkPatient(@PathVariable String patientId) {
         return linkService.deleteLinkPatient(SecurityUtils.getApiUser().getId(), patientId)
                 ? ResponseEntity.ok().build()
                 : ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
     }
     @PreAuthorize("hasRole('PATIENT')")
-    @DeleteMapping ("remove/doctor/{doctorId}")
+    @DeleteMapping ("remove/doctorId/{doctorId}")
     public ResponseEntity<?> deleteLinkDoctor(@PathVariable String doctorId) {
         return linkService.deleteLinkDoctor(SecurityUtils.getApiUser().getId(), doctorId)
                 ? ResponseEntity.ok().build()
