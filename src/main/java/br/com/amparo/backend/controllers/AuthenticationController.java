@@ -44,7 +44,7 @@ public class AuthenticationController {
             responses = {
                     @ApiResponse(responseCode = "200", description = "Generated Bearer token for the user",
                             content = @Content(schema = @Schema(implementation = LoginTokenResponse.class))),
-                    @ApiResponse(responseCode = "401", description = "email or password invalid",
+                    @ApiResponse(responseCode = "401", description = "Email or password invalid",
                             content = @Content(schema = @Schema(implementation = ErrorMessage.class)))
             })
     @SecurityRequirements
@@ -54,7 +54,7 @@ public class AuthenticationController {
         if (token.isPresent()) {
             return ResponseEntity.ok(new LoginResponseDto(token.get()));
         } else {
-            return new ResponseEntity<>(new ErrorMessage("email of password invalid"), HttpStatus.UNAUTHORIZED);
+            return new ResponseEntity<>(new ErrorMessage("Email of password invalid"), HttpStatus.UNAUTHORIZED);
         }
     }
 
