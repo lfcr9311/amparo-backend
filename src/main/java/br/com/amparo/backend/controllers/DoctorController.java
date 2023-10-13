@@ -31,6 +31,7 @@ import java.util.Objects;
 @Slf4j
 @Tag(name = "3. Doctor")
 public class DoctorController {
+
     @Autowired
     DoctorService doctorService;
 
@@ -38,6 +39,9 @@ public class DoctorController {
             responses = {
                     @ApiResponse(responseCode = "200", description = "Doctor found",
                             content = @Content(schema = @Schema(implementation = DoctorResponse.class))
+                    ),
+                    @ApiResponse(responseCode = "401", description = "Unauthenticated doctor",
+                            content = @Content(schema = @Schema(implementation = ErrorMessage.class))
                     ),
                     @ApiResponse(responseCode = "404", description = "Doctor not found",
                             content = @Content(schema = @Schema(implementation = ErrorMessage.class))
@@ -51,8 +55,7 @@ public class DoctorController {
                     name = "id",
                     description = "Doctor Id",
                     example = "a7f6b9c0a8f0d2c4f1e9b5c8f3c6a0e2a3d9b4d1a7d3e6c5a9f8b7d0a8f1e2c4"
-            )
-            String id
+            ) String id
     ) {
         ApiUser apiUser = SecurityUtils.getApiUser();
         if (apiUser.isDoctor() && !Objects.equals(SecurityUtils.getApiUser().getId(), id)) {

@@ -33,6 +33,7 @@ import java.util.List;
 @Slf4j
 @Tag(name = "2. Patient")
 public class PatientController {
+
     @Autowired
     PatientService patientService;
 
@@ -53,8 +54,7 @@ public class PatientController {
                     name = "cpf",
                     description = "Patient CPF",
                     example = "06073525049"
-            )
-            String cpf
+            ) String cpf
     ) {
         return patientService.findPatientByCpf(cpf)
                 .map(ResponseEntity::ok)
@@ -94,7 +94,6 @@ public class PatientController {
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
-
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<?> handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
