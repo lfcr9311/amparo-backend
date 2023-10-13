@@ -1,6 +1,5 @@
 package br.com.amparo.backend.controllers;
 
-
 import br.com.amparo.backend.controllers.dto.ObjectMappingError;
 import br.com.amparo.backend.service.LinkService;
 import br.com.amparo.backend.service.security.SecurityUtils;
@@ -30,13 +29,11 @@ public class LinkController {
 
     @Operation(operationId = "link", description = "Link a doctor to a patient",
             responses = {
-                    @ApiResponse(responseCode = "200", description = "Doctor and patient linked"
-                    ),
+                    @ApiResponse(responseCode = "200", description = "Doctor and patient linked"),
                     @ApiResponse(responseCode = "500", description = "Linking failed",
                             content = @Content(schema = @Schema(implementation = ObjectMappingError.class))
                     ),
-                    @ApiResponse(responseCode = "409", description = "Link already exists"
-                    )
+                    @ApiResponse(responseCode = "409", description = "Link already exists")
             })
     @PreAuthorize("hasRole('DOCTOR')")
     @PostMapping("/{id}")
