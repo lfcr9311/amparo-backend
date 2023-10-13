@@ -40,11 +40,14 @@ dependencies {
 	testImplementation 'org.springframework.security:spring-security-test'
 	testImplementation 'org.testcontainers:junit-jupiter'
 	testImplementation 'org.testcontainers:postgresql'
+	testImplementation 'org.assertj:assertj-core:3.24.2'
+
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
 
 	testImplementation platform("org.spockframework:spock-bom:2.3-groovy-4.0")
-	testImplementation "org.spockframework:spock-core"
+	testImplementation "org.spockframework:spock-spring:2.3-groovy-4.0"
+	testImplementation "org.spockframework:spock-core:2.3-groovy-4.0"
 }
 
 tasks.named('test') {
