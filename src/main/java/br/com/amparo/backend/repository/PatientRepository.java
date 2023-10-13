@@ -23,37 +23,43 @@ public class PatientRepository {
     public boolean create(Patient patient) {
         try {
             String sql = """
-                    INSERT INTO "Patient" ("id", "cpf", "birthDate")
+                    INSERT INTO "Patient" ("id", "cpf", "birth_date", "num_sus")
                     values (
-                        :id,
-                        :cpf,
-                        :birthDate
-                    )
+                           :id,
+                           :cpf,
+                           :birth_date,
+                           :num_sus
+                       )
                     """;
             MapSqlParameterSource param = new MapSqlParameterSource(Map.of(
                     "id", UUID.fromString(patient.getId()),
                     "cpf", patient.getCpf(),
-                    "birthDate", patient.getBirthDate()
+                    "birth_date", patient.getBirth_date(),
+                    "num_sus", patient.getNum_sus()
             ));
             jdbcTemplate.update(sql, param);
             return true;
+
         } catch (DataAccessException e) {
             log.error("Error trying to create patient: " + patient.getId() + " Error: " + e.getMessage());
-            return false;
+            throw new PatientOperationException(patient.getEmail(), patient.getCpf(), e);
         }
     }
+
     public Optional<PatientResponse> updatePatient(Patient patient) {
         try {
             String sql = """
                     UPDATE "Patient"
                     SET cpf = :cpf,
-                    birthDate = :birthDate
+                    birth_date = :birth_date,
+                    num_sus = :num_sus
                     WHERE "id" = :id
                     """;
             MapSqlParameterSource param = new MapSqlParameterSource(Map.of(
                     "id", UUID.fromString(patient.getId()),
                     "cpf", patient.getCpf(),
-                    "birthDate", patient.getBirthDate()
+                    "birth_date", patient.getBirth_date(),
+                    "num_sus", patient.getNum_sus()
             ));
             jdbcTemplate.update(sql, param);
             return findByCpf(patient.getCpf());
@@ -68,7 +74,8 @@ public class PatientRepository {
             String sql = """
                     SELECT p."id"            as "id",
                            p.cpf             as "cpf",
-                           p.birthDate       as "birthDate",
+                           p.birth_date      as "birth_date",
+                           p.num_sus         as "num_sus",
                            u."email"         as "email",
                            u.name            as "name",
                            u.cellphone       as "cellphone",
@@ -89,7 +96,8 @@ public class PatientRepository {
                     rs.getString("profilePicture"),
                     rs.getBoolean("isAnonymous"),
                     rs.getString("cpf"),
-                    rs.getString("birthDate")
+                    rs.getString("birth_date"),
+                    rs.getString("num_sus")
             ));
 
             return Optional.ofNullable(patientResponse);
@@ -104,7 +112,8 @@ public class PatientRepository {
             String sql = """
                     SELECT p."id"            as "id",
                            p.cpf             as "cpf",
-                           p.birthDate       as "birthDate",
+                           p.birth_date      as "birth_date",
+                           p.num_sus         as "num_sus",
                            u."email"         as "email",
                            u.name            as "name",
                            u.cellphone       as "cellphone",
@@ -125,7 +134,8 @@ public class PatientRepository {
                     rs.getString("profilePicture"),
                     rs.getBoolean("isAnonymous"),
                     rs.getString("cpf"),
-                    rs.getString("birthDate")
+                    rs.getString("birth_date"),
+                    rs.getString("num_sus")
             ));
 
             return Optional.ofNullable(patientResponse);

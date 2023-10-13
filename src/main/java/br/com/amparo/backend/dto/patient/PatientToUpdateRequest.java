@@ -18,8 +18,13 @@ public record PatientToUpdateRequest(
         @NotBlank(message = "Cellphone is required")
         String cellphone,
         @NotNull
-        @Pattern(regexp = "[0-9]{11}", message = "Cpf deve conter somente 11 números")
+        @Pattern(regexp = "[0-9]{11}", message = "CPF deve conter somente 11 números")
         String cpf,
+        @NotNull
+        @Pattern(regexp = "^(0?[1-9]|[12][0-9]|3[01])/(0?[1-9]|1[0-2])/\\d{4}$", message = "Data deve ser DD/MM/AAAA")
+        String birth_date,
+        @Pattern(regexp = "\\d{0}|\\d{15}$", message = "Nº do SUS deve conter 15 dígitos")
+        String num_sus,
         String profilePicture) {
 
     public Patient toPatient(String id) {
@@ -30,6 +35,8 @@ public record PatientToUpdateRequest(
                 .profilePicture(this.profilePicture)
                 .cellphone(this.cellphone)
                 .cpf(this.cpf)
+                .birth_date(this.birth_date)
+                .num_sus(this.num_sus)
                 .build();
     }
 }
