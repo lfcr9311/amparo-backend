@@ -45,7 +45,8 @@ public class DoctorController {
             })
     @GetMapping("/{id}")
     @PreAuthorize("hasRole('DOCTOR') or hasRole('PATIENT')")
-    public ResponseEntity<?> findDoctorById(@PathVariable
+    public ResponseEntity<?> findDoctorById(
+            @PathVariable
             @Parameter(
                     name = "id",
                     description = "Doctor Id",
