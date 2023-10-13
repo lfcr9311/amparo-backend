@@ -23,15 +23,17 @@ public class PatientRepository {
     public boolean create(Patient patient) {
         try {
             String sql = """
-                    INSERT INTO "Patient" ("id", "cpf")
+                    INSERT INTO "Patient" ("id", "cpf", "birthDate")
                     values (
                         :id,
-                        :cpf
+                        :cpf,
+                        :birthDate
                     )
                     """;
             MapSqlParameterSource param = new MapSqlParameterSource(Map.of(
                     "id", UUID.fromString(patient.getId()),
-                    "cpf", patient.getCpf()
+                    "cpf", patient.getCpf(),
+                    "birthDate", patient.getBirthDate()
             ));
             jdbcTemplate.update(sql, param);
             return true;
@@ -44,12 +46,14 @@ public class PatientRepository {
         try {
             String sql = """
                     UPDATE "Patient"
-                    SET cpf = :cpf
+                    SET cpf = :cpf,
+                    birthDate = :birthDate
                     WHERE "id" = :id
                     """;
             MapSqlParameterSource param = new MapSqlParameterSource(Map.of(
                     "id", UUID.fromString(patient.getId()),
-                    "cpf", patient.getCpf()
+                    "cpf", patient.getCpf(),
+                    "birthDate", patient.getBirthDate()
             ));
             jdbcTemplate.update(sql, param);
             return findByCpf(patient.getCpf());
@@ -64,6 +68,7 @@ public class PatientRepository {
             String sql = """
                     SELECT p."id"            as "id",
                            p.cpf             as "cpf",
+                           p.birthDate       as "birthDate",
                            u."email"         as "email",
                            u.name            as "name",
                            u.cellphone       as "cellphone",
@@ -83,7 +88,8 @@ public class PatientRepository {
                     rs.getString("cellphone"),
                     rs.getString("profilePicture"),
                     rs.getBoolean("isAnonymous"),
-                    rs.getString("cpf")
+                    rs.getString("cpf"),
+                    rs.getString("birthDate")
             ));
 
             return Optional.ofNullable(patientResponse);
@@ -98,6 +104,7 @@ public class PatientRepository {
             String sql = """
                     SELECT p."id"            as "id",
                            p.cpf             as "cpf",
+                           p.birthDate       as "birthDate",
                            u."email"         as "email",
                            u.name            as "name",
                            u.cellphone       as "cellphone",
@@ -117,7 +124,8 @@ public class PatientRepository {
                     rs.getString("cellphone"),
                     rs.getString("profilePicture"),
                     rs.getBoolean("isAnonymous"),
-                    rs.getString("cpf")
+                    rs.getString("cpf"),
+                    rs.getString("birthDate")
             ));
 
             return Optional.ofNullable(patientResponse);

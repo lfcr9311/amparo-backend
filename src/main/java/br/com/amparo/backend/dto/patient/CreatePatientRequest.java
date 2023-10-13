@@ -13,6 +13,10 @@ public class CreatePatientRequest extends CreateUserRequest {
     @Pattern(regexp = "[0-9]{11}", message = "Cpf deve conter somente 11 números")
     private String cpf;
 
+    @NotNull
+    @Pattern(regexp = "^(0?[1-9]|[12][0-9]|3[01])/(0?[1-9]|1[0-2])/\\d{4}$", message = "Data deve ser DD/MM/AAAA")
+    private String birthDate;
+
     public CreatePatientRequest() {
         super(UserType.PATIENT);
     }
@@ -25,6 +29,7 @@ public class CreatePatientRequest extends CreateUserRequest {
                 .profilePicture(this.profilePicture)
                 .cellphone(this.cellphone)
                 .cpf(this.cpf)
+                .birthDate(this.birthDate)
                 .build();
     }
 }
