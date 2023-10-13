@@ -47,11 +47,13 @@ public class PatientController {
             })
     @GetMapping("/{cpf}")
     @PreAuthorize("hasRole('DOCTOR')")
-    public ResponseEntity<?> findByCPF(@PathVariable
+    public ResponseEntity<?> findByCPF(
+            @PathVariable
             @Parameter(
                     name = "cpf",
                     description = "Patient CPF",
-                    example = "06073525049")
+                    example = "06073525049"
+            )
             String cpf
     ) {
         return patientService.findPatientByCpf(cpf)
