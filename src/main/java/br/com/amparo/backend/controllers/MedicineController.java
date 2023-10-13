@@ -1,11 +1,7 @@
 package br.com.amparo.backend.controllers;
 
 import br.com.amparo.backend.controllers.dto.ErrorMessage;
-import br.com.amparo.backend.domain.entity.Doctor;
-import br.com.amparo.backend.domain.entity.Patient;
-import br.com.amparo.backend.dto.doctor.DoctorResponse;
 import br.com.amparo.backend.dto.medicine.MedicineResponse;
-import br.com.amparo.backend.dto.patient.PatientResponse;
 import br.com.amparo.backend.service.MedicineService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -16,7 +12,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.hibernate.annotations.AnyKeyJavaClass;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -51,8 +46,7 @@ public class MedicineController {
                     name = "id",
                     description = "Medicine Id",
                     example = "10"
-            )
-            String id
+            ) String id
     ) {
         return medicineService.findMedicineById(id)
                 .map(ResponseEntity::ok)
@@ -76,8 +70,7 @@ public class MedicineController {
                     name = "name",
                     description = "Medicine Name",
                     example = "Ibuprofen"
-            )
-            String name
+            ) String name
     ) {
         return medicineService.findMedicineByName(name)
                 .map(ResponseEntity::ok)
@@ -88,9 +81,6 @@ public class MedicineController {
             responses = {
                     @ApiResponse(responseCode = "200", description = "Medicines found",
                             content = @Content(array = @ArraySchema(schema = @Schema(implementation = MedicineResponse.class)))
-                    ),
-                    @ApiResponse(responseCode = "404", description = "Page not found",
-                            content = @Content(schema = @Schema(implementation = ErrorMessage.class))
                     )
             })
     @GetMapping("/all")
