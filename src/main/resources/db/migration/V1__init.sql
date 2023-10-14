@@ -65,7 +65,7 @@ CREATE TABLE IF NOT EXISTS "Appointment" (
 );
 
 CREATE TABLE IF NOT EXISTS "Medicine" (
-  "id" uuid PRIMARY KEY NOT NULL DEFAULT uuid_generate_v4(),
+  "id" INTEGER PRIMARY KEY NOT NULL,
   "name" TEXT NOT NULL,
   "leaflet" TEXT
 );
@@ -73,7 +73,7 @@ CREATE TABLE IF NOT EXISTS "Medicine" (
 CREATE TABLE IF NOT EXISTS "Dosage" (
   "id" uuid PRIMARY KEY NOT NULL DEFAULT uuid_generate_v4(),
   "id_patient" uuid,
-  "id_medicine" uuid,
+  "id_medicine" INTEGER,
   "quantity" TEXT NOT NULL,
   "initial_hour" timestamp,
   "frequency" timestamp,
@@ -84,8 +84,8 @@ CREATE TABLE IF NOT EXISTS "Dosage" (
 
 CREATE TABLE IF NOT EXISTS "Incompatibility" (
   "id" uuid PRIMARY KEY NOT NULL DEFAULT uuid_generate_v4(),
-  "id_medicine" uuid,
-  "id_medicine_inc" uuid,
+  "id_medicine" INTEGER,
+  "id_medicine_inc" INTEGER,
   "severity" TEXT,
   "description" TEXT,
   FOREIGN KEY ("id_medicine") REFERENCES "Medicine" ("id"),
