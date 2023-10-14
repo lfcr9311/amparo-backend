@@ -20,7 +20,7 @@ public class MedicineRepository {
     public MedicineRepository(NamedParameterJdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
-    public Optional<MedicineResponse> findMedicineById(String id) {
+    public Optional<MedicineResponse> findMedicineById(int id) {
         try {
             String sql = """
                     SELECT  m."id" as "id",
@@ -30,10 +30,10 @@ public class MedicineRepository {
                     WHERE m."id" = :id
                     """;
             MapSqlParameterSource param = new MapSqlParameterSource(Map.of(
-                    "id", UUID.fromString(id)
+                    "id", id
             ));
             MedicineResponse medicineResponse = jdbcTemplate.queryForObject(sql, param, (rs, rowNum) -> new MedicineResponse(
-                    rs.getString("id"),
+                    rs.getInt(id),
                     rs.getString("name"),
                     rs.getString("leaflet")
             ));
@@ -57,7 +57,7 @@ public class MedicineRepository {
                     Map.of("name", name)
             );
             MedicineResponse medicineResponse = jdbcTemplate.queryForObject(sql, param, (rs, rowNum) -> new MedicineResponse(
-                    rs.getString("id"),
+                    rs.getInt("id"),
                     rs.getString("name"),
                     rs.getString("leaflet")
             ));
@@ -88,13 +88,13 @@ public class MedicineRepository {
             return medicines;
         } catch (DataAccessException e) {
             log.error("Error trying to find medicines by page: " + pageNumber + ". Error: " + e.getMessage());
-            throw new MedicineOperationException("null", "null", "null", e);
+            throw new MedicineOperationException(null, "null", "null", e);
         }
     }
 
     private RowMapper<MedicineResponse> getMedicineRowMapper() {
         return (rs, rowNum) -> new MedicineResponse(
-                rs.getString("id"),
+                rs.getInt("id"),
                 rs.getString("name"),
                 rs.getString("leaflet")
         );

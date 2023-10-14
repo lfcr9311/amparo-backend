@@ -46,7 +46,7 @@ public class MedicineController {
                     name = "id",
                     description = "Medicine Id",
                     example = "10"
-            ) String id
+            ) int id
     ) {
         return medicineService.findMedicineById(id)
                 .map(ResponseEntity::ok)
@@ -62,7 +62,7 @@ public class MedicineController {
                             content = @Content(schema = @Schema(implementation = ErrorMessage.class))
                     )
             })
-    @GetMapping("/{name}")
+    @GetMapping("/name/{name}")
     @PreAuthorize("hasRole('PATIENT') or hasRole('DOCTOR')")
     public ResponseEntity<?> findByName(
             @PathVariable
