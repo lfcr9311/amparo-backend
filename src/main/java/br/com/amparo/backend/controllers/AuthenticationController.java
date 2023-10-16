@@ -22,6 +22,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
@@ -78,5 +79,17 @@ public class AuthenticationController {
         } catch (UserAlreadyExistsException ignored) {
             return new ResponseEntity<>(new ErrorMessage("Registration failed for email"), HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    @Operation(operationId = "validate", description = "Validate if the token used is valid.",
+            responses = {
+                    @ApiResponse(responseCode = "204", description = "Token is valid"),
+                    @ApiResponse(responseCode = "401", description = "Token is not valid")
+            }
+    )
+    @GetMapping("/valid")
+    @PreAuthorize("hasRole('PATIENT') or hasRole('DOCTOR')")
+    public ResponseEntity<?> isTokenValid() {
+        return ResponseEntity.noContent().build();
     }
 }

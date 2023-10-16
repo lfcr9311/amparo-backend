@@ -7,18 +7,23 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTCreationException;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.List;
+import java.util.Optional;
+
+@Slf4j
 public class TokenService {
     private String secret;
 
     public TokenService(String secret) {
         this.secret = secret;
     }
+
     public String generateToken(TokenUser apiUser) {
         try {
             Algorithm algorithm = Algorithm.HMAC256(secret);
@@ -36,22 +41,27 @@ public class TokenService {
         }
     }
 
-    public ApiUser validateToken(String token) {
+    public Optional<ApiUser> validateToken(String token) {
+        if (token == null) return Optional.empty();
         try {
             Algorithm algorithm = Algorithm.HMAC256(secret);
-            DecodedJWT decodedJWT =  JWT.require(algorithm).build().verify(token);
+            DecodedJWT decodedJWT = JWT.require(algorithm).build().verify(token);
             String id = decodedJWT.getSubject();
             String name = decodedJWT.getClaim("name").asString();
             String email = decodedJWT.getClaim("email").asString();
-            List<String> authorities = decodedJWT.getClaim("roles").asList(String.class);
+            List<SimpleGrantedAuthority> authorities = decodedJWT.getClaim("roles").asList(String.class)
+                    .stream()
+                    .map(SimpleGrantedAuthority::new)
+                    .toList();
 
-            return new ApiUser(id, email, name, token, authorities.stream().map(SimpleGrantedAuthority::new).toList());
+            return Optional.of(new ApiUser(id, email, name, token, authorities));
         } catch (JWTVerificationException e) {
-            throw new RuntimeException("Error while validating token", e);
+            log.error("Error while validating token", e);
+            return Optional.empty();
         }
     }
 
-    private Instant genExpirationDate(){
+    private Instant genExpirationDate() {
         return LocalDateTime.now().plusHours(2).toInstant(ZoneOffset.of("-03:00"));
     }
 
