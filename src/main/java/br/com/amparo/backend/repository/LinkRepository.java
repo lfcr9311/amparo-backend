@@ -47,8 +47,8 @@ public class LinkRepository {
                         SELECT 1
                         FROM "DoctorPatient"
                         WHERE "id_doctor" = :id_doctor
-                        AND "id_patient" = :id_patient                         
-                    );
+                        AND "id_patient" = :id_patient
+                        );
                     """;
             MapSqlParameterSource param = new MapSqlParameterSource(Map.of(
                     "id_doctor", UUID.fromString(doctorId),
