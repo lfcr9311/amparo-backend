@@ -22,18 +22,15 @@ public class LinkRepository {
     public Boolean requestDoctorToPatient(String doctorId, String patientId) {
         try {
             String sql = """
-                INSERT INTO "DoctorPatient" ("id_doctor", "id_patient", "accepted")
+                INSERT INTO "DoctorPatient" ("id_doctor", "id_patient")
                 VALUES (
                     :id_doctor,
-                    :id_patient,
-                    false
+                    :id_patient
                 )
                 """;
             jdbcTemplate.update(sql, Map.of(
                     "id_doctor", UUID.fromString(doctorId),
                     "id_patient", UUID.fromString(patientId)
-
-
             ));
             return true;
         } catch (DataAccessException e) {
@@ -50,9 +47,7 @@ public class LinkRepository {
                         SELECT 1
                         FROM "DoctorPatient"
                         WHERE "id_doctor" = :id_doctor
-                        AND "id_patient" = :id_patient
-                        
-                                            
+                        AND "id_patient" = :id_patient                         
                     );
                     """;
             MapSqlParameterSource param = new MapSqlParameterSource(Map.of(
