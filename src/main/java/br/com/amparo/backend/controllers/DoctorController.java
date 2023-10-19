@@ -1,6 +1,7 @@
 package br.com.amparo.backend.controllers;
 
 import br.com.amparo.backend.domain.security.ApiUser;
+import br.com.amparo.backend.dto.doctor.DoctorResponse;
 import br.com.amparo.backend.dto.doctor.DoctorToUpdateRequest;
 import br.com.amparo.backend.service.DoctorService;
 import br.com.amparo.backend.service.security.SecurityUtils;
@@ -31,7 +32,7 @@ public class DoctorController {
 
     @GetMapping("/{id}")
     @PreAuthorize("hasRole('PATIENT')")
-    public ResponseEntity<?> findDoctorById(@PathVariable String id) {
+    public ResponseEntity<DoctorResponse> findDoctorById(@PathVariable String id) {
         return doctorService.findDoctorById(id)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
@@ -40,7 +41,7 @@ public class DoctorController {
 
     @PreAuthorize("hasRole('DOCTOR')")
     @GetMapping
-    public ResponseEntity<?> getDoctor() {
+    public ResponseEntity<DoctorResponse> getDoctor() {
         String userId = SecurityUtils.getCurrentUserId();
         return doctorService.findDoctorById(userId)
                 .map(ResponseEntity::ok)
@@ -49,7 +50,7 @@ public class DoctorController {
 
     @PreAuthorize("hasRole('DOCTOR')")
     @PutMapping
-    public ResponseEntity<?> editDoctor(@RequestBody @Valid DoctorToUpdateRequest doctor) {
+    public ResponseEntity<DoctorResponse> editDoctor(@RequestBody @Valid DoctorToUpdateRequest doctor) {
         return doctorService.editDoctor(doctor, SecurityUtils.getApiUser().getId())
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
