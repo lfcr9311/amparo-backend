@@ -40,7 +40,8 @@ public class PatientController {
     @GetMapping
     @PreAuthorize("hasRole('PATIENT')")
     public ResponseEntity<?> findById() {
-        return patientService.findPatientById(SecurityUtils.getApiUser().getId())
+        String userId = SecurityUtils.getApiUser().getId();
+        return patientService.findPatientById(userId)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
