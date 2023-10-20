@@ -50,7 +50,7 @@ public class LinkController {
     }
 
     @PreAuthorize("hasRole('DOCTOR')")
-    @PutMapping("/to/patient{patientId}")
+    @PutMapping("/to/patient/{patientId}")
     public ResponseEntity<?> linkDoctorToPatient(@PathVariable String patientId) {
         if (linkService.checkConnectionRequest(SecurityUtils.getApiUser().getId(), patientId)) {
             return ResponseEntity.status(HttpStatus.CONFLICT).build();
