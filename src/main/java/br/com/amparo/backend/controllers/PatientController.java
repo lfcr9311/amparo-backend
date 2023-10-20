@@ -1,5 +1,6 @@
 package br.com.amparo.backend.controllers;
 
+import br.com.amparo.backend.dto.patient.PatientResponse;
 import br.com.amparo.backend.dto.patient.PatientToUpdateRequest;
 import br.com.amparo.backend.controllers.dto.FieldMappedError;
 import br.com.amparo.backend.controllers.dto.ObjectMappingError;
@@ -31,7 +32,7 @@ public class PatientController {
 
     @GetMapping("/{cpf}")
     @PreAuthorize("hasRole('DOCTOR')")
-    public ResponseEntity<?> findByCPF(@PathVariable String cpf) {
+    public ResponseEntity<PatientResponse> findByCPF(@PathVariable String cpf) {
         return patientService.findPatientByCpf(cpf)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
@@ -39,7 +40,7 @@ public class PatientController {
 
     @GetMapping
     @PreAuthorize("hasRole('PATIENT')")
-    public ResponseEntity<?> findById() {
+    public ResponseEntity<PatientResponse> findById() {
         String userId = SecurityUtils.getApiUser().getId();
         return patientService.findPatientById(userId)
                 .map(ResponseEntity::ok)
@@ -48,7 +49,7 @@ public class PatientController {
 
     @PreAuthorize("hasRole('PATIENT')")
     @PutMapping
-    public ResponseEntity<?> editPatient(@RequestBody @Valid PatientToUpdateRequest patient) {
+    public ResponseEntity<PatientResponse> editPatient(@RequestBody @Valid PatientToUpdateRequest patient) {
         return patientService.editPatient(patient, SecurityUtils.getApiUser().getId())
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
