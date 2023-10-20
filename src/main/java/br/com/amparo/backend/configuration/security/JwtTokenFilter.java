@@ -26,6 +26,10 @@ public class JwtTokenFilter extends OncePerRequestFilter {
                                     HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
         var token = recoverToken(request);
+        if(token == null) {
+            filterChain.doFilter(request, response);
+            return;
+        }
         Optional<ApiUser> apiUser = tokenService.validateToken(token);
         if (apiUser.isPresent()) {
             ApiUser user = apiUser.get();

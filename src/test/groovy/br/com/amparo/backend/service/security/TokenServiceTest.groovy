@@ -43,11 +43,12 @@ class TokenServiceTest extends Specification {
         authorities.add("ROLE")
 
         then:
-        res.username == "user@email.com"
-        res.accountNonExpired
-        res.credentialsNonExpired
-        res.accountNonLocked
-        res.authorities.find { it.authority == "ROLE" }
+        res.isPresent()
+        res.get().username == "user@email.com"
+        res.get().accountNonExpired
+        res.get().credentialsNonExpired
+        res.get().accountNonLocked
+        res.get().authorities.find { it.authority == "ROLE" }
     }
 
     def "should throw RunTimeException if token is null"() {
@@ -55,10 +56,10 @@ class TokenServiceTest extends Specification {
         def token = null
 
         when:
-        service.validateToken(token)
+        def resp = service.validateToken(token)
 
         then:
-        thrown(RuntimeException)
+        resp.isEmpty()
     }
 
 

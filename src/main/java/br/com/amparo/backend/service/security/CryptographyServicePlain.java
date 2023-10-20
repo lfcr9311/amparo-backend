@@ -3,7 +3,7 @@ package br.com.amparo.backend.service.security;
 import br.com.amparo.backend.domain.record.SaltedPassword;
 import br.com.amparo.backend.service.CryptographyService;
 public class CryptographyServicePlain implements CryptographyService {
-    private static final String SALT = "SALT";
+    static final String SALT = "SALT";
 
     @Override
     public Boolean compare(String inputPassword, SaltedPassword saltedPassword) {

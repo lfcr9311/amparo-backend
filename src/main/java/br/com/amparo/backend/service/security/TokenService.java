@@ -42,7 +42,6 @@ public class TokenService {
     }
 
     public Optional<ApiUser> validateToken(String token) {
-        if (token == null) return Optional.empty();
         try {
             Algorithm algorithm = Algorithm.HMAC256(secret);
             DecodedJWT decodedJWT = JWT.require(algorithm).build().verify(token);

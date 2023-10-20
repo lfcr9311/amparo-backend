@@ -10,6 +10,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @JsonTypeInfo(
         use = JsonTypeInfo.Id.NAME, property = "userType"
@@ -26,6 +27,7 @@ public abstract class CreateUserRequest{
 
     @Schema(example = "email@email.com.br")
     @Pattern(regexp = "^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$", message = "Invalid email pattern")
+    @Setter
     protected String email;
     @NotBlank(message = "Name should not be blank")
     @Schema(example = "Theo")
