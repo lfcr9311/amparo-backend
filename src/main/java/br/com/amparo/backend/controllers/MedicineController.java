@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @ControllerAdvice
 @Slf4j
-@Tag(name = "7. Medicine")
+@Tag(name = "6. Medicine")
 public class MedicineController {
 
     @Autowired

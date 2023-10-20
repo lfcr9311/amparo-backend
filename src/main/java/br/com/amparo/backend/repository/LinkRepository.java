@@ -19,7 +19,7 @@ public class LinkRepository {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    public Boolean linkDoctorToPatient(String doctorId, String patientId) {
+    public Boolean requestDoctorToPatient(String doctorId, String patientId) {
         try {
             String sql = """
                 INSERT INTO "DoctorPatient" ("id_doctor", "id_patient")
@@ -39,8 +39,34 @@ public class LinkRepository {
         }
     }
 
-    public boolean checkConnection(String doctorId, String patientId) {
+    public boolean checkConnectionRequest(String doctorId, String patientId) {
         try {
+
+            String sql = """
+                    SELECT EXISTS(
+                        SELECT 1
+                        FROM "DoctorPatient"
+                        WHERE "id_doctor" = :id_doctor
+                        AND "id_patient" = :id_patient
+                        );
+                    """;
+            MapSqlParameterSource param = new MapSqlParameterSource(Map.of(
+                    "id_doctor", UUID.fromString(doctorId),
+                    "id_patient", UUID.fromString(patientId)
+            ));
+
+            return Boolean.FALSE.equals(jdbcTemplate.queryForObject(sql, param, Boolean.class));
+
+        } catch (DataAccessException e) {
+            log.error("Error trying to check connection between doctor: " + doctorId + " and patient: " +
+                    patientId + " Error: " + e.getMessage());
+            throw new LinkOperationalException(doctorId, patientId, e);
+        }
+    }
+
+    public Boolean checkConnection(String doctorId, String patientId) {
+        try {
+
             String sql = """
                 SELECT EXISTS(
                     SELECT 1
@@ -49,15 +75,73 @@ public class LinkRepository {
                     AND "id_patient" = :id_patient
                 );
                 """;
-
             MapSqlParameterSource param = new MapSqlParameterSource(Map.of(
                     "id_doctor", UUID.fromString(doctorId),
                     "id_patient", UUID.fromString(patientId)
             ));
 
             return Boolean.TRUE.equals(jdbcTemplate.queryForObject(sql, param, Boolean.class));
+
         } catch (DataAccessException e) {
-            log.error("Error trying to check connection between doctor: " + doctorId + " and patient: " + patientId + " Error: " + e.getMessage());
+            log.error("Error trying to check connection between doctor: " + doctorId + " and patient: " +
+                    patientId + " Error: " + e.getMessage());
+            throw new LinkOperationalException(doctorId, patientId, e);
+        }
+    }
+
+    public Boolean linkDoctorToPatient (String doctorId, String patientId){
+        try {
+            String sql = """
+                UPDATE "DoctorPatient"
+                SET "accepted" = true
+                WHERE "id_doctor" = :id_doctor
+                AND "id_patient" = :id_patient
+                """;
+            jdbcTemplate.update(sql, Map.of(
+                    "id_doctor", UUID.fromString(doctorId),
+                    "id_patient", UUID.fromString(patientId)
+            ));
+            return true;
+        } catch (DataAccessException e) {
+            log.error("Error trying to link doctor: " + doctorId + " to " + "patient: " + patientId + " Error: " + e.getMessage());
+            throw new LinkOperationalException(doctorId, patientId, e);
+        }
+    }
+
+    public Boolean deleteLinkPatient (String doctorId, String patientId){
+        try {
+            String sql = """
+                DELETE FROM "DoctorPatient"
+                WHERE "id_doctor" = :id_doctor
+                AND "id_patient" = :id_patient
+                """;
+            jdbcTemplate.update(sql, Map.of(
+                    "id_doctor", UUID.fromString(doctorId),
+                    "id_patient", UUID.fromString(patientId)
+            ));
+            return true;
+        } catch (DataAccessException e) {
+            log.error("Error trying to delete link between doctor: " + doctorId + " and patient: " +
+                    patientId + " Error: " + e.getMessage());
+            throw new LinkOperationalException(doctorId, patientId, e);
+        }
+    }
+
+    public Boolean deleteLinkDoctor (String patientId, String doctorId){
+        try {
+            String sql = """
+                DELETE FROM "DoctorPatient"
+                WHERE "id_patient" = :id_patient
+                AND "id_doctor" = :id_doctor
+                """;
+            jdbcTemplate.update(sql, Map.of(
+                    "id_patient", UUID.fromString(patientId),
+                    "id_doctor", UUID.fromString(doctorId)
+            ));
+            return true;
+        } catch (DataAccessException e) {
+            log.error("Error trying to delete link between doctor: " + doctorId + " and patient: " +
+                    patientId + " Error: " + e.getMessage());
             throw new LinkOperationalException(doctorId, patientId, e);
         }
     }

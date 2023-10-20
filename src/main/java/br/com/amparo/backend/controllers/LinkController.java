@@ -1,6 +1,5 @@
 package br.com.amparo.backend.controllers;
 
-
 import br.com.amparo.backend.controllers.dto.ObjectMappingError;
 import br.com.amparo.backend.service.LinkService;
 import br.com.amparo.backend.service.security.SecurityUtils;
@@ -22,15 +21,15 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @ControllerAdvice
 @Slf4j
-@Tag(name = "8. link controller")
+@Tag(name = "7. link controller")
 public class LinkController {
 
     @Autowired
     private LinkService linkService;
 
-    @Operation(operationId = "link", description = "Link a doctor to a patient",
+    @Operation(operationId = "link", description = "Link a patient to a doctor",
             responses = {
-                    @ApiResponse(responseCode = "200", description = "Doctor and patient linked"
+                    @ApiResponse(responseCode = "200", description = "Patient and doctor linked"
                     ),
                     @ApiResponse(responseCode = "500", description = "Linking failed",
                             content = @Content(schema = @Schema(implementation = ObjectMappingError.class))
@@ -38,15 +37,43 @@ public class LinkController {
                     @ApiResponse(responseCode = "409", description = "Link already exists"
                     )
             })
+    @PreAuthorize("hasRole('PATIENT')")
+    @PostMapping("/to/doctor/{doctorId}")
+    public ResponseEntity<?> requestDoctorToPatient(@PathVariable String doctorId) {
+         if (linkService.checkConnection(doctorId, SecurityUtils.getApiUser().getId())) {
+             return ResponseEntity.status(HttpStatus.CONFLICT).build();
+        }
+            return linkService.requestDoctorToPatient(doctorId, SecurityUtils.getApiUser().getId())
+                ? ResponseEntity.ok().build()
+                : ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+
+    }
+
     @PreAuthorize("hasRole('DOCTOR')")
-    @PostMapping("/{id}")
-    public ResponseEntity<?> linkDoctorToPatient(@PathVariable String id) {
-         if (linkService.checkConnection(SecurityUtils.getApiUser().getId(), id)) {
+    @PutMapping("/to/patient{patientId}")
+    public ResponseEntity<?> linkDoctorToPatient(@PathVariable String patientId) {
+        if (linkService.checkConnectionRequest(SecurityUtils.getApiUser().getId(), patientId)) {
             return ResponseEntity.status(HttpStatus.CONFLICT).build();
         }
-
-        return linkService.linkDoctorToPatient(SecurityUtils.getApiUser().getId(), id)
+            return linkService.linkDoctorToPatient(SecurityUtils.getApiUser().getId(), patientId)
                 ? ResponseEntity.ok().build()
                 : ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
     }
+    @PreAuthorize("hasRole('DOCTOR')")
+    @DeleteMapping ("/patient/{patientId}")
+    public ResponseEntity<?> deleteLinkPatient(@PathVariable String patientId) {
+        return linkService.deleteLinkPatient(SecurityUtils.getApiUser().getId(), patientId)
+                ? ResponseEntity.ok().build()
+                : ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+    }
+    @PreAuthorize("hasRole('PATIENT')")
+    @DeleteMapping ("/doctor/{doctorId}")
+    public ResponseEntity<?> deleteLinkDoctor(@PathVariable String doctorId) {
+        return linkService.deleteLinkDoctor(SecurityUtils.getApiUser().getId(), doctorId)
+                ? ResponseEntity.ok().build()
+                : ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+    }
+
 }
+
+
