@@ -48,7 +48,9 @@ public class PatientRepository {
         try {
             String sql = """
                     UPDATE "Patient"
-                    SET cpf = :cpf
+                    SET cpf = :cpf,
+                    birth_date = :birthDate,
+                    num_sus = :numSus
                     WHERE "id" = :id
                     """;
             MapSqlParameterSource param = new MapSqlParameterSource(Map.of(
