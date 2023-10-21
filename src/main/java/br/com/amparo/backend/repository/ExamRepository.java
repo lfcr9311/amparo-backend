@@ -26,9 +26,9 @@ public class ExamRepository {
     public Optional<ExamResponse> addExam(CreateExamRequest exam, String id) {
         try {
             String sql = """
-                INSERT INTO "Exam" ("id_patient", "exam_date", "description", "is_done", "exam_image", "exam_file")
+                INSERT INTO "Exam" ("idPatient", "exam_date", "description", "is_done", "exam_image", "exam_file")
                 VALUES (
-                    :id_patient,
+                    :idPatient,
                     :exam_date,
                     :description,
                     :is_done,
@@ -38,7 +38,7 @@ public class ExamRepository {
                 RETURNING "id";
                 """;
             MapSqlParameterSource param = new MapSqlParameterSource(Map.of(
-                    "id_patient", UUID.fromString(id),
+                    "idPatient", UUID.fromString(id),
                     "exam_date", exam.exam_date(),
                     "description", exam.description(),
                     "is_done", exam.is_done()
@@ -62,7 +62,7 @@ public class ExamRepository {
                            e."description"   as "description",
                            e."exam_date"     as "examDate",
                            e."is_done"       as "isDone",
-                           e."id_patient"    as "patientId",
+                           e."idPatient"    as "patientId",
                            e."exam_image"    as "image",
                            e."exam_file"     as "file"
                     FROM "Exam" e
@@ -101,11 +101,11 @@ public class ExamRepository {
                        e."description"   as "description",
                        e."exam_date"     as "examDate",
                        e."is_done"       as "isDone",
-                       e."id_patient"    as "patientId",
+                       e."idPatient"    as "patientId",
                        e."exam_image"    as "image",
                        e."exam_file"     as "file"
                 FROM "Exam" e
-                WHERE e."id_patient" = :id
+                WHERE e."idPatient" = :id
                 AND e."is_done" = true
                 LIMIT :size OFFSET :offset
                 """;
@@ -141,11 +141,11 @@ public class ExamRepository {
                        e."description"   as "description",
                        e."exam_date"     as "examDate",
                        e."is_done"       as "isDone",
-                       e."id_patient"    as "patientId",
+                       e."idPatient"    as "patientId",
                        e."exam_image"    as "image",
                        e."exam_file"     as "file"
                 FROM "Exam" e
-                WHERE e."id_patient" = :id
+                WHERE e."idPatient" = :id
                 AND e."is_done" = false
                 LIMIT :size OFFSET :offset
                 """;

@@ -5,8 +5,8 @@ import jakarta.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
 public record EditDosageRequest(
-        @NotNull String medicine_id,
+        @NotNull String medicineId,
         @NotNull String quantity,
         @NotNull int frequency,
-        @NotNull LocalDateTime final_date
+        @NotNull LocalDateTime finalDate
 ) {}

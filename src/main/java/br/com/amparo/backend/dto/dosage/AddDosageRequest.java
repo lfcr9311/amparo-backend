@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 
 public record AddDosageRequest(
         @NotNull String quantity,
-        @Timestamp LocalDateTime initial_hour,
+        @Timestamp LocalDateTime initialHour,
         @NotNull int frequency,
-        @Timestamp LocalDateTime final_date
+        @Timestamp LocalDateTime finalDate
 ) {}
