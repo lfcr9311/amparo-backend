@@ -21,7 +21,7 @@ public class MedicineController {
     @Autowired
     MedicineService medicineService;
 
-    @GetMapping("/{id}")
+    @GetMapping("/id/{id}")
     @PreAuthorize("hasRole('PATIENT') or hasRole('DOCTOR')")
     public ResponseEntity<?> findById(@PathVariable int id) {
         return medicineService.findMedicineById(id)
@@ -29,7 +29,7 @@ public class MedicineController {
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
-    @GetMapping("/{name}")
+    @GetMapping("/name/{name}")
     @PreAuthorize("hasRole('PATIENT') or hasRole('DOCTOR')")
     public ResponseEntity<?> findByName(@PathVariable String name) {
         return medicineService.findMedicineByName(name)
