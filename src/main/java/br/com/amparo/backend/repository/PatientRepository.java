@@ -56,8 +56,8 @@ public class PatientRepository {
             MapSqlParameterSource param = new MapSqlParameterSource(Map.of(
                     "id", UUID.fromString(patient.getId()),
                     "cpf", patient.getCpf(),
-                    "birthDate", patient.getBirthDate(),
-                    "numSus", patient.getNumSus()
+                    "birth_date", patient.getBirthDate(),
+                    "num_sus", patient.getNumSus()
             ));
             jdbcTemplate.update(sql, param);
             return findByCpf(patient.getCpf());
