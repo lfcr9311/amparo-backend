@@ -1,6 +1,8 @@
 package br.com.amparo.backend.controllers;
 
+import br.com.amparo.backend.controllers.dto.ErrorMessage;
 import br.com.amparo.backend.dto.exam.CreateExamRequest;
+import br.com.amparo.backend.dto.exam.ExamResponse;
 import br.com.amparo.backend.dto.exam.ExamToUpdateRequest;
 import br.com.amparo.backend.service.ExamService;
 import br.com.amparo.backend.service.security.SecurityUtils;
@@ -10,12 +12,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.authorization.method.PostFilterAuthorizationReactiveMethodInterceptor;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Objects;
+import java.util.Optional;
 
 @RestController
-@RequestMapping("/patient/{id}/exam")
+@RequestMapping("/patient/exam")
 @RequiredArgsConstructor
 @ControllerAdvice
 @Slf4j
@@ -25,13 +29,19 @@ public class PatientExamController {
 
     @PreAuthorize("hasRole('PATIENT')")
     @PostMapping
-    public ResponseEntity<?> addExam(@RequestBody CreateExamRequest exam, @PathVariable String id){
-        if (!Objects.equals(id, SecurityUtils.getApiUser().getId())) {
-            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+    public ResponseEntity<?> addExam(@RequestBody CreateExamRequest exam){
+        try {
+            Optional<ExamResponse> examResponse = examService.addExam(exam, SecurityUtils.getApiUser().getId() );
+            if (examResponse.isEmpty()){
+                return new ResponseEntity<>(new ErrorMessage("Exan error"), HttpStatus.BAD_REQUEST);
+            }else {
+                return new ResponseEntity<>(examResponse, HttpStatus.OK);
+            }
+        }catch (Exception e){ //TBD
+            return new ResponseEntity<>(new ErrorMessage("Exam not found"), HttpStatus.NOT_FOUND);
+        }catch (RuntimeException e){
+            return new ResponseEntity<>(new ErrorMessage("bad request"), HttpStatus.BAD_REQUEST);
         }
-        return examService.addExam(exam, id)
-                .map(ResponseEntity::ok)
-                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
     @PreAuthorize("hasRole('PATIENT')")

@@ -6,6 +6,7 @@ import br.com.amparo.backend.dto.exam.ExamToUpdateRequest;
 import br.com.amparo.backend.repository.ExamRepository;
 import br.com.amparo.backend.repository.PatientRepository;
 import br.com.amparo.backend.service.ExamService;
+import br.com.amparo.backend.service.security.SecurityUtils;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
@@ -17,11 +18,13 @@ public class ExamServiceImpl implements ExamService {
 
     private final PatientRepository patientRepository;
     @Override
-    public Optional<ExamResponse> addExam(CreateExamRequest exam, String id) {
-        if (patientRepository.findById(id).isEmpty()) {
-            return Optional.empty();
+    public Optional<ExamResponse> addExam( CreateExamRequest request, String examId) {
+       String patientId = SecurityUtils.getApiUser().getId();
+        if (patientRepository.findById(patientId).isEmpty()) {
+            throw new RuntimeException(patientId);
+        }else {
+            return repository.addExam(request, examId);
         }
-        return repository.addExam(exam, id);
     }
 
     @Override
