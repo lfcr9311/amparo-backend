@@ -4,6 +4,7 @@ import br.com.amparo.backend.controllers.dto.ErrorMessage;
 import br.com.amparo.backend.dto.dosage.AddDosageRequest;
 import br.com.amparo.backend.dto.dosage.DosageResponse;
 import br.com.amparo.backend.dto.dosage.EditDosageRequest;
+import br.com.amparo.backend.exception.PatientNotFoundException;
 import br.com.amparo.backend.service.DosageService;
 import br.com.amparo.backend.service.PatientService;
 import br.com.amparo.backend.service.security.SecurityUtils;
@@ -61,18 +62,19 @@ public class DosageController {
             }
     )
     public ResponseEntity<?> addDosage(@PathVariable String medicineId, @RequestBody AddDosageRequest request) {
-        String patientId = SecurityUtils.getApiUser().getId();
-        if (patientService.findPatientById(patientId).isEmpty()) {
-            return new ResponseEntity<>(new ErrorMessage("Patient not found"), HttpStatus.NOT_FOUND);
-        }
-        Optional<DosageResponse> dosage = service.addDosage(patientId, medicineId, request);
-        if (service.addDosage(patientId, medicineId, request).isEmpty()) {
+        try{
+            Optional<DosageResponse> dosage = service.addDosage(medicineId, request);
+            if (dosage.isEmpty()) {
+                return new ResponseEntity<>(new ErrorMessage("Bad request"), HttpStatus.BAD_REQUEST);
+            } else {
+                return new ResponseEntity<>(dosage, HttpStatus.OK);
+            }
+        } catch (PatientNotFoundException e){
+            return new ResponseEntity<>(new ErrorMessage("Patient not Found"), HttpStatus.NOT_FOUND);
+        } catch (RuntimeException e){
             return new ResponseEntity<>(new ErrorMessage("Bad request"), HttpStatus.BAD_REQUEST);
-        } else {
-            return new ResponseEntity<>(dosage, HttpStatus.OK);
         }
     }
-
     @PreAuthorize("hasRole('PATIENT')")
     @PutMapping("/{dosageId}")
     @Operation(
@@ -97,18 +99,15 @@ public class DosageController {
             }
     )
     public ResponseEntity<?> updateDosage(@PathVariable String dosageId, @RequestBody EditDosageRequest request) {
-        String patientId = SecurityUtils.getApiUser().getId();
-        if (patientService.findPatientById(patientId).isEmpty()) {
-            return new ResponseEntity<>(new ErrorMessage("Patient not found"),HttpStatus.NOT_FOUND);
-        }
-        if (!patientId.equals(service.getDosage(dosageId).get().id_patient())) {
+        try{
+            Optional<DosageResponse> dosage = service.editDosage(dosageId, request);
+            if (dosage.isEmpty()) {
+                return new ResponseEntity<>(new ErrorMessage("Dosage not found"),HttpStatus.NOT_FOUND);
+            } else {
+                return new ResponseEntity<>(dosage, HttpStatus.OK);
+            }
+        } catch (IllegalAccessException e){
             return new ResponseEntity<>(new ErrorMessage("Forbidden"),HttpStatus.FORBIDDEN);
-        }
-        Optional<DosageResponse> dosage = service.editDosage(patientId, dosageId, request);
-        if (dosage.isEmpty()) {
-            return new ResponseEntity<>(new ErrorMessage("Dosage not found"),HttpStatus.NOT_FOUND);
-        } else {
-            return new ResponseEntity<>(dosage, HttpStatus.OK);
         }
     }
 
@@ -136,19 +135,17 @@ public class DosageController {
             }
     )
     public ResponseEntity<?> getDosage(@PathVariable String dosageId) {
-        String patientId = SecurityUtils.getApiUser().getId();
-        if (patientService.findPatientById(patientId).isEmpty()) {
-            return new ResponseEntity<>(new ErrorMessage("Patient not found"),HttpStatus.NOT_FOUND);
-        }
-
-        Optional<DosageResponse> dosage = service.getDosage(dosageId);
-
-        if(dosage.isEmpty()) {
-            return new ResponseEntity<>(new ErrorMessage("Dosage not found"),HttpStatus.NOT_FOUND);
-        } else if (!patientId.equals(dosage.get().id_patient())) {
+        try{
+            Optional<DosageResponse> dosage = service.getDosage(dosageId);
+            if (dosage.isEmpty()) {
+                return new ResponseEntity<>(new ErrorMessage("Dosage not found"),HttpStatus.NOT_FOUND);
+            } else {
+                return new ResponseEntity<>(dosage, HttpStatus.OK);
+            }
+        } catch (PatientNotFoundException ex){
+            return new ResponseEntity<>(new ErrorMessage("Patient not Found"), HttpStatus.NOT_FOUND);
+        } catch (IllegalAccessException ex) {
             return new ResponseEntity<>(new ErrorMessage("Forbidden"),HttpStatus.FORBIDDEN);
-        } else {
-            return new ResponseEntity<>(dosage.get(), HttpStatus.OK);
         }
     }
 
@@ -175,24 +172,25 @@ public class DosageController {
                     )
             }
     )
-    public ResponseEntity<?> deleteDosage(@PathVariable String dosageId) {
-        String patientId = SecurityUtils.getApiUser().getId();
-        if (patientService.findPatientById(patientId).isEmpty()) {
-            return new ResponseEntity<>(new ErrorMessage("Patient not found"),HttpStatus.NOT_FOUND);
-        }
-
-        Optional<DosageResponse> dosage = service.getDosage(dosageId);
-
-        if (dosage.isEmpty()) {
-            return new ResponseEntity<>(new ErrorMessage("Dosage not found"),HttpStatus.NOT_FOUND);
-        } else if (!patientId.equals(dosage.get().id_patient())) {
-            return new ResponseEntity<>(new ErrorMessage("Forbidden"),HttpStatus.FORBIDDEN);
-        } else {
-            if (service.deleteDosage(dosage.get()).isEmpty()) {
-                return new ResponseEntity<>(new ErrorMessage("Error deleting dosage"),HttpStatus.INTERNAL_SERVER_ERROR);
+    public ResponseEntity<?> deleteDosage(@PathVariable String dosageId){
+        try{
+            Optional<DosageResponse> dosage = service.getDosage(dosageId);
+            if (dosage.isEmpty()) {
+                return new ResponseEntity<>(new ErrorMessage("Dosage not found"),HttpStatus.NOT_FOUND);
             } else {
-                return new ResponseEntity<>(dosage.get(), HttpStatus.OK);
+                Optional<DosageResponse> deletedDosage = service.deleteDosage(dosage.get());
+                if (deletedDosage.isEmpty()){
+                    return new ResponseEntity<>(new ErrorMessage("Error deleting Dosage"), HttpStatus.INTERNAL_SERVER_ERROR);
+                } else {
+                    return new ResponseEntity<>(dosage, HttpStatus.OK);
+                }
             }
+        } catch (PatientNotFoundException ex){
+            return new ResponseEntity<>(new ErrorMessage("Patient not Found"), HttpStatus.NOT_FOUND);
+        } catch (IllegalAccessException ex) {
+            return new ResponseEntity<>(new ErrorMessage("Forbidden"),HttpStatus.FORBIDDEN);
+        } catch (RuntimeException ex) {
+            return new ResponseEntity<>(new ErrorMessage("Error deleting Dosage"), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }

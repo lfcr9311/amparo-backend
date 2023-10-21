@@ -7,11 +7,11 @@ import br.com.amparo.backend.dto.dosage.EditDosageRequest;
 import java.util.Optional;
 
 public interface DosageService {
-    Optional<DosageResponse> addDosage(String patientId, String medicineId, AddDosageRequest request);
+    Optional<DosageResponse> addDosage(String medicineId, AddDosageRequest request);
 
-    Optional<DosageResponse> editDosage(String patientId, String dosageId, EditDosageRequest request);
+    Optional<DosageResponse> editDosage(String dosageId, EditDosageRequest request) throws IllegalAccessException;
 
-    Optional<DosageResponse> getDosage(String dosageId);
+    Optional<DosageResponse> getDosage(String dosageId) throws IllegalAccessException;
 
-    Optional<DosageResponse> deleteDosage(DosageResponse dosage);
+    Optional<DosageResponse> deleteDosage(DosageResponse dosage) throws IllegalAccessException;
 }
