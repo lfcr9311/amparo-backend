@@ -41,7 +41,7 @@ public class PatientRepository {
             return true;
         } catch (DataAccessException e) {
             log.error("Error trying to create patient: " + patient.getId() + " Error: " + e.getMessage());
-            throw new PatientOperationException(patient.getEmail(), patient.getId(), e);
+            throw new PatientOperationException(patient.getEmail(), patient.getCpf(), e);
         }
     }
     public Optional<PatientResponse> updatePatient(Patient patient) {

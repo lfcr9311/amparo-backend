@@ -18,7 +18,6 @@ public class CreatePatientRequest extends CreateUserRequest {
     @Pattern(regexp = "^(0?[1-9]|[12][0-9]|3[01])/(0?[1-9]|1[0-2])/\\d{4}$", message = "Data deve ser DD/MM/AAAA")
     private String birthDate;
 
-    @NotBlank
     @Pattern(regexp = "\\d{15}$", message = "Nº do SUS deve conter 15 dígitos")
     private String numSus;
 
