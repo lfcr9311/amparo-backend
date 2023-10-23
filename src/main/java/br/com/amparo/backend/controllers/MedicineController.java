@@ -21,7 +21,7 @@ public class MedicineController {
     @Autowired
     MedicineService medicineService;
 
-    @GetMapping("/id/{id}")
+    @GetMapping("/{id}")
     @PreAuthorize("hasRole('PATIENT') or hasRole('DOCTOR')")
     public ResponseEntity<?> findById(@PathVariable int id) {
         return medicineService.findMedicineById(id)
