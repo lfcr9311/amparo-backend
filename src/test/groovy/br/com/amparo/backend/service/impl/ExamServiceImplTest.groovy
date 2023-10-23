@@ -169,7 +169,9 @@ class ExamServiceImplTest extends Specification {
                 "cellphone",
                 "profile_picture",
                 true,
-                "cpf"
+                "cpf",
+                "today",
+                "12345"
         )
     }
 
