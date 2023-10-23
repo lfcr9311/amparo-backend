@@ -4,6 +4,7 @@ import br.com.amparo.backend.controllers.dto.ErrorMessage;
 import br.com.amparo.backend.dto.exam.CreateExamRequest;
 import br.com.amparo.backend.dto.exam.ExamResponse;
 import br.com.amparo.backend.dto.exam.ExamToUpdateRequest;
+import br.com.amparo.backend.exception.ExamCreationException;
 import br.com.amparo.backend.service.ExamService;
 import br.com.amparo.backend.service.security.SecurityUtils;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -37,7 +38,7 @@ public class PatientExamController {
             }else {
                 return new ResponseEntity<>(examResponse, HttpStatus.OK);
             }
-        }catch (Exception e){ //TBD
+        }catch (ExamCreationException e){ //TBD
             return new ResponseEntity<>(new ErrorMessage("Exam not found"), HttpStatus.NOT_FOUND);
         }catch (RuntimeException e){
             return new ResponseEntity<>(new ErrorMessage("bad request"), HttpStatus.BAD_REQUEST);
