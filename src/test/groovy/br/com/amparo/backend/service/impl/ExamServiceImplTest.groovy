@@ -169,7 +169,9 @@ class ExamServiceImplTest extends Specification {
                 "cellphone",
                 "profile_picture",
                 true,
-                "cpf"
+                "cpf",
+                "today",
+                "12345"
         )
     }
 
@@ -189,7 +191,7 @@ class ExamServiceImplTest extends Specification {
                 "description",
                 LocalDateTime.parse("2021-01-01T00:00:00"),
                 true,
-                "idPatient",
+                "id_patient",
                 "file",
                 "image"
         )

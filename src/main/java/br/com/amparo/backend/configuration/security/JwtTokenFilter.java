@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.Optional;
 
 @Component
 public class JwtTokenFilter extends OncePerRequestFilter {
@@ -25,13 +26,19 @@ public class JwtTokenFilter extends OncePerRequestFilter {
                                     HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
         var token = recoverToken(request);
-        if (token != null) {
-            ApiUser apiUser = tokenService.validateToken(token);
-            var authentication = new UsernamePasswordAuthenticationToken(apiUser, null, apiUser.getAuthorities());
-            SecurityContextHolder.getContext().setAuthentication(authentication);
+        if(token == null) {
+            filterChain.doFilter(request, response);
+            return;
         }
-        filterChain.doFilter(request, response);
-
+        Optional<ApiUser> apiUser = tokenService.validateToken(token);
+        if (apiUser.isPresent()) {
+            ApiUser user = apiUser.get();
+            var authentication = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+            filterChain.doFilter(request, response);
+        } else {
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Token is not Valid");
+        }
     }
 
     private String recoverToken(HttpServletRequest request) {

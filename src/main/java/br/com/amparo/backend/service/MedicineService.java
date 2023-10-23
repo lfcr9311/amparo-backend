@@ -7,7 +7,7 @@ import java.util.Optional;
 
 public interface MedicineService {
 
-    Optional<MedicineResponse> findMedicineById(String id);
+    Optional<MedicineResponse> findMedicineById(int id);
     Optional<MedicineResponse> findMedicineByName(String name);
     List<MedicineResponse> findAllMedicines(int pageNumber, int pageSize);
 

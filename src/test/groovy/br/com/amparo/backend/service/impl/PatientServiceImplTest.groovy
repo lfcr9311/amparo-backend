@@ -84,7 +84,10 @@ class PatientServiceImplTest extends Specification {
                 "patient@email.com",
                 "cellphone",
                 "cpf",
-                "profile_picture"
+                "today",
+                "12354",
+                "profile_picture",
+
         )
     }
 
@@ -96,7 +99,9 @@ class PatientServiceImplTest extends Specification {
                 "cellphone",
                 "profile_picture",
                 true,
-                "cpf"
+                "cpf",
+                "today",
+                "123465"
         )
     }
 }
