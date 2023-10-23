@@ -38,7 +38,7 @@ public class ExamRepository {
                 RETURNING "id";
                 """;
             MapSqlParameterSource param = new MapSqlParameterSource(Map.of(
-                    "id_patient", UUID.fromString(id),
+                    "idPatient", UUID.fromString(id),
                     "exam_date", exam.exam_date(),
                     "description", exam.description(),
                     "is_done", exam.is_done()

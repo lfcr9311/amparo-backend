@@ -13,7 +13,6 @@ import br.com.amparo.backend.service.impl.UserServiceImpl;
 import br.com.amparo.backend.service.security.AuthService;
 import br.com.amparo.backend.service.security.CryptographyServiceSha256;
 import br.com.amparo.backend.service.security.TokenService;
-import io.swagger.v3.oas.models.links.Link;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
