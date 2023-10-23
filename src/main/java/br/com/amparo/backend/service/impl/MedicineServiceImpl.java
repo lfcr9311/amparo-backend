@@ -14,7 +14,7 @@ public class MedicineServiceImpl implements MedicineService {
     private final MedicineRepository repository;
 
     @Override
-    public Optional<MedicineResponse> findMedicineById(String id) {
+    public Optional<MedicineResponse> findMedicineById(int id) {
         return repository.findMedicineById(id);
     }
 

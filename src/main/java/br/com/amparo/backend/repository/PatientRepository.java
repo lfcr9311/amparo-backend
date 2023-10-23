@@ -23,33 +23,41 @@ public class PatientRepository {
     public boolean create(Patient patient) {
         try {
             String sql = """
-                    INSERT INTO "Patient" ("id", "cpf")
+                    INSERT INTO "Patient" ("id", "cpf", "birth_date", "num_sus")
                     values (
                         :id,
-                        :cpf
+                        :cpf,
+                        :birth_date,
+                        :num_sus
                     )
                     """;
             MapSqlParameterSource param = new MapSqlParameterSource(Map.of(
                     "id", UUID.fromString(patient.getId()),
-                    "cpf", patient.getCpf()
+                    "cpf", patient.getCpf(),
+                    "birth_date", patient.getBirthDate(),
+                    "num_sus", patient.getNumSus()
             ));
             jdbcTemplate.update(sql, param);
             return true;
         } catch (DataAccessException e) {
             log.error("Error trying to create patient: " + patient.getId() + " Error: " + e.getMessage());
-            return false;
+            throw new PatientOperationException(patient.getEmail(), patient.getId(), e);
         }
     }
     public Optional<PatientResponse> updatePatient(Patient patient) {
         try {
             String sql = """
                     UPDATE "Patient"
-                    SET cpf = :cpf
+                    SET cpf = :cpf,
+                    birth_date = :birthDate,
+                    num_sus = :numSus
                     WHERE "id" = :id
                     """;
             MapSqlParameterSource param = new MapSqlParameterSource(Map.of(
                     "id", UUID.fromString(patient.getId()),
-                    "cpf", patient.getCpf()
+                    "cpf", patient.getCpf(),
+                    "birth_date", patient.getBirthDate(),
+                    "num_sus", patient.getNumSus()
             ));
             jdbcTemplate.update(sql, param);
             return findByCpf(patient.getCpf());
@@ -64,6 +72,8 @@ public class PatientRepository {
             String sql = """
                     SELECT p."id"            as "id",
                            p.cpf             as "cpf",
+                           p.birth_date      as "birthDate",
+                           p.num_sus         as "numSus",
                            u."email"         as "email",
                            u.name            as "name",
                            u.cellphone       as "cellphone",
@@ -83,7 +93,9 @@ public class PatientRepository {
                     rs.getString("cellphone"),
                     rs.getString("profilePicture"),
                     rs.getBoolean("isAnonymous"),
-                    rs.getString("cpf")
+                    rs.getString("cpf"),
+                    rs.getString("birthDate"),
+                    rs.getString("numSus")
             ));
 
             return Optional.ofNullable(patientResponse);
@@ -98,6 +110,8 @@ public class PatientRepository {
             String sql = """
                     SELECT p."id"            as "id",
                            p.cpf             as "cpf",
+                           p.birth_date      as "birthDate",
+                           p.num_sus         as "numSus",
                            u."email"         as "email",
                            u.name            as "name",
                            u.cellphone       as "cellphone",
@@ -117,7 +131,9 @@ public class PatientRepository {
                     rs.getString("cellphone"),
                     rs.getString("profilePicture"),
                     rs.getBoolean("isAnonymous"),
-                    rs.getString("cpf")
+                    rs.getString("cpf"),
+                    rs.getString("birthDate"),
+                    rs.getString("numSus")
             ));
 
             return Optional.ofNullable(patientResponse);
