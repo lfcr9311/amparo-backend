@@ -8,10 +8,8 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
+
+import java.util.*;
 
 @Slf4j
 public class MedicineRepository {
@@ -20,6 +18,7 @@ public class MedicineRepository {
     public MedicineRepository(NamedParameterJdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
+
     public Optional<MedicineResponse> findMedicineById(int id) {
         try {
             String sql = """
@@ -65,6 +64,28 @@ public class MedicineRepository {
         } catch (DataAccessException e) {
             log.error("Error trying to find medicine by name: " + name + " Error: " + e.getMessage());
             return Optional.empty();
+        }
+    }
+
+    public List<MedicineResponse> findIncompatibility(int id) {
+        try {
+            String sql = """
+                SELECT "id_medicine_inc"
+                FROM "Incompatibility"
+                WHERE "id_medicine" = :id
+                """;
+            MapSqlParameterSource param = new MapSqlParameterSource(
+                    Map.of("id", id)
+            );
+            List<MedicineResponse> medicineResponses = jdbcTemplate.query(sql, param, (rs, rowNum) -> new MedicineResponse(
+                    rs.getInt("id_medicine_inc"),
+                    null,
+                    null
+            ));
+            return medicineResponses;
+        } catch (DataAccessException e) {
+            log.error("Error trying to find medicine by id: " + id + " Error: " + e.getMessage());
+            return new ArrayList<>();
         }
     }
 

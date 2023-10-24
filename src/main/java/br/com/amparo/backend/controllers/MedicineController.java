@@ -43,12 +43,9 @@ public class MedicineController {
         return ResponseEntity.ok(medicineService.findAllMedicines(pageNumber, pageSize));
     }
 
-    @GetMapping("incompability/{id}")
+    @GetMapping("/incompatibility/{id}")
     @PreAuthorize("hasRole('PATIENT') or hasRole('DOCTOR')")
-    public ResponseEntity<?> findIncompability(@PathVariable int id) {
-        return medicineService.findIncompatibility(id)
-                .map(ResponseEntity::ok)
-                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    public ResponseEntity<?> findIncompatibility(@PathVariable int id) {
+        return ResponseEntity.ok(medicineService.findIncompatibility(id));
     }
-
 }
