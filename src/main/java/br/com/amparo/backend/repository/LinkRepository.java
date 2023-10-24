@@ -22,7 +22,7 @@ public class LinkRepository {
     public Boolean requestDoctorToPatient(String doctorId, String patientId) {
         try {
             String sql = """
-                INSERT INTO "DoctorPatient" ("id_doctor", "idPatient")
+                INSERT INTO "DoctorPatient" ("id_doctor", "id_patient")
                 VALUES (
                     :id_doctor,
                     :idPatient
@@ -72,7 +72,7 @@ public class LinkRepository {
                     SELECT 1
                     FROM "DoctorPatient"
                     WHERE "id_doctor" = :id_doctor
-                    AND "idPatient" = :idPatient
+                    AND "id_patient" = :idPatient
                 );
                 """;
             MapSqlParameterSource param = new MapSqlParameterSource(Map.of(

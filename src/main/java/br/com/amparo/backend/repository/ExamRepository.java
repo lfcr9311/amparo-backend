@@ -26,7 +26,7 @@ public class ExamRepository {
     public Optional<ExamResponse> addExam(CreateExamRequest exam, String id) {
         try {
             String sql = """
-                INSERT INTO "Exam" ("idPatient", "exam_date", "description", "is_done", "exam_image", "exam_file")
+                INSERT INTO "Exam" ("id_patient", "exam_date", "description", "is_done", "exam_image", "exam_file")
                 VALUES (
                     :idPatient,
                     :exam_date,
@@ -62,7 +62,7 @@ public class ExamRepository {
                            e."description"   as "description",
                            e."exam_date"     as "examDate",
                            e."is_done"       as "isDone",
-                           e."idPatient"    as "patientId",
+                           e."id_patient"    as "patientId",
                            e."exam_image"    as "image",
                            e."exam_file"     as "file"
                     FROM "Exam" e
@@ -101,11 +101,11 @@ public class ExamRepository {
                        e."description"   as "description",
                        e."exam_date"     as "examDate",
                        e."is_done"       as "isDone",
-                       e."idPatient"    as "patientId",
+                       e."id_patient"    as "patientId",
                        e."exam_image"    as "image",
                        e."exam_file"     as "file"
                 FROM "Exam" e
-                WHERE e."idPatient" = :id
+                WHERE e."id_patient" = :id
                 AND e."is_done" = true
                 LIMIT :size OFFSET :offset
                 """;
@@ -141,11 +141,11 @@ public class ExamRepository {
                        e."description"   as "description",
                        e."exam_date"     as "examDate",
                        e."is_done"       as "isDone",
-                       e."idPatient"    as "patientId",
+                       e."id_patient"    as "patientId",
                        e."exam_image"    as "image",
                        e."exam_file"     as "file"
                 FROM "Exam" e
-                WHERE e."idPatient" = :id
+                WHERE e."id_patient" = :id
                 AND e."is_done" = false
                 LIMIT :size OFFSET :offset
                 """;
