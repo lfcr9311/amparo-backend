@@ -1,5 +1,6 @@
 package br.com.amparo.backend.repository;
 
+import br.com.amparo.backend.dto.medicine.MedicineIncResponse;
 import br.com.amparo.backend.dto.medicine.MedicineResponse;
 import br.com.amparo.backend.exception.MedicineOperationException;
 import lombok.extern.slf4j.Slf4j;
@@ -67,25 +68,32 @@ public class MedicineRepository {
         }
     }
 
-    public List<MedicineResponse> findIncompatibility(int id) {
+    public Optional<List<MedicineIncResponse>> findIncompatibility(int id) {
         try {
             String sql = """
-                SELECT "id_medicine_inc"
-                FROM "Incompatibility"
-                WHERE "id_medicine" = :id
-                """;
+                    SELECT m."id" as "id_medicine_inc",
+                            m."name" as "name_medicine_inc",
+                            i."severity" as "severity"
+                    FROM "Medicine" m
+                    INNER JOIN "Incompatibility" i ON m."id" = i."id_medicine_inc"
+                    WHERE i."id_medicine" = :id
+                    """;
             MapSqlParameterSource param = new MapSqlParameterSource(
                     Map.of("id", id)
             );
-            List<MedicineResponse> medicineResponses = jdbcTemplate.query(sql, param, (rs, rowNum) -> new MedicineResponse(
+            List<MedicineIncResponse> medicineIncResponse = jdbcTemplate.query(sql, param, (rs, rowNum) -> new MedicineIncResponse(
                     rs.getInt("id_medicine_inc"),
-                    null,
-                    null
+                    rs.getString("name_medicine_inc"),
+                    rs.getString("severity")
             ));
-            return medicineResponses;
+            if(medicineIncResponse.isEmpty()){
+                return Optional.empty();
+            }else {
+                return Optional.of(medicineIncResponse);
+            }
         } catch (DataAccessException e) {
             log.error("Error trying to find medicine by id: " + id + " Error: " + e.getMessage());
-            return new ArrayList<>();
+            return Optional.of(new ArrayList<>());
         }
     }
 

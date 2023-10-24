@@ -1,5 +1,6 @@
 package br.com.amparo.backend.service.impl;
 
+import br.com.amparo.backend.dto.medicine.MedicineIncResponse;
 import br.com.amparo.backend.dto.medicine.MedicineResponse;
 import br.com.amparo.backend.repository.MedicineRepository;
 import br.com.amparo.backend.service.MedicineService;
@@ -27,7 +28,7 @@ public class MedicineServiceImpl implements MedicineService {
         return repository.findAllMedicines(pageNumber, pageSize);
     }
 
-    public List<MedicineResponse> findIncompatibility(int id) {
+    public Optional<List<MedicineIncResponse>> findIncompatibility(int id) {
         return repository.findIncompatibility(id);
     }
 }

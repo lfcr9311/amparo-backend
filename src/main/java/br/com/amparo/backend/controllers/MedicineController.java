@@ -1,5 +1,6 @@
 package br.com.amparo.backend.controllers;
 
+import br.com.amparo.backend.dto.medicine.MedicineIncResponse;
 import br.com.amparo.backend.service.MedicineService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -9,6 +10,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/medicine")
@@ -46,6 +50,11 @@ public class MedicineController {
     @GetMapping("/incompatibility/{id}")
     @PreAuthorize("hasRole('PATIENT') or hasRole('DOCTOR')")
     public ResponseEntity<?> findIncompatibility(@PathVariable int id) {
-        return ResponseEntity.ok(medicineService.findIncompatibility(id));
+        Optional<List<MedicineIncResponse>> incompatibilities = medicineService.findIncompatibility(id);
+            if (incompatibilities.isEmpty()) {
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }else{
+                return ResponseEntity.ok(incompatibilities);
+        }
     }
 }
