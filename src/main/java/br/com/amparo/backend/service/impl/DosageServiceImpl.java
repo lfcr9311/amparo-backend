@@ -18,14 +18,14 @@ public class DosageServiceImpl implements DosageService {
     private final DosageRepository repository;
     private final PatientService patientService;
     @Override
-    public Optional<DosageResponse> addDosage(int medicineId, AddDosageRequest request) {
+    public Optional<DosageResponse> create(int medicineId, AddDosageRequest request) {
         String patientId = SecurityUtils.getApiUser().getId();
         if (patientService.findPatientById(patientId).isEmpty()) {
             throw new PatientNotFoundException(patientId);
         } else return repository.addDosage(patientId, medicineId, request);
     }
     @Override
-    public Optional<DosageResponse> getDosage(String dosageId) {
+    public Optional<DosageResponse> findById(String dosageId) {
         String patientId = SecurityUtils.getApiUser().getId();
         if (patientService.findPatientById(patientId).isEmpty()) {
             throw new PatientNotFoundException(patientId);
@@ -33,7 +33,7 @@ public class DosageServiceImpl implements DosageService {
     }
 
     @Override
-    public Optional<DosageResponse> deleteDosage(DosageResponse dosage) {
+    public Optional<DosageResponse> delete(DosageResponse dosage) {
         String patientId = SecurityUtils.getApiUser().getId();
         if (patientService.findPatientById(patientId).isEmpty()) {
             throw new PatientNotFoundException(patientId);
@@ -41,7 +41,7 @@ public class DosageServiceImpl implements DosageService {
     }
 
     @Override
-    public List<DosageResponse> listDosage(int pageNumber, int pageSize) {
+    public List<DosageResponse> findAll(int pageNumber, int pageSize) {
         String patientId = SecurityUtils.getApiUser().getId();
         if(patientService.findPatientById(patientId).isEmpty()){
             throw new PatientNotFoundException(patientId);
@@ -49,7 +49,7 @@ public class DosageServiceImpl implements DosageService {
     }
 
     @Override
-    public Optional<DosageResponse> editDosage(String dosageId, EditDosageRequest request) {
+    public Optional<DosageResponse> update(String dosageId, EditDosageRequest request) {
         String patientId = SecurityUtils.getApiUser().getId();
         if (patientService.findPatientById(patientId).isEmpty()) {
             throw new PatientNotFoundException(patientId);

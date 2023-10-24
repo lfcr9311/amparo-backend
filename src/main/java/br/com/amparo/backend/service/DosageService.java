@@ -8,13 +8,13 @@ import java.util.List;
 import java.util.Optional;
 
 public interface DosageService {
-    Optional<DosageResponse> addDosage(int medicineId, AddDosageRequest request);
+    Optional<DosageResponse> create(int medicineId, AddDosageRequest request);
 
-    Optional<DosageResponse> editDosage(String dosageId, EditDosageRequest request);
+    Optional<DosageResponse> update(String dosageId, EditDosageRequest request);
 
-    Optional<DosageResponse> getDosage(String dosageId);
+    Optional<DosageResponse> findById(String dosageId);
 
-    Optional<DosageResponse> deleteDosage(DosageResponse dosage);
+    Optional<DosageResponse> delete(DosageResponse dosage);
 
-    List<DosageResponse> listDosage(int pageNumber, int pageSize);
+    List<DosageResponse> findAll(int pageNumber, int pageSize);
 }

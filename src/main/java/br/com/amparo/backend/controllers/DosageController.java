@@ -40,7 +40,7 @@ public class DosageController {
     private PatientService patientService;
 
     @PreAuthorize("hasRole('PATIENT')")
-    @GetMapping("/list")
+    @GetMapping()
     @Operation(
             summary = "List Dosages",
             description = "List all dosages of a specific patient",
@@ -64,7 +64,7 @@ public class DosageController {
     )
     public ResponseEntity<?> listDosages(@RequestParam(defaultValue = "1") int pageNumber, @RequestParam(defaultValue = "10") int pageSize) {
         try{
-            List<DosageResponse> dosages = service.listDosage(pageNumber, pageSize);
+            List<DosageResponse> dosages = service.findAll(pageNumber, pageSize);
             if (dosages.isEmpty()) {
                 return new ResponseEntity<>(new ErrorMessage("No dosages found"), HttpStatus.NOT_FOUND);
             } else {
@@ -100,7 +100,7 @@ public class DosageController {
     )
     public ResponseEntity<?> addDosage(@PathVariable int medicineId, @RequestBody AddDosageRequest request) {
         try{
-            Optional<DosageResponse> dosage = service.addDosage(medicineId, request);
+            Optional<DosageResponse> dosage = service.create(medicineId, request);
             if (dosage.isEmpty()) {
                 return new ResponseEntity<>(new ErrorMessage("Bad request"), HttpStatus.BAD_REQUEST);
             } else {
@@ -111,7 +111,7 @@ public class DosageController {
         }
     }
     @PreAuthorize("hasRole('PATIENT')")
-    @PutMapping("/{dosageId}")
+    @PutMapping("/{id}")
     @Operation(
             summary = "Update Dosage",
             description = "Update an existing dosage",
@@ -133,9 +133,9 @@ public class DosageController {
                     )
             }
     )
-    public ResponseEntity<?> updateDosage(@PathVariable String dosageId, @RequestBody EditDosageRequest request) {
+    public ResponseEntity<?> updateDosage(@PathVariable String id, @RequestBody EditDosageRequest request) {
         try{
-            Optional<DosageResponse> dosage = service.editDosage(dosageId, request);
+            Optional<DosageResponse> dosage = service.update(id, request);
             if (dosage.isEmpty()) {
                 return new ResponseEntity<>(new ErrorMessage("Dosage not found"),HttpStatus.NOT_FOUND);
             } else {
@@ -147,7 +147,7 @@ public class DosageController {
     }
 
     @PreAuthorize("hasRole('PATIENT')")
-    @GetMapping("/{dosageId}")
+    @GetMapping("/{id}")
     @Operation(
             summary = "Get Dosage",
             description = "Get details of a specific dosage",
@@ -169,9 +169,9 @@ public class DosageController {
                     )
             }
     )
-    public ResponseEntity<?> getDosage(@PathVariable String dosageId) {
+    public ResponseEntity<?> getDosage(@PathVariable String id) {
         try{
-            Optional<DosageResponse> dosage = service.getDosage(dosageId);
+            Optional<DosageResponse> dosage = service.findById(id);
             if (dosage.isEmpty()) {
                 return new ResponseEntity<>(new ErrorMessage("Dosage not found"),HttpStatus.NOT_FOUND);
             } else {
@@ -183,7 +183,7 @@ public class DosageController {
     }
 
     @PreAuthorize("hasRole('PATIENT')")
-    @DeleteMapping("/{dosageId}")
+    @DeleteMapping("/{id}")
     @Operation(
             summary = "Delete Dosage",
             description = "Delete a dosage",
@@ -205,13 +205,13 @@ public class DosageController {
                     )
             }
     )
-    public ResponseEntity<?> deleteDosage(@PathVariable String dosageId){
+    public ResponseEntity<?> deleteDosage(@PathVariable String id){
         try{
-            Optional<DosageResponse> dosage = service.getDosage(dosageId);
+            Optional<DosageResponse> dosage = service.findById(id);
             if (dosage.isEmpty()) {
                 return new ResponseEntity<>(new ErrorMessage("Dosage not found"),HttpStatus.NOT_FOUND);
             } else {
-                Optional<DosageResponse> deletedDosage = service.deleteDosage(dosage.get());
+                Optional<DosageResponse> deletedDosage = service.delete(dosage.get());
                 if (deletedDosage.isEmpty()){
                     return new ResponseEntity<>(new ErrorMessage("Error deleting Dosage"), HttpStatus.INTERNAL_SERVER_ERROR);
                 } else {
