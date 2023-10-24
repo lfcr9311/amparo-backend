@@ -39,8 +39,16 @@ public class DoctorController {
 
     }
 
+    @PreAuthorize("hasRole('PATIENT')")
+    @GetMapping("/crm/{crm}")
+    public ResponseEntity<DoctorResponse> findByCrm(@PathVariable String crm) {
+        return doctorService.findByCrm(crm)
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    }
+
     @PreAuthorize("hasRole('DOCTOR')")
-    @GetMapping
+    @GetMapping()
     public ResponseEntity<DoctorResponse> getDoctor() {
         String userId = SecurityUtils.getCurrentUserId();
         return doctorService.findDoctorById(userId)
@@ -49,7 +57,7 @@ public class DoctorController {
     }
 
     @PreAuthorize("hasRole('DOCTOR')")
-    @PutMapping
+    @PutMapping()
     public ResponseEntity<DoctorResponse> editDoctor(@RequestBody @Valid DoctorToUpdateRequest doctor) {
         return doctorService.editDoctor(doctor, SecurityUtils.getApiUser().getId())
                 .map(ResponseEntity::ok)
