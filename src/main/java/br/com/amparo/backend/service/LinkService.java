@@ -1,5 +1,10 @@
 package br.com.amparo.backend.service;
 
+import br.com.amparo.backend.domain.entity.Doctor;
+import br.com.amparo.backend.dto.doctor.DoctorResponse;
+import org.springframework.http.ResponseEntity;
+
+import java.util.List;
 import java.util.Optional;
 
 public interface LinkService {
@@ -15,4 +20,5 @@ public interface LinkService {
 
     Boolean deleteLinkDoctor(String doctor, String patientId);
 
+    List<DoctorResponse> getAllDoctorOfPatient(String patientId);
 }

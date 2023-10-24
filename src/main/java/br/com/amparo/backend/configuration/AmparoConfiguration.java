@@ -104,8 +104,8 @@ public class AmparoConfiguration {
     }
 
     @Bean
-    public LinkService linkService(LinkRepository linkRepository) {
-        return new LinkServiceImpl(linkRepository);
+    public LinkService linkService(LinkRepository linkRepository, DoctorService doctorService) {
+        return new LinkServiceImpl(linkRepository, doctorService);
     }
 
     @Bean

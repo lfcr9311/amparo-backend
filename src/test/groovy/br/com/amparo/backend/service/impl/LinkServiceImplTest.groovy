@@ -1,18 +1,21 @@
 package br.com.amparo.backend.service.impl
 
 import br.com.amparo.backend.repository.LinkRepository
+import br.com.amparo.backend.service.DoctorService
 import spock.lang.Specification
 import spock.lang.Unroll
 
 class LinkServiceImplTest extends Specification {
 
     LinkRepository linkRepository
-
+    DoctorService doctorService
     LinkServiceImpl linkService
+
 
     def setup() {
         linkRepository = Mock(LinkRepository.class)
-        linkService = new LinkServiceImpl(linkRepository)
+        doctorService = Mock(DoctorService.class)
+        linkService = new LinkServiceImpl(linkRepository, doctorService)
     }
 
     def "should link doctor to patient"() {
