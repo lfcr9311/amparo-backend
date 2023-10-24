@@ -10,7 +10,7 @@ public interface MedicineService {
 
     Optional<MedicineResponse> findMedicineById(int id);
     Optional<MedicineResponse> findMedicineByName(String name);
-    Optional<List<MedicineIncResponse>> findIncompatibility(int id);
+    Optional<List<MedicineIncResponse>> findAllIncompatibility(int id);
     List<MedicineResponse> findAllMedicines(int pageNumber, int pageSize);
 
 }

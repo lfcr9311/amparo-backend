@@ -49,8 +49,8 @@ public class MedicineController {
 
     @GetMapping("/incompatibility/{id}")
     @PreAuthorize("hasRole('PATIENT') or hasRole('DOCTOR')")
-    public ResponseEntity<?> findIncompatibility(@PathVariable int id) {
-        Optional<List<MedicineIncResponse>> incompatibilities = medicineService.findIncompatibility(id);
+    public ResponseEntity<?> findAllIncompatibility(@PathVariable int id) {
+        Optional<List<MedicineIncResponse>> incompatibilities = medicineService.findAllIncompatibility(id);
             if (incompatibilities.isEmpty()) {
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             }else{

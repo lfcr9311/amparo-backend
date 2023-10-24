@@ -68,7 +68,7 @@ public class MedicineRepository {
         }
     }
 
-    public Optional<List<MedicineIncResponse>> findIncompatibility(int id) {
+    public Optional<List<MedicineIncResponse>> findAllIncompatibility(int id) {
         try {
             String sql = """
                     SELECT m."id" as "id_medicine_inc",

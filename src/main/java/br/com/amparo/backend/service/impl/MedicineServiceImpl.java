@@ -28,7 +28,7 @@ public class MedicineServiceImpl implements MedicineService {
         return repository.findAllMedicines(pageNumber, pageSize);
     }
 
-    public Optional<List<MedicineIncResponse>> findIncompatibility(int id) {
-        return repository.findIncompatibility(id);
+    public Optional<List<MedicineIncResponse>> findAllIncompatibility(int id) {
+        return repository.findAllIncompatibility(id);
     }
 }
