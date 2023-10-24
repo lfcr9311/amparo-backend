@@ -22,6 +22,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -37,6 +38,42 @@ public class DosageController {
 
     @Autowired
     private PatientService patientService;
+
+    @PreAuthorize("hasRole('PATIENT')")
+    @GetMapping("/list")
+    @Operation(
+            summary = "List Dosages",
+            description = "List all dosages of a specific patient",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Dosages retrieved successfully",
+                            content = @Content(schema = @Schema(implementation = DosageResponse.class))
+                    ),
+                    @ApiResponse(
+                            responseCode = "403",
+                            description = "Forbidden",
+                            content = @Content(schema = @Schema(implementation = ErrorMessage.class))
+                    ),
+                    @ApiResponse(
+                            responseCode = "404",
+                            description = "Patient not found",
+                            content = @Content(schema = @Schema(implementation = ErrorMessage.class))
+                    )
+            }
+    )
+    public ResponseEntity<?> listDosages(@RequestParam(defaultValue = "1") int pageNumber, @RequestParam(defaultValue = "10") int pageSize) {
+        try{
+            List<DosageResponse> dosages = service.listDosage(pageNumber, pageSize);
+            if (dosages.isEmpty()) {
+                return new ResponseEntity<>(new ErrorMessage("No dosages found"), HttpStatus.NOT_FOUND);
+            } else {
+                return new ResponseEntity<>(dosages, HttpStatus.OK);
+            }
+        } catch (PatientNotFoundException ex){
+            return new ResponseEntity<>(new ErrorMessage("Patient not Found"), HttpStatus.NOT_FOUND);
+        }
+    }
 
     @PreAuthorize("hasRole('PATIENT')")
     @PostMapping("/{medicineId}")
@@ -61,7 +98,7 @@ public class DosageController {
                     )
             }
     )
-    public ResponseEntity<?> addDosage(@PathVariable String medicineId, @RequestBody AddDosageRequest request) {
+    public ResponseEntity<?> addDosage(@PathVariable int medicineId, @RequestBody AddDosageRequest request) {
         try{
             Optional<DosageResponse> dosage = service.addDosage(medicineId, request);
             if (dosage.isEmpty()) {
@@ -71,8 +108,6 @@ public class DosageController {
             }
         } catch (PatientNotFoundException e){
             return new ResponseEntity<>(new ErrorMessage("Patient not Found"), HttpStatus.NOT_FOUND);
-        } catch (RuntimeException e){
-            return new ResponseEntity<>(new ErrorMessage("Bad request"), HttpStatus.BAD_REQUEST);
         }
     }
     @PreAuthorize("hasRole('PATIENT')")
@@ -106,8 +141,8 @@ public class DosageController {
             } else {
                 return new ResponseEntity<>(dosage, HttpStatus.OK);
             }
-        } catch (IllegalAccessException e){
-            return new ResponseEntity<>(new ErrorMessage("Forbidden"),HttpStatus.FORBIDDEN);
+        } catch (PatientNotFoundException ex){
+            return new ResponseEntity<>(new ErrorMessage("Patient not Found"), HttpStatus.NOT_FOUND);
         }
     }
 
@@ -144,8 +179,6 @@ public class DosageController {
             }
         } catch (PatientNotFoundException ex){
             return new ResponseEntity<>(new ErrorMessage("Patient not Found"), HttpStatus.NOT_FOUND);
-        } catch (IllegalAccessException ex) {
-            return new ResponseEntity<>(new ErrorMessage("Forbidden"),HttpStatus.FORBIDDEN);
         }
     }
 
@@ -187,8 +220,6 @@ public class DosageController {
             }
         } catch (PatientNotFoundException ex){
             return new ResponseEntity<>(new ErrorMessage("Patient not Found"), HttpStatus.NOT_FOUND);
-        } catch (IllegalAccessException ex) {
-            return new ResponseEntity<>(new ErrorMessage("Forbidden"),HttpStatus.FORBIDDEN);
         } catch (RuntimeException ex) {
             return new ResponseEntity<>(new ErrorMessage("Error deleting Dosage"), HttpStatus.INTERNAL_SERVER_ERROR);
         }

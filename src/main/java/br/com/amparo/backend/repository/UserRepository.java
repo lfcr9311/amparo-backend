@@ -67,7 +67,6 @@ public class UserRepository {
 
     public String create(User user, SaltedPassword password) {
         try {
-
             String sql = """
                 INSERT INTO "User" ("email","password","salt","name","cellphone","is_anonymous")
                 values (

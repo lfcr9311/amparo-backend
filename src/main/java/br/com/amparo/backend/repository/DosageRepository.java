@@ -21,10 +21,10 @@ public class DosageRepository {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    public Optional<DosageResponse> addDosage(String patientId, String medicineId, AddDosageRequest request) {
+    public Optional<DosageResponse> addDosage(String patientId, int medicineId, AddDosageRequest request) {
         try {
             String sql = """
-                INSERT INTO "Dosage" ("idPatient", "idMedicine", "quantity", "initialHour", "frequency", "finalDate")
+                INSERT INTO "Dosage" ("id_patient", "id_medicine", "quantity", "initial_hour", "frequency", "final_date")
                 VALUES (
                     :idPatient,
                     :idMedicine,
@@ -33,26 +33,26 @@ public class DosageRepository {
                     :frequency,
                     :finalDate
                 )
-                RETURNING "id", "idPatient", "idMedicine", "quantity", "initialHour", "frequency", "finalDate",
-                          (SELECT "name" FROM "Medicine" WHERE "id" = :idMedicine) AS "medicineName";
+                RETURNING "id", "id_patient", "id_medicine", "quantity", "initial_hour", "frequency", "final_date",
+                          (SELECT "name" FROM "Medicine" WHERE "id" = "id_medicine") AS "medicineName";
                 """;
             MapSqlParameterSource param = new MapSqlParameterSource(Map.of(
                     "idPatient", UUID.fromString(patientId),
-                    "idMedicine", UUID.fromString(medicineId),
+                    "idMedicine", medicineId,
                     "quantity", request.quantity()
             ));
-            param.addValue("initialHour", Timestamp.valueOf(request.initialHour()));
+            param.addValue("initialHour", request.initialHour());
             param.addValue("frequency", request.frequency());
-            param.addValue("finalDate", Timestamp.valueOf(request.finalDate()));
+            param.addValue("finalDate", request.finalDate() == null ? null : Timestamp.valueOf(request.finalDate()));
 
             List<DosageResponse> dosage = jdbcTemplate.query(sql, param, (rs, rowNum) -> new DosageResponse(
                     rs.getString("id"),
-                    rs.getString("idPatient"),
-                    rs.getString("idMedicine"),
+                    rs.getString("id_patient"),
+                    rs.getString("id_medicine"),
                     rs.getString("quantity"),
-                    rs.getTimestamp("initialHour").toLocalDateTime(),
+                    rs.getTimestamp("initial_hour").toLocalDateTime(),
                     rs.getInt("frequency"),
-                    rs.getTimestamp("finalDate").toLocalDateTime(),
+                    rs.getTimestamp("final_date") == null ? null : rs.getTimestamp("final_date").toLocalDateTime(),
                     rs.getString("medicineName")
             ));
             if (dosage.isEmpty()) {
@@ -66,33 +66,35 @@ public class DosageRepository {
         }
     }
 
-    public Optional<DosageResponse> editDosage(String dosageId, EditDosageRequest request) {
+    public Optional<DosageResponse> editDosage(String dosageId, EditDosageRequest request, String patientId) {
         try {
             String sql = """
                 UPDATE "Dosage"
                 SET "quantity" = :quantity,
-                    "initialHour" = :initialHour,
                     "frequency" = :frequency,
-                    "finalDate" = :finalDate
-                WHERE "id" = :id
-                RETURNING "id", "idPatient", "idMedicine", "quantity", "initialHour", "frequency", "finalDate",
-                          (SELECT "name" FROM "Medicine" WHERE "id" = :idMedicine) AS "medicineName";
+                    "final_date" = :finalDate,
+                    "id_medicine" = :idMedicine
+                WHERE "id" = :id AND "id_patient" = :patientId
+                RETURNING "id", "id_patient", "id_medicine", "quantity", "initial_hour", "frequency", "final_date",
+                          (SELECT "name" FROM "Medicine" WHERE "id" = "id_medicine") AS "medicineName";
                 """;
             MapSqlParameterSource param = new MapSqlParameterSource(Map.of(
                     "id", UUID.fromString(dosageId),
-                    "quantity", request.quantity()
+                    "patientId", UUID.fromString(patientId),
+                    "quantity", request.quantity(),
+                    "idMedicine", request.medicineId()
             ));
             param.addValue("frequency", request.frequency());
-            param.addValue("finalDate", Timestamp.valueOf(request.finalDate()));
+            param.addValue("finalDate", request.finalDate() == null ? null : Timestamp.valueOf(request.finalDate()));
 
             List<DosageResponse> dosage = jdbcTemplate.query(sql, param, (rs, rowNum) -> new DosageResponse(
                     rs.getString("id"),
-                    rs.getString("idPatient"),
-                    rs.getString("idMedicine"),
+                    rs.getString("id_patient"),
+                    rs.getString("id_medicine"),
                     rs.getString("quantity"),
-                    rs.getTimestamp("initialHour").toLocalDateTime(),
+                    rs.getTimestamp("initial_hour").toLocalDateTime(),
                     rs.getInt("frequency"),
-                    rs.getTimestamp("finalDate").toLocalDateTime(),
+                    rs.getTimestamp("final_date") == null ? null : rs.getTimestamp("final_date").toLocalDateTime(),
                     rs.getString("medicineName")
             ));
             if (dosage.isEmpty()) {
@@ -106,26 +108,27 @@ public class DosageRepository {
         }
     }
 
-    public Optional<DosageResponse> getDosage(String dosageId) {
+    public Optional<DosageResponse> getDosage(String dosageId, String patientId) {
         try {
             String sql = """
-                SELECT "id", "idPatient", "idMedicine", "quantity", "initialHour", "frequency", "finalDate",
-                       (SELECT "name" FROM "Medicine" WHERE "id" = "idMedicine") AS "medicineName"
+                SELECT "id", "id_patient", "id_medicine", "quantity", "initial_hour", "frequency", "final_date",
+                          (SELECT "name" FROM "Medicine" WHERE "id" = "id_medicine") AS "medicineName"
                 FROM "Dosage"
-                WHERE "id" = :id 
+                WHERE "id_patient" = :patientId AND "id" = :id
                 """;
             MapSqlParameterSource param = new MapSqlParameterSource(Map.of(
-                    "id", UUID.fromString(dosageId)
+                    "id", UUID.fromString(dosageId),
+                    "patientId", UUID.fromString(patientId)
             ));
 
             List<DosageResponse> dosage = jdbcTemplate.query(sql, param, (rs, rowNum) -> new DosageResponse(
                     rs.getString("id"),
-                    rs.getString("idPatient"),
-                    rs.getString("idMedicine"),
+                    rs.getString("id_patient"),
+                    rs.getString("id_medicine"),
                     rs.getString("quantity"),
-                    rs.getTimestamp("initialHour").toLocalDateTime(),
+                    rs.getTimestamp("initial_hour").toLocalDateTime(),
                     rs.getInt("frequency"),
-                    rs.getTimestamp("finalDate").toLocalDateTime(),
+                    rs.getTimestamp("final_date") == null ? null : rs.getTimestamp("final_date").toLocalDateTime(),
                     rs.getString("medicineName")
             ));
             if (dosage.isEmpty()) {
@@ -143,8 +146,7 @@ public class DosageRepository {
         try {
             String sql = """
                 DELETE FROM "Dosage"
-                WHERE "id" = :id
-                AND "id_patient" = :patientId
+                WHERE "id" = :id AND "id_patient" = :patientId
                 """;
             MapSqlParameterSource param = new MapSqlParameterSource(Map.of(
                     "id", UUID.fromString(dosage.id()),
@@ -154,6 +156,37 @@ public class DosageRepository {
             return Optional.of(dosage);
         } catch (Exception e) {
             log.error("Error trying to delete dosage: " + dosage.id(), e);
+            throw new RuntimeException(e);
+        }
+    }
+
+    public List<DosageResponse> listDosage(String patientId, int pageNumber, int pageSize){
+        try{
+            int offset = (pageNumber - 1) * pageSize;
+            String sql = """
+                SELECT "id", "id_patient", "id_medicine", "quantity", "initial_hour", "frequency", "final_date",
+                          (SELECT "name" FROM "Medicine" WHERE "id" = "id_medicine") AS "medicineName"
+                FROM "Dosage"
+                WHERE "id_patient" = :patientId
+                LIMIT :pageSize OFFSET :offset
+                """;
+            MapSqlParameterSource param = new MapSqlParameterSource(Map.of(
+                    "patientId", UUID.fromString(patientId),
+                    "pageSize", pageSize,
+                    "offset", offset));
+            List<DosageResponse> dosage = jdbcTemplate.query(sql, param, (rs, rowNum) -> new DosageResponse(
+                    rs.getString("id"),
+                    rs.getString("id_patient"),
+                    rs.getString("id_medicine"),
+                    rs.getString("quantity"),
+                    rs.getTimestamp("initial_hour").toLocalDateTime(),
+                    rs.getInt("frequency"),
+                    rs.getTimestamp("final_date") == null ? null : rs.getTimestamp("final_date").toLocalDateTime(),
+                    rs.getString("medicineName")
+            ));
+            return dosage;
+        } catch (Exception e){
+            log.error("Error trying to list dosage from patient with id: " + patientId, e);
             throw new RuntimeException(e);
         }
     }

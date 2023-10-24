@@ -10,6 +10,7 @@ import br.com.amparo.backend.service.PatientService;
 import br.com.amparo.backend.service.security.SecurityUtils;
 import lombok.RequiredArgsConstructor;
 
+import java.util.List;
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -17,47 +18,41 @@ public class DosageServiceImpl implements DosageService {
     private final DosageRepository repository;
     private final PatientService patientService;
     @Override
-    public Optional<DosageResponse> addDosage(String medicineId, AddDosageRequest request) {
+    public Optional<DosageResponse> addDosage(int medicineId, AddDosageRequest request) {
         String patientId = SecurityUtils.getApiUser().getId();
         if (patientService.findPatientById(patientId).isEmpty()) {
             throw new PatientNotFoundException(patientId);
-        } else {
-            return repository.addDosage(patientId, medicineId, request);
-        }
+        } else return repository.addDosage(patientId, medicineId, request);
     }
     @Override
-    public Optional<DosageResponse> getDosage(String dosageId) throws IllegalAccessException {
+    public Optional<DosageResponse> getDosage(String dosageId) {
         String patientId = SecurityUtils.getApiUser().getId();
         if (patientService.findPatientById(patientId).isEmpty()) {
             throw new PatientNotFoundException(patientId);
-        } else if (!patientId.equals(repository.getDosage(dosageId).get().idPatient())) {
-            throw new IllegalAccessException(patientId);
-        } else {
-            return repository.getDosage(dosageId);
-        }
+        } else return repository.getDosage(dosageId, patientId);
     }
 
     @Override
-    public Optional<DosageResponse> deleteDosage(DosageResponse dosage) throws IllegalAccessException {
+    public Optional<DosageResponse> deleteDosage(DosageResponse dosage) {
         String patientId = SecurityUtils.getApiUser().getId();
         if (patientService.findPatientById(patientId).isEmpty()) {
             throw new PatientNotFoundException(patientId);
-        } else if (!patientId.equals(repository.getDosage(dosage.id()).get().idPatient())) {
-            throw new IllegalAccessException(patientId);
-        } else {
-            return repository.deleteDosage(dosage);
-        }
+        } else return repository.deleteDosage(dosage);
     }
 
     @Override
-    public Optional<DosageResponse> editDosage(String dosageId, EditDosageRequest request) throws IllegalAccessException {
+    public List<DosageResponse> listDosage(int pageNumber, int pageSize) {
+        String patientId = SecurityUtils.getApiUser().getId();
+        if(patientService.findPatientById(patientId).isEmpty()){
+            throw new PatientNotFoundException(patientId);
+        } else return repository.listDosage(patientId, pageNumber, pageSize);
+    }
+
+    @Override
+    public Optional<DosageResponse> editDosage(String dosageId, EditDosageRequest request) {
         String patientId = SecurityUtils.getApiUser().getId();
         if (patientService.findPatientById(patientId).isEmpty()) {
             throw new PatientNotFoundException(patientId);
-        } else if (!patientId.equals(repository.getDosage(dosageId).get().idPatient())) {
-            throw new IllegalAccessException(patientId);
-        } else {
-            return repository.editDosage(dosageId, request);
-        }
+        } else return repository.editDosage(dosageId, request, patientId);
     }
 }
