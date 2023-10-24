@@ -58,4 +58,6 @@ debug-job:
   only:
     - debug
   script:
+    - echo "=========================== LOG ================================"
     - docker logs --since=1h amparo-api
+    - echo "========================= END LOG =============================="G
