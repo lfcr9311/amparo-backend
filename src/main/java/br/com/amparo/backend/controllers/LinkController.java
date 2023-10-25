@@ -44,7 +44,14 @@ public class LinkController {
             })
     @PreAuthorize("hasRole('PATIENT')")
     @PostMapping("/to/doctor/{doctorId}")
-    public ResponseEntity<?> requestDoctorToPatient(@PathVariable String doctorId) {
+    public ResponseEntity<?> requestDoctorToPatient(
+            @PathVariable
+            @Parameter(
+                    name = "doctorId",
+                    description = "Doctor Id",
+                    example = "a88402a4-a68f-4912-866e-6fc6f33cbfd1"
+            ) String doctorId
+    ) {
          if (linkService.checkConnection(doctorId, SecurityUtils.getApiUser().getId())) {
              return ResponseEntity.status(HttpStatus.CONFLICT).build();
         }
@@ -59,9 +66,9 @@ public class LinkController {
     public ResponseEntity<?> linkDoctorToPatient(
             @PathVariable
             @Parameter(
-                    name = "id",
+                    name = "patientId",
                     description = "Patient Id",
-                    example = "a7f6b9c0a8f0d2c4f1e9b5c8f3c6a0e2a3d9b4d1a7d3e6c5a9f8b7d0a8f1e2c4"
+                    example = "a88402a4-a68f-4912-866e-6fc6f33cbfd1"
             ) String patientId
     ) {
         if (linkService.checkConnectionRequest(SecurityUtils.getApiUser().getId(), patientId)) {
@@ -73,14 +80,28 @@ public class LinkController {
     }
     @PreAuthorize("hasRole('DOCTOR')")
     @DeleteMapping ("/patient/{patientId}")
-    public ResponseEntity<?> deleteLinkPatient(@PathVariable String patientId) {
+    public ResponseEntity<?> deleteLinkPatient(
+            @PathVariable
+            @Parameter(
+                name = "patientId",
+                description = "Patient Id",
+                example = "a88402a4-a68f-4912-866e-6fc6f33cbfd1"
+            ) String patientId
+    ) {
         return linkService.deleteLinkPatient(SecurityUtils.getApiUser().getId(), patientId)
                 ? ResponseEntity.ok().build()
                 : ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
     }
     @PreAuthorize("hasRole('PATIENT')")
     @DeleteMapping ("/doctor/{doctorId}")
-    public ResponseEntity<?> deleteLinkDoctor(@PathVariable String doctorId) {
+    public ResponseEntity<?> deleteLinkDoctor(
+            @PathVariable
+            @Parameter(
+                name = "doctorId",
+                description = "Doctor Id",
+                example = "a88402a4-a68f-4912-866e-6fc6f33cbfd1"
+            ) String doctorId
+    ) {
         return linkService.deleteLinkDoctor(SecurityUtils.getApiUser().getId(), doctorId)
                 ? ResponseEntity.ok().build()
                 : ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
