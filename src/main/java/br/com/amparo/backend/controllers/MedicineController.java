@@ -53,18 +53,21 @@ public class MedicineController {
     @PreAuthorize("hasRole('PATIENT') or hasRole('DOCTOR')")
     public ResponseEntity<?> findAllIncompatibility(@PathVariable int id) {
         Optional<List<MedicineIncResponse>> incompatibilities = medicineService.findAllIncompatibility(id);
-            if (incompatibilities.isEmpty()) {
-                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-            }else{
-                return ResponseEntity.ok(incompatibilities);
+        if (incompatibilities.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } else {
+            return ResponseEntity.ok(incompatibilities);
         }
     }
 
-    @PostMapping("/incompatibility/test/{id}")
+    @PostMapping("/{id}/incompatibility")
     @PreAuthorize("hasRole('PATIENT') or hasRole('DOCTOR')")
-    public ResponseEntity<List<MedicineIncResponse>> findIncompatibility(@PathVariable int id, @RequestBody Map<String, List<Integer>> body) {
-        List<Integer> listIdInc = body.get("idInc");
-        Optional<List<MedicineIncResponse>> incompatibilities = medicineService.findIncompatibility(id, listIdInc);
-        return incompatibilities.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+    public ResponseEntity<?> listIncompatibility(@PathVariable int id, @RequestBody List<Integer> incompatibilities) {
+        List<Map<String, Integer>> list = new ArrayList<>();
+        for (Integer incompatibility : incompatibilities) {
+            list.add(Map.of("id", id, "incompatibility", incompatibility));
+        }
+        medicineService.listIncompatibility(list);
+        return ResponseEntity.ok().build();
     }
 }

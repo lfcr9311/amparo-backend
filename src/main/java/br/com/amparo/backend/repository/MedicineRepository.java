@@ -97,25 +97,19 @@ public class MedicineRepository {
         }
     }
 
-    public Optional<List<MedicineIncResponse>> findIncompatibility(int id, List<Integer> idInc) {
-        List<MedicineIncResponse> result = new ArrayList<>();
+    public Optional<List<MedicineIncResponse>> listIncompatibility(int id) {
         try {
-            StringJoiner joiner = new StringJoiner(",", "(", ")");
-            for (int i = 0; i < idInc.size(); i++) {
-                joiner.add("?");
-            }
-            String sql = "SELECT i.severity, " +
-                    "m1.name AS medicine_name, " +
-                    "m2.name AS incompatibility_name " +
-                    "FROM Incompatibility i " +
-                    "JOIN Medicine m1 ON i.id_medicine = m1.id " +
-                    "JOIN Medicine m2 ON i.id_medicine_inc = m2.id " +
-                    "WHERE m1.id = ? OR m1.id IN " + joiner.toString();
-            MapSqlParameterSource param = new MapSqlParameterSource();
-            param.addValue("id", id);
-            for (int i = 0; i < idInc.size(); i++) {
-                param.addValue("idInc" + i, idInc.get(i));
-            }
+            String sql = """
+                    SELECT m."id" as "id_medicine_inc",
+                            m."name" as "name_medicine_inc",
+                            i."severity" as "severity"
+                    FROM "Medicine" m
+                    INNER JOIN "Incompatibility" i ON m."id" = i."id_medicine_inc"
+                    WHERE i."id_medicine" = :id
+                    """;
+            MapSqlParameterSource param = new MapSqlParameterSource(
+                    Map.of("id", id)
+            );
             List<MedicineIncResponse> medicineIncResponse = jdbcTemplate.query(sql, param, (rs, rowNum) -> new MedicineIncResponse(
                     rs.getInt("id_medicine_inc"),
                     rs.getString("name_medicine_inc"),
@@ -131,8 +125,6 @@ public class MedicineRepository {
             return Optional.of(new ArrayList<>());
         }
     }
-
-
 
     public List<MedicineResponse> findAllMedicines(int pageNumber, int pageSize) {
         try {

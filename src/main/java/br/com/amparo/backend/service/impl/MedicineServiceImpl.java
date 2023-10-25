@@ -33,7 +33,5 @@ public class MedicineServiceImpl implements MedicineService {
         return repository.findAllIncompatibility(id);
     }
 
-    public Optional<List<MedicineIncResponse>> findIncompatibility(int id, List<Integer> idInc) {
-        return repository.findIncompatibility(id, idInc);
-    }
+
 }
