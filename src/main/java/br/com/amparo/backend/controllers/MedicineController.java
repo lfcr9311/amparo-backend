@@ -85,18 +85,18 @@ public class MedicineController {
             })
     @GetMapping("/all")
     @PreAuthorize("hasRole('PATIENT') or hasRole('DOCTOR')")
-    public ResponseEntity<?> findAllMedicines(
-            @RequestParam
+    public ResponseEntity<?> findAllMedicines (
+            @RequestParam(defaultValue = "1")
             @Parameter(
-                    name = "pageNumber",
-                    description = "Current page number",
-                    example = "1"
+                name = "pageNumber",
+                description = "Current page number",
+                example = "1"
             ) int pageNumber,
-            @RequestParam
+            @RequestParam(defaultValue = "10")
             @Parameter(
-                    name = "pageSize",
-                    description = "Number of items per page",
-                    example = "10"
+                name = "pageSize",
+                description = "Number of items per page",
+                example = "10"
             ) int pageSize
     ) {
         return ResponseEntity.ok(medicineService.findAllMedicines(pageNumber, pageSize));
