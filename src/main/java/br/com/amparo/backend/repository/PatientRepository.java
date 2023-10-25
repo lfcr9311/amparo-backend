@@ -34,9 +34,9 @@ public class PatientRepository {
             MapSqlParameterSource param = new MapSqlParameterSource(Map.of(
                     "id", UUID.fromString(patient.getId()),
                     "cpf", patient.getCpf(),
-                    "birth_date", patient.getBirthDate(),
-                    "num_sus", patient.getNumSus()
+                    "birth_date", patient.getBirthDate()
             ));
+            param.addValue("num_sus", patient.getNumSus());
             jdbcTemplate.update(sql, param);
             return true;
         } catch (DataAccessException e) {
@@ -49,15 +49,15 @@ public class PatientRepository {
             String sql = """
                     UPDATE "Patient"
                     SET cpf = :cpf,
-                    birth_date = :birthDate,
-                    num_sus = :numSus
+                        birth_date = :birthDate,
+                        num_sus = :numSus
                     WHERE "id" = :id
                     """;
             MapSqlParameterSource param = new MapSqlParameterSource(Map.of(
                     "id", UUID.fromString(patient.getId()),
                     "cpf", patient.getCpf(),
-                    "birth_date", patient.getBirthDate(),
-                    "num_sus", patient.getNumSus()
+                    "birthDate", patient.getBirthDate(),
+                    "numSus", patient.getNumSus()
             ));
             jdbcTemplate.update(sql, param);
             return findByCpf(patient.getCpf());

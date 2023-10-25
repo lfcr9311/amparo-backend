@@ -22,7 +22,6 @@ public record PatientToUpdateRequest(
         @NotNull
         @Pattern(regexp = "^(0?[1-9]|[12][0-9]|3[01])/(0?[1-9]|1[0-2])/\\d{4}$", message = "Data deve ser DD/MM/AAAA")
         String birthDate,
-        @NotBlank
         @Pattern(regexp = "\\d{15}$", message = "Nº do SUS deve conter 15 dígitos")
         String numSus,
         String profilePicture) {

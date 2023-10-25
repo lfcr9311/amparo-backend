@@ -85,9 +85,9 @@ public class UserRepository {
                     "password",password.encryptedPassword(),
                     "salt",password.salt(),
                     "name",user.getName(),
-                    "cellphone",user.getCellphone(),
                     "is_anonymous",false
             ));
+            param.addValue("cellphone", user.getCellphone());
             return jdbcTemplate.queryForObject(sql, param, String.class);
         } catch (DataAccessException e) {
             log.error("Error trying to create user: " + user.getEmail(), e);
