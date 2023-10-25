@@ -1,6 +1,5 @@
 package br.com.amparo.backend.controllers;
 
-import br.com.amparo.backend.controllers.dto.ErrorMessage;
 import br.com.amparo.backend.domain.security.ApiUser;
 import br.com.amparo.backend.dto.doctor.DoctorResponse;
 import br.com.amparo.backend.dto.doctor.DoctorToUpdateRequest;
@@ -34,17 +33,13 @@ public class DoctorController {
     @Autowired
     DoctorService doctorService;
 
-    @Operation(operationId = "findDoctorById", description = "Find a doctor by Id",
+    @Operation(operationId = "findDoctorById", description = "Patient find a doctor by Id",
             responses = {
                     @ApiResponse(responseCode = "200", description = "Doctor found",
                             content = @Content(schema = @Schema(implementation = DoctorResponse.class))
                     ),
-                    @ApiResponse(responseCode = "401", description = "Unauthenticated doctor",
-                            content = @Content(schema = @Schema(implementation = ErrorMessage.class))
-                    ),
-                    @ApiResponse(responseCode = "404", description = "Doctor not found",
-                            content = @Content(schema = @Schema(implementation = ErrorMessage.class))
-                    )
+                    @ApiResponse(responseCode = "401", description = "Authorization information is missing or invalid"),
+                    @ApiResponse(responseCode = "404", description = "A doctor with the specified ID was not found")
             })
     @GetMapping("/{id}")
     @PreAuthorize("hasRole('PATIENT')")
@@ -65,14 +60,12 @@ public class DoctorController {
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
-    @Operation(operationId = "editDoctor", description = "Edit a doctor",
+    @Operation(operationId = "getDoctor", description = "Doctor find a doctor",
             responses = {
-                    @ApiResponse(responseCode = "200", description = "Altered doctor",
+                    @ApiResponse(responseCode = "200", description = "Doctor found",
                             content = @Content(schema = @Schema(implementation = DoctorResponse.class))
                     ),
-                    @ApiResponse(responseCode = "404", description = "Doctor not found",
-                            content = @Content(schema = @Schema(implementation = ErrorMessage.class))
-                    )
+                    @ApiResponse(responseCode = "401", description = "Authorization information is missing or invalid")
             })
     @PreAuthorize("hasRole('DOCTOR')")
     @GetMapping
@@ -83,7 +76,14 @@ public class DoctorController {
                 .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
-
+    @Operation(operationId = "editDoctor", description = "Edit a doctor",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Altered doctor",
+                            content = @Content(schema = @Schema(implementation = DoctorResponse.class))
+                    ),
+                    @ApiResponse(responseCode = "401", description = "Authorization information is missing or invalid"),
+                    @ApiResponse(responseCode = "404", description = "A doctor with the specified ID was not found")
+            })
     @PreAuthorize("hasRole('DOCTOR')")
     @PutMapping
     public ResponseEntity<DoctorResponse> editDoctor(@RequestBody @Valid DoctorToUpdateRequest doctor) {

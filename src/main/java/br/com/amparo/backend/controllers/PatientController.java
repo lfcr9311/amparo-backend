@@ -35,14 +35,13 @@ public class PatientController {
     @Autowired
     PatientService patientService;
 
-    @Operation(operationId = "findByCPF", description = "Find a patient by CPF",
+    @Operation(operationId = "findByCPF", description = "Doctor find a patient by CPF",
             responses = {
                     @ApiResponse(responseCode = "200", description = "Patient found",
                             content = @Content(schema = @Schema(implementation = PatientResponse.class))
                     ),
-                    @ApiResponse(responseCode = "404", description = "Patient not found",
-                            content = @Content(schema = @Schema(implementation = ErrorMessage.class))
-                    )
+                    @ApiResponse(responseCode = "401", description = "Authorization information is missing or invalid"),
+                    @ApiResponse(responseCode = "404", description = "A patient with the specified CPF was not found")
             })
     @GetMapping("/{cpf}")
     @PreAuthorize("hasRole('DOCTOR')")
@@ -64,9 +63,8 @@ public class PatientController {
                     @ApiResponse(responseCode = "200", description = "Patient found",
                             content = @Content(schema = @Schema(implementation = PatientResponse.class))
                     ),
-                    @ApiResponse(responseCode = "404", description = "Patient not found",
-                            content = @Content(schema = @Schema(implementation = ErrorMessage.class))
-                    )
+                    @ApiResponse(responseCode = "401", description = "Authorization information is missing or invalid"),
+                    @ApiResponse(responseCode = "404", description = "A patient with the specified ID was not found")
             })
     @GetMapping
     @PreAuthorize("hasRole('PATIENT')")
@@ -82,9 +80,10 @@ public class PatientController {
                     @ApiResponse(responseCode = "200", description = "Altered patient",
                             content = @Content(schema = @Schema(implementation = PatientResponse.class))
                     ),
-                    @ApiResponse(responseCode = "404", description = "Patient not found",
+                    @ApiResponse(responseCode = "400", description = "Bad Request",
                             content = @Content(schema = @Schema(implementation = ErrorMessage.class))
-                    )
+                    ),
+                    @ApiResponse(responseCode = "404", description = "A patient with the specified ID was not found")
             })
     @PreAuthorize("hasRole('PATIENT')")
     @PutMapping
