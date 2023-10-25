@@ -53,7 +53,7 @@ public class DoctorController {
             @Parameter(
                     name = "id",
                     description = "Doctor Id",
-                    example = "a7f6b9c0a8f0d2c4f1e9b5c8f3c6a0e2a3d9b4d1a7d3e6c5a9f8b7d0a8f1e2c4"
+                    example = "a88402a4-a68f-4912-866e-6fc6f33cbfd1"
             ) String id
     ) {
         ApiUser apiUser = SecurityUtils.getApiUser();
