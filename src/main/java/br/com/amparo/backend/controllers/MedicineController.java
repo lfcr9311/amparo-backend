@@ -39,7 +39,7 @@ public class MedicineController {
 
     @GetMapping("/all")
     @PreAuthorize("hasRole('PATIENT') or hasRole('DOCTOR')")
-    public ResponseEntity<?> findAllMedicines(@RequestParam int pageNumber, @RequestParam int pageSize) {
+    public ResponseEntity<?> findAllMedicines(@RequestParam(defaultValue = "1")  int pageNumber, @RequestParam(defaultValue = "10")  int pageSize) {
         return ResponseEntity.ok(medicineService.findAllMedicines(pageNumber, pageSize));
     }
 }
