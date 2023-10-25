@@ -13,4 +13,6 @@ public interface MedicineService {
     Optional<List<MedicineIncResponse>> findAllIncompatibility(int id);
     List<MedicineResponse> findAllMedicines(int pageNumber, int pageSize);
 
+    Optional<List<MedicineIncResponse>> findIncompatibility(int id);
+
 }

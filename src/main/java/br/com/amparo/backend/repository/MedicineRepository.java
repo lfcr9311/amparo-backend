@@ -86,9 +86,9 @@ public class MedicineRepository {
                     rs.getString("name_medicine_inc"),
                     rs.getString("severity")
             ));
-            if(medicineIncResponse.isEmpty()){
+            if (medicineIncResponse.isEmpty()) {
                 return Optional.empty();
-            }else {
+            } else {
                 return Optional.of(medicineIncResponse);
             }
         } catch (DataAccessException e) {
@@ -96,7 +96,6 @@ public class MedicineRepository {
             return Optional.of(new ArrayList<>());
         }
     }
-
     public List<MedicineResponse> findAllMedicines(int pageNumber, int pageSize) {
         try {
             String sql = """
