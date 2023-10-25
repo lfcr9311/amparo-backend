@@ -97,21 +97,25 @@ public class MedicineRepository {
         }
     }
 
-    public Optional<List<MedicineIncResponse>> findIncompatibility(int id) {
+    public Optional<List<MedicineIncResponse>> findIncompatibility(int id, List<Integer> idInc) {
+        List<MedicineIncResponse> result = new ArrayList<>();
         try {
-            String sql = """
-                SELECT m.name as medicine_name, 
-                       minc.name as incompability_name, 
-                       i.severity, i.description
-                FROM "Incompatibility" i
-                    JOIN "Medicine" m on i.id_medicine = m.id
-                    JOIN "Medicine" minc on i.id_medicine_inc = minc.id
-                WHERE i.id+id_medicine = :id_medicament
-                ORDER BY 2;
-            """;
-            MapSqlParameterSource param = new MapSqlParameterSource(
-                    Map.of("id", id)
-            );
+            StringJoiner joiner = new StringJoiner(",", "(", ")");
+            for (int i = 0; i < idInc.size(); i++) {
+                joiner.add("?");
+            }
+            String sql = "SELECT i.severity, " +
+                    "m1.name AS medicine_name, " +
+                    "m2.name AS incompatibility_name " +
+                    "FROM Incompatibility i " +
+                    "JOIN Medicine m1 ON i.id_medicine = m1.id " +
+                    "JOIN Medicine m2 ON i.id_medicine_inc = m2.id " +
+                    "WHERE m1.id = ? OR m1.id IN " + joiner.toString();
+            MapSqlParameterSource param = new MapSqlParameterSource();
+            param.addValue("id", id);
+            for (int i = 0; i < idInc.size(); i++) {
+                param.addValue("idInc" + i, idInc.get(i));
+            }
             List<MedicineIncResponse> medicineIncResponse = jdbcTemplate.query(sql, param, (rs, rowNum) -> new MedicineIncResponse(
                     rs.getInt("id_medicine_inc"),
                     rs.getString("name_medicine_inc"),
@@ -123,10 +127,13 @@ public class MedicineRepository {
                 return Optional.of(medicineIncResponse);
             }
         } catch (DataAccessException e) {
-            log.error("Error to try find medicine by " + id + " ERROR: " + e.getMessage());
+            log.error("Error trying to find medicine by id: " + id + " Error: " + e.getMessage());
             return Optional.of(new ArrayList<>());
         }
     }
+
+
+
     public List<MedicineResponse> findAllMedicines(int pageNumber, int pageSize) {
         try {
             String sql = """

@@ -3,6 +3,7 @@ package br.com.amparo.backend.service;
 import br.com.amparo.backend.dto.medicine.MedicineIncResponse;
 import br.com.amparo.backend.dto.medicine.MedicineResponse;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -13,6 +14,7 @@ public interface MedicineService {
     Optional<List<MedicineIncResponse>> findAllIncompatibility(int id);
     List<MedicineResponse> findAllMedicines(int pageNumber, int pageSize);
 
-    Optional<List<MedicineIncResponse>> findIncompatibility(int id);
+    Optional<List<MedicineIncResponse>> findIncompatibility(int id, List<Integer> idInc);
+
 
 }

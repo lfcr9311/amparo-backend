@@ -11,7 +11,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -58,15 +60,11 @@ public class MedicineController {
         }
     }
 
-    @PostMapping("/incompatibility/{id}/with/{idInc}")
+    @PostMapping("/incompatibility/test/{id}")
     @PreAuthorize("hasRole('PATIENT') or hasRole('DOCTOR')")
-    public ResponseEntity<?> findIncompatibility(@PathVariable int id, @PathVariable int idInc) {
-        Optional<Optional<List<MedicineIncResponse>>> incompatibilities = Optional.ofNullable(medicineService.findIncompatibility(id));
-            if (incompatibilities.isEmpty()) {
-                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-
-            }else{
-                return ResponseEntity.ok(incompatibilities);
-        }
+    public ResponseEntity<List<MedicineIncResponse>> findIncompatibility(@PathVariable int id, @RequestBody Map<String, List<Integer>> body) {
+        List<Integer> listIdInc = body.get("idInc");
+        Optional<List<MedicineIncResponse>> incompatibilities = medicineService.findIncompatibility(id, listIdInc);
+        return incompatibilities.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 }

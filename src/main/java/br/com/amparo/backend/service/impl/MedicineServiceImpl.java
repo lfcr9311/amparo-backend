@@ -6,6 +6,7 @@ import br.com.amparo.backend.repository.MedicineRepository;
 import br.com.amparo.backend.service.MedicineService;
 import lombok.RequiredArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -32,7 +33,7 @@ public class MedicineServiceImpl implements MedicineService {
         return repository.findAllIncompatibility(id);
     }
 
-    public Optional<List<MedicineIncResponse>> findIncompatibility(int id) {
-        return repository.findIncompatibility(id);
+    public Optional<List<MedicineIncResponse>> findIncompatibility(int id, List<Integer> idInc) {
+        return repository.findIncompatibility(id, idInc);
     }
 }
