@@ -1,7 +1,6 @@
 package br.com.amparo.backend.controllers;
 
 import br.com.amparo.backend.controllers.dto.ErrorMessage;
-import br.com.amparo.backend.controllers.dto.LoginTokenResponse;
 import br.com.amparo.backend.dto.patient.PatientResponse;
 import br.com.amparo.backend.dto.patient.PatientToUpdateRequest;
 import br.com.amparo.backend.controllers.dto.FieldMappedError;
@@ -23,7 +22,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 
 @RestController
@@ -48,9 +46,8 @@ public class PatientController {
             })
     @GetMapping("/{cpf}")
     @PreAuthorize("hasRole('DOCTOR')")
-    public ResponseEntity<?> findByCPF(
-            @PathVariable
-            @Parameter(
+    public ResponseEntity<PatientResponse> findByCPF(@PathVariable
+        @Parameter(
                     name = "cpf",
                     description = "Patient CPF",
                     example = "06073525049"
@@ -72,8 +69,9 @@ public class PatientController {
             })
     @GetMapping
     @PreAuthorize("hasRole('PATIENT')")
-    public ResponseEntity<?> findById() {
-        return patientService.findPatientById(SecurityUtils.getApiUser().getId())
+    public ResponseEntity<PatientResponse> findById() {
+        String userId = SecurityUtils.getApiUser().getId();
+        return patientService.findPatientById(userId)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
@@ -89,7 +87,7 @@ public class PatientController {
             })
     @PreAuthorize("hasRole('PATIENT')")
     @PutMapping
-    public ResponseEntity<?> editPatient(@RequestBody @Valid PatientToUpdateRequest patient) {
+    public ResponseEntity<PatientResponse> editPatient(@RequestBody @Valid PatientToUpdateRequest patient) {
         return patientService.editPatient(patient, SecurityUtils.getApiUser().getId())
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));

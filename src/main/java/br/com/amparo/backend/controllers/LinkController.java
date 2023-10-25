@@ -2,6 +2,7 @@ package br.com.amparo.backend.controllers;
 
 import br.com.amparo.backend.controllers.dto.ErrorMessage;
 import br.com.amparo.backend.controllers.dto.ObjectMappingError;
+import br.com.amparo.backend.dto.doctor.DoctorResponse;
 import br.com.amparo.backend.service.LinkService;
 import br.com.amparo.backend.service.security.SecurityUtils;
 import io.swagger.v3.oas.annotations.Operation;
@@ -18,20 +19,23 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/link")
 @RequiredArgsConstructor
 @ControllerAdvice
 @Slf4j
-@Tag(name = "8. link controller")
+@Tag(name = "7. link controller")
 public class LinkController {
 
     @Autowired
     private LinkService linkService;
 
-    @Operation(operationId = "link", description = "Link a doctor to a patient",
+    @Operation(operationId = "link", description = "Link a patient to a doctor",
             responses = {
-                    @ApiResponse(responseCode = "200", description = "Doctor and patient linked"),
+                    @ApiResponse(responseCode = "200", description = "Patient and doctor linked"
+                    ),
                     @ApiResponse(responseCode = "500", description = "Linking failed",
                             content = @Content(schema = @Schema(implementation = ObjectMappingError.class))
                     ),
@@ -39,22 +43,54 @@ public class LinkController {
                             content = @Content(schema = @Schema(implementation = ErrorMessage.class))
                     )
             })
+    @PreAuthorize("hasRole('PATIENT')")
+    @PostMapping("/to/doctor/{doctorId}")
+    public ResponseEntity<?> requestDoctorToPatient(@PathVariable String doctorId) {
+         if (linkService.checkConnection(doctorId, SecurityUtils.getApiUser().getId())) {
+             return ResponseEntity.status(HttpStatus.CONFLICT).build();
+        }
+            return linkService.requestDoctorToPatient(doctorId, SecurityUtils.getApiUser().getId())
+                ? ResponseEntity.ok().build()
+                : ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+
+    }
+
     @PreAuthorize("hasRole('DOCTOR')")
-    @PostMapping("/{id}")
+    @PutMapping("/to/patient/{patientId}")
     public ResponseEntity<?> linkDoctorToPatient(
             @PathVariable
             @Parameter(
                     name = "id",
                     description = "Patient Id",
                     example = "a7f6b9c0a8f0d2c4f1e9b5c8f3c6a0e2a3d9b4d1a7d3e6c5a9f8b7d0a8f1e2c4"
-            ) String id
+            ) String patientId
     ) {
-         if (linkService.checkConnection(SecurityUtils.getApiUser().getId(), id)) {
+        if (linkService.checkConnectionRequest(SecurityUtils.getApiUser().getId(), patientId)) {
             return ResponseEntity.status(HttpStatus.CONFLICT).build();
         }
-
-        return linkService.linkDoctorToPatient(SecurityUtils.getApiUser().getId(), id)
+            return linkService.linkDoctorToPatient(SecurityUtils.getApiUser().getId(), patientId)
                 ? ResponseEntity.ok().build()
                 : ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+    }
+    @PreAuthorize("hasRole('DOCTOR')")
+    @DeleteMapping ("/patient/{patientId}")
+    public ResponseEntity<?> deleteLinkPatient(@PathVariable String patientId) {
+        return linkService.deleteLinkPatient(SecurityUtils.getApiUser().getId(), patientId)
+                ? ResponseEntity.ok().build()
+                : ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+    }
+    @PreAuthorize("hasRole('PATIENT')")
+    @DeleteMapping ("/doctor/{doctorId}")
+    public ResponseEntity<?> deleteLinkDoctor(@PathVariable String doctorId) {
+        return linkService.deleteLinkDoctor(SecurityUtils.getApiUser().getId(), doctorId)
+                ? ResponseEntity.ok().build()
+                : ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+    }
+
+    @PreAuthorize("hasRole('PATIENT')")
+    @GetMapping("/doctor")
+    public ResponseEntity<List<DoctorResponse>> getAllLinked() {
+        List<DoctorResponse> doctors = linkService.getAllDoctorOfPatient(SecurityUtils.getApiUser().getId());
+        return ResponseEntity.ok(doctors);
     }
 }

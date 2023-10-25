@@ -33,7 +33,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
         Optional<ApiUser> apiUser = tokenService.validateToken(token);
         if (apiUser.isPresent()) {
             ApiUser user = apiUser.get();
-            var authentication = new UsernamePasswordAuthenticationToken(apiUser, null, user.getAuthorities());
+            var authentication = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
             SecurityContextHolder.getContext().setAuthentication(authentication);
             filterChain.doFilter(request, response);
         } else {

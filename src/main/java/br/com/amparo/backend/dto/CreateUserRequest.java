@@ -35,13 +35,10 @@ public abstract class CreateUserRequest{
     protected String name;
     @NotBlank(message = "password is required")
     protected String password;
-    @NotBlank(message = "Cellphone is required")
     protected String cellphone;
     @NotNull(message = "Required to know what type of user: PATIENT or DOCTOR")
     private UserType userType;
-
     protected String profilePicture;
-
 
     public CreateUserRequest(UserType userType) {
         this.userType = userType;

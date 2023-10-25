@@ -7,6 +7,7 @@ import br.com.amparo.backend.service.DoctorService;
 import br.com.amparo.backend.service.UserService;
 import lombok.RequiredArgsConstructor;
 
+import java.util.List;
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -28,5 +29,10 @@ public class DoctorServiceImpl implements DoctorService {
             userService.updateUser(doctorToUpdateRequest.toDoctor(id));
             return repository.updateDoctor(doctorToUpdateRequest.toDoctor(id));
         }
+    }
+
+    @Override
+    public List<DoctorResponse> findAll(List<String> doctorIds) {
+        return repository.findAll(doctorIds);
     }
 }

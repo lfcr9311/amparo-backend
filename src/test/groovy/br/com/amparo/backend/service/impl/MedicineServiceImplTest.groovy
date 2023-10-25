@@ -18,7 +18,7 @@ class MedicineServiceImplTest extends Specification {
 
     def "should find medicine by id"() {
         given:
-        def id = "id"
+        def id = 1
         def medicine = mockMedicineResponse()
         repository.findMedicineById(id) >> Optional.of(medicine)
 
@@ -59,7 +59,7 @@ class MedicineServiceImplTest extends Specification {
 
     def mockMedicineResponse() {
         return new MedicineResponse(
-                "id",
+                1,
                 "name",
                 "description",
         )
