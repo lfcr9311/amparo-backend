@@ -96,6 +96,37 @@ public class MedicineRepository {
             return Optional.of(new ArrayList<>());
         }
     }
+
+    public Optional<List<MedicineIncResponse>> findIncompatibility(int id) {
+        try {
+            String sql = """
+                SELECT m.name as medicine_name, 
+                       minc.name as incompability_name, 
+                       i.severity, i.description
+                FROM "Incompatibility" i
+                    JOIN "Medicine" m on i.id_medicine = m.id
+                    JOIN "Medicine" minc on i.id_medicine_inc = minc.id
+                WHERE i.id+id_medicine = :id_medicament
+                ORDER BY 2;
+            """;
+            MapSqlParameterSource param = new MapSqlParameterSource(
+                    Map.of("id", id)
+            );
+            List<MedicineIncResponse> medicineIncResponse = jdbcTemplate.query(sql, param, (rs, rowNum) -> new MedicineIncResponse(
+                    rs.getInt("id_medicine_inc"),
+                    rs.getString("name_medicine_inc"),
+                    rs.getString("severity")
+            ));
+            if (medicineIncResponse.isEmpty()) {
+                return Optional.empty();
+            } else {
+                return Optional.of(medicineIncResponse);
+            }
+        } catch (DataAccessException e) {
+            log.error("Error to try find medicine by " + id + " ERROR: " + e.getMessage());
+            return Optional.of(new ArrayList<>());
+        }
+    }
     public List<MedicineResponse> findAllMedicines(int pageNumber, int pageSize) {
         try {
             String sql = """
