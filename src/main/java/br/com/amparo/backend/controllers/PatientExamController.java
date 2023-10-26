@@ -64,12 +64,11 @@ public class PatientExamController {
 
     @PreAuthorize("hasRole('PATIENT')")
     @GetMapping("/{examId}")
-    public ResponseEntity<?> findById(@PathVariable("examId") String examId, @PathVariable("id") String id) {
+    public ResponseEntity<?> findById(@PathVariable("examId") String examId, String id) {
         if (!Objects.equals(id, SecurityUtils.getApiUser().getId())) {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
-
-        return examService.findExamById(examId)
+            return examService.findExamById(examId)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
