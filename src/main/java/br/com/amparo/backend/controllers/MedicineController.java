@@ -6,7 +6,6 @@ import br.com.amparo.backend.dto.medicine.MedicineIncompatibilityRequest;
 import br.com.amparo.backend.service.MedicineService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -33,9 +32,7 @@ public class MedicineController {
 
     @Operation(operationId = "findMedicineById", description = "Find a medicine by Id",
             responses = {
-                    @ApiResponse(responseCode = "200", description = "Medicine found",
-                            content = @Content(schema = @Schema(implementation = MedicineResponse.class))
-                    ),
+                    @ApiResponse(responseCode = "200", description = "Medicine found"),
                     @ApiResponse(responseCode = "404", description = "A medicine with the specified ID was not found",
                             content = @Content(schema = @Schema(hidden = true))
                     )
@@ -57,9 +54,7 @@ public class MedicineController {
 
     @Operation(operationId = "findMedicineByName", description = "Find a medicine by Name",
             responses = {
-                    @ApiResponse(responseCode = "200", description = "Medicine found",
-                            content = @Content(schema = @Schema(implementation = MedicineResponse.class))
-                    ),
+                    @ApiResponse(responseCode = "200", description = "Medicine found"),
                     @ApiResponse(responseCode = "404", description = "A medicine with the specified name was not found",
                             content = @Content(schema = @Schema(hidden = true))
                     )
@@ -81,9 +76,7 @@ public class MedicineController {
 
     @Operation(operationId = "findAllMedicines", description = "Find all medicines",
             responses = {
-                    @ApiResponse(responseCode = "200", description = "Medicines found",
-                            content = @Content(array = @ArraySchema(schema = @Schema(implementation = MedicineResponse.class)))
-                    ),
+                    @ApiResponse(responseCode = "200", description = "Medicines found"),
                     @ApiResponse(responseCode = "404", description = "Medicines not found",
                             content = @Content(schema = @Schema(hidden = true))
                     )
@@ -109,9 +102,7 @@ public class MedicineController {
 
     @Operation(operationId = "findAllIncompatibility", description = "Find a medicine incompatibilities",
             responses = {
-                    @ApiResponse(responseCode = "200", description = "Incompatibilities found",
-                            content = @Content(array = @ArraySchema(schema = @Schema(implementation = MedicineIncResponse.class)))
-                    ),
+                    @ApiResponse(responseCode = "200", description = "Incompatibilities found"),
                     @ApiResponse(responseCode = "404", description = "Incompatibilities not found",
                             content = @Content(schema = @Schema(hidden = true))
                     )
@@ -136,9 +127,7 @@ public class MedicineController {
 
     @Operation(operationId = "findIncompatibility", description = "Add a medicine incompatibility",
             responses = {
-                    @ApiResponse(responseCode = "200", description = "Incompatibilities added",
-                            content = @Content(array = @ArraySchema(schema = @Schema(implementation = MedicineIncResponse.class)))
-                    ),
+                    @ApiResponse(responseCode = "200", description = "Incompatibilities added"),
                     @ApiResponse(responseCode = "400", description = "Bad request",
                             content = @Content(schema = @Schema(hidden = true))
                     ),
