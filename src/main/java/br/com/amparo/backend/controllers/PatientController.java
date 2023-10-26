@@ -64,6 +64,7 @@ public class PatientController {
                             content = @Content(schema = @Schema(implementation = PatientResponse.class))
                     ),
                     @ApiResponse(responseCode = "401", description = "Token is not Valid"),
+                    @ApiResponse(responseCode = "403", description = "Forbidden"),
                     @ApiResponse(responseCode = "404", description = "A patient with the specified ID was not found")
             })
     @GetMapping
@@ -80,8 +81,7 @@ public class PatientController {
                     @ApiResponse(responseCode = "200", description = "Altered patient",
                             content = @Content(schema = @Schema(implementation = PatientResponse.class))
                     ),
-                    @ApiResponse(responseCode = "401", description = "Token is not Valid"),
-                    @ApiResponse(responseCode = "404", description = "A patient with the specified ID was not found")
+                    @ApiResponse(responseCode = "401", description = "Token is not Valid")
             })
     @PreAuthorize("hasRole('PATIENT')")
     @PutMapping
