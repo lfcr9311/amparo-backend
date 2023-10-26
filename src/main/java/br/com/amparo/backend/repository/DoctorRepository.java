@@ -95,7 +95,7 @@ public class DoctorRepository {
     public List<DoctorResponse> findAll(List<String> doctorIds) {
         try {
             String sql = """
-                    ELECT d."id"            as "id",
+                    SELECT d."id"            as "id",
                            d.crm             as "crm",
                            u."email"         as "email",
                            u.name            as "name",
