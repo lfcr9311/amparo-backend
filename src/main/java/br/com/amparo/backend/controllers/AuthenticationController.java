@@ -51,7 +51,7 @@ public class AuthenticationController {
         if (token.isPresent()) {
             return ResponseEntity.ok(new LoginResponseDto(token.get()));
         } else {
-            return new ResponseEntity<>(new ErrorMessage("Email of password invalid"), HttpStatus.UNAUTHORIZED);
+            return new ResponseEntity<>(new ErrorMessage("email or password invalid"), HttpStatus.UNAUTHORIZED);
         }
     }
 
