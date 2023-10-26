@@ -19,7 +19,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.Objects;
 
 @RestController
@@ -35,9 +34,7 @@ public class DoctorController {
 
     @Operation(operationId = "findDoctorById", description = "Patient find a doctor by Id",
             responses = {
-                    @ApiResponse(responseCode = "200", description = "Doctor found",
-                            content = @Content(schema = @Schema(implementation = DoctorResponse.class))
-                    ),
+                    @ApiResponse(responseCode = "200", description = "Doctor found"),
                     @ApiResponse(responseCode = "401", description = "Token is not valid",
                             content = @Content(schema = @Schema(hidden = true))
                     ),
@@ -66,9 +63,7 @@ public class DoctorController {
 
     @Operation(operationId = "getDoctor", description = "Doctor find a doctor",
             responses = {
-                    @ApiResponse(responseCode = "200", description = "Doctor found",
-                            content = @Content(schema = @Schema(implementation = DoctorResponse.class))
-                    ),
+                    @ApiResponse(responseCode = "200", description = "Doctor found"),
                     @ApiResponse(responseCode = "401", description = "Token is not valid",
                             content = @Content(schema = @Schema(hidden = true))
                     ),
@@ -90,9 +85,7 @@ public class DoctorController {
 
     @Operation(operationId = "editDoctor", description = "Edit a doctor",
             responses = {
-                    @ApiResponse(responseCode = "200", description = "Altered doctor",
-                            content = @Content(schema = @Schema(implementation = DoctorResponse.class))
-                    ),
+                    @ApiResponse(responseCode = "200", description = "Altered doctor"),
                     @ApiResponse(responseCode = "401", description = "Token is not valid",
                             content = @Content(schema = @Schema(hidden = true))
                     ),

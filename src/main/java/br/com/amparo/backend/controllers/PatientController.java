@@ -36,9 +36,7 @@ public class PatientController {
 
     @Operation(operationId = "findByCPF", description = "Doctor find a patient by CPF",
             responses = {
-                    @ApiResponse(responseCode = "200", description = "Patient found",
-                            content = @Content(schema = @Schema(implementation = PatientResponse.class))
-                    ),
+                    @ApiResponse(responseCode = "200", description = "Patient found"),
                     @ApiResponse(responseCode = "401", description = "Token is not Valid",
                             content = @Content(schema = @Schema(hidden = true))
                     ),
@@ -63,9 +61,7 @@ public class PatientController {
 
     @Operation(operationId = "findById", description = "Find a patient by Id",
             responses = {
-                    @ApiResponse(responseCode = "200", description = "Patient found",
-                            content = @Content(schema = @Schema(implementation = PatientResponse.class))
-                    ),
+                    @ApiResponse(responseCode = "200", description = "Patient found"),
                     @ApiResponse(responseCode = "401", description = "Token is not Valid",
                             content = @Content(schema = @Schema(hidden = true))
                     ),
@@ -87,9 +83,7 @@ public class PatientController {
 
     @Operation(operationId = "editPatient", description = "Edit a patient",
             responses = {
-                    @ApiResponse(responseCode = "200", description = "Altered patient",
-                            content = @Content(schema = @Schema(implementation = PatientResponse.class))
-                    ),
+                    @ApiResponse(responseCode = "200", description = "Altered patient"),
                     @ApiResponse(responseCode = "401", description = "Token is not Valid",
                             content = @Content(schema = @Schema(hidden = true))
                     ),
