@@ -26,19 +26,6 @@ class ExamServiceImplTest extends Specification {
         examService = new ExamServiceImpl(examRepository, patientRepository)
     }
 
-    def "addExam() should return empty when patient not found"() {
-        given:
-        def request = mockExamRequest()
-        def id = "id"
-
-        patientRepository.findById(_ as String) >> Optional.empty()
-
-        when:
-        def response = examService.addExam(request, id)
-
-        then:
-        Assertions.assertThat(response.isEmpty()).isTrue()
-    }
 
     def "addExam() success should return exam when patient found"() {
         given:

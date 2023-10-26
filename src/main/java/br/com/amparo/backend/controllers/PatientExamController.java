@@ -13,7 +13,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.authorization.method.PostFilterAuthorizationReactiveMethodInterceptor;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Objects;
@@ -38,7 +37,7 @@ public class PatientExamController {
             }else {
                 return new ResponseEntity<>(examResponse, HttpStatus.OK);
             }
-        }catch (ExamCreationException e){ //TBD
+        }catch (ExamCreationException e){
             return new ResponseEntity<>(new ErrorMessage("Exam not found"), HttpStatus.NOT_FOUND);
         }catch (RuntimeException e){
             return new ResponseEntity<>(new ErrorMessage("bad request"), HttpStatus.BAD_REQUEST);
@@ -47,7 +46,7 @@ public class PatientExamController {
 
     @PreAuthorize("hasRole('PATIENT')")
     @GetMapping("/done/list")
-    public ResponseEntity<?> listDoneExams(@PathVariable String id, @RequestParam(defaultValue = "1") int pageNumber, @RequestParam(defaultValue = "10") int pageSize){
+    public ResponseEntity<?> listDoneExams(String id, @RequestParam(defaultValue = "1") int pageNumber, @RequestParam(defaultValue = "10") int pageSize){
         if (!Objects.equals(id, SecurityUtils.getApiUser().getId())) {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }

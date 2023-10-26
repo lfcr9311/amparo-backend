@@ -119,7 +119,7 @@ public class PatientRepository {
                            u.is_anonymous    as "isAnonymous"
                     FROM "Patient" p
                              LEFT JOIN "User" u ON u."id" = p."id"
-                    WHERE "id" = :id 
+                    WHERE "id" = :id
                     """;
             MapSqlParameterSource param = new MapSqlParameterSource(Map.of(
                     "id", UUID.fromString(id)

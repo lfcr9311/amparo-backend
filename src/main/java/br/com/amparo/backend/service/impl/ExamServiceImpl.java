@@ -18,7 +18,7 @@ public class ExamServiceImpl implements ExamService {
 
     private final PatientRepository patientRepository;
     @Override
-    public Optional<ExamResponse> addExam( CreateExamRequest request, String patientId) {
+    public Optional<ExamResponse> addExam(CreateExamRequest request, String patientId) {
             return repository.addExam(request, patientId);
     }
 
