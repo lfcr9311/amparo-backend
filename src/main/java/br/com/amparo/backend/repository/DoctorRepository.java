@@ -49,7 +49,7 @@ public class DoctorRepository {
         try {
             String sql = """
                     UPDATE "Doctor"
-                    SET crm = :crm
+                    SET crm = :crm,
                         uf = :uf
                     WHERE "id" = :id
                     """;
