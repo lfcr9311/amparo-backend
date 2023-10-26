@@ -110,6 +110,7 @@ public class LinkController {
 
     @PreAuthorize("hasRole('PATIENT')")
     @GetMapping("/doctor")
+    @Operation(summary = "View all doctors of a patient")
     public ResponseEntity<List<DoctorResponse>> getAllLinked() {
         List<DoctorResponse> doctors = linkService.getAllDoctorOfPatient(SecurityUtils.getApiUser().getId());
         return ResponseEntity.ok(doctors);
@@ -117,6 +118,7 @@ public class LinkController {
 
     @PreAuthorize("hasRole('DOCTOR')")
     @GetMapping("/pacient")
+    @Operation(summary = "View all patient of a doctor")
     public ResponseEntity<List<PatientResponse>> getAllPatientLinked() {
         List<PatientResponse> patients = linkService.getAllPatientOfDoctor(SecurityUtils.getApiUser().getId());
         return ResponseEntity.ok(patients);
