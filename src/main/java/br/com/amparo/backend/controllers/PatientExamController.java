@@ -1,6 +1,5 @@
 package br.com.amparo.backend.controllers;
 
-import br.com.amparo.backend.controllers.dto.ErrorMessage;
 import br.com.amparo.backend.dto.exam.CreateExamRequest;
 import br.com.amparo.backend.dto.exam.ExamResponse;
 import br.com.amparo.backend.dto.exam.ExamToUpdateRequest;
@@ -8,7 +7,6 @@ import br.com.amparo.backend.service.ExamService;
 import br.com.amparo.backend.service.security.SecurityUtils;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -19,6 +17,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import java.util.List;
 import java.util.Objects;
 
 @RestController
@@ -32,25 +31,23 @@ public class PatientExamController {
 
     @Operation(operationId = "addExam", description = "Add a new exam",
             responses = {
-                    @ApiResponse(responseCode = "201", description = "Added Exam",
-                            content = @Content(schema = @Schema(implementation = ExamResponse.class))
+                    @ApiResponse(responseCode = "200", description = "Added Exam"),
+                    @ApiResponse(responseCode = "403", description = "Forbidden",
+                            content = @Content(schema = @Schema(hidden = true))
                     ),
-                    @ApiResponse(responseCode = "403", description = "Don't have permission to access / on this server",
-                            content = @Content(schema = @Schema(implementation = ErrorMessage.class))
-                    ),
-                    @ApiResponse(responseCode = "404", description = "Exam not Added",
-                            content = @Content(schema = @Schema(implementation = ErrorMessage.class))
+                    @ApiResponse(responseCode = "404", description = "A patient with the specified ID was not found",
+                            content = @Content(schema = @Schema(hidden = true))
                     )
             })
     @PreAuthorize("hasRole('PATIENT')")
     @PostMapping
-    public ResponseEntity<?> addExam(
+    public ResponseEntity<ExamResponse> addExam(
             @RequestBody CreateExamRequest exam,
             @PathVariable
             @Parameter(
-                    name = "examId",
-                    description = "Exam Id",
-                    example = "1"
+                    name = "id",
+                    description = "Patient Id",
+                    example = "66e9b9bd-0c27-4fb2-ba78-0ed898d2a3b6"
             ) String id
     ){
         if (!Objects.equals(id, SecurityUtils.getApiUser().getId())) {
@@ -63,21 +60,19 @@ public class PatientExamController {
 
     @Operation(operationId = "listDoneExams", description = "List done exams",
             responses = {
-                    @ApiResponse(responseCode = "200", description = "Exams found",
-                            content = @Content(array = @ArraySchema(schema = @Schema(implementation = ExamResponse.class)))
-                    ),
-                    @ApiResponse(responseCode = "403", description = "Don't have permission to access / on this server",
-                            content = @Content(schema = @Schema(implementation = ErrorMessage.class))
+                    @ApiResponse(responseCode = "200", description = "Done exams found"),
+                    @ApiResponse(responseCode = "403", description = "Forbidden",
+                            content = @Content(schema = @Schema(hidden = true))
                     )
             })
     @PreAuthorize("hasRole('PATIENT')")
     @GetMapping("/done/list")
-    public ResponseEntity<?> listDoneExams(
+    public ResponseEntity<List<ExamResponse>> listDoneExams(
             @PathVariable
             @Parameter(
-                    name = "examId",
-                    description = "Exam Id",
-                    example = "1"
+                    name = "id",
+                    description = "Patient Id",
+                    example = "66e9b9bd-0c27-4fb2-ba78-0ed898d2a3b6"
             ) String id,
             @Parameter(
                     name = "pageNumber",
@@ -100,21 +95,19 @@ public class PatientExamController {
 
     @Operation(operationId = "listPendingExams", description = "List pending exams",
             responses = {
-                    @ApiResponse(responseCode = "200", description = "Exams found",
-                            content = @Content(array = @ArraySchema(schema = @Schema(implementation = ExamResponse.class)))
-                    ),
-                    @ApiResponse(responseCode = "403", description = "Don't have permission to access / on this server",
-                            content = @Content(schema = @Schema(implementation = ErrorMessage.class))
+                    @ApiResponse(responseCode = "200", description = "Pending exams found"),
+                    @ApiResponse(responseCode = "403", description = "Forbidden",
+                            content = @Content(schema = @Schema(hidden = true))
                     )
             })
     @PreAuthorize("hasRole('PATIENT')")
     @GetMapping("/pending/list")
-    public ResponseEntity<?> listPendingExams(
+    public ResponseEntity<List<ExamResponse>> listPendingExams(
             @PathVariable
             @Parameter(
-                    name = "examId",
-                    description = "Exam Id",
-                    example = "1"
+                    name = "id",
+                    description = "Patient Id",
+                    example = "66e9b9bd-0c27-4fb2-ba78-0ed898d2a3b6"
             ) String id,
             @Parameter(
                     name = "pageNumber",
@@ -137,31 +130,29 @@ public class PatientExamController {
 
     @Operation(operationId = "findExamById", description = "Find a exam by Id",
             responses = {
-                    @ApiResponse(responseCode = "200", description = "Exam found",
-                            content = @Content(schema = @Schema(implementation = ExamResponse.class))
+                    @ApiResponse(responseCode = "200", description = "Exam found"),
+                    @ApiResponse(responseCode = "403", description = "Forbidden",
+                            content = @Content(schema = @Schema(hidden = true))
                     ),
-                    @ApiResponse(responseCode = "403", description = "Don't have permission to access / on this server",
-                            content = @Content(schema = @Schema(implementation = ErrorMessage.class))
-                    ),
-                    @ApiResponse(responseCode = "404", description = "Exam not found",
-                            content = @Content(schema = @Schema(implementation = ErrorMessage.class))
+                    @ApiResponse(responseCode = "404", description = "A exam with the specified ID was not found",
+                            content = @Content(schema = @Schema(hidden = true))
                     )
             })
     @PreAuthorize("hasRole('PATIENT')")
     @GetMapping("/{examId}")
-    public ResponseEntity<?> findById(
+    public ResponseEntity<ExamResponse> findById(
             @PathVariable("examId")
             @Parameter(
                     name = "examId",
                     description = "Exam Id",
-                    example = "1"
+                    example = "77a9c8jd-0c00-4fb2-ca68-0ed898d2a3c7"
             ) String examId,
+            @PathVariable("id")
             @Parameter(
                     name = "id",
                     description = "Patient Id",
-                    example = "a7f6b9c0a8f0d2c4f1e9b5c8f3c6a0e2a3d9b4d1a7d3e6c5a9f8b7d0a8f1e2c4"
-            )
-            @PathVariable("id") String id
+                    example = "66e9b9bd-0c27-4fb2-ba78-0ed898d2a3b6"
+            ) String id
     ) {
         if (!Objects.equals(id, SecurityUtils.getApiUser().getId())) {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
@@ -174,19 +165,17 @@ public class PatientExamController {
 
     @Operation(operationId = "editExam", description = "Edit a exam",
             responses = {
-                    @ApiResponse(responseCode = "200", description = "Altered exam",
-                            content = @Content(schema = @Schema(implementation = ExamResponse.class))
+                    @ApiResponse(responseCode = "200", description = "Altered exam"),
+                    @ApiResponse(responseCode = "403", description = "Forbidden",
+                            content = @Content(schema = @Schema(hidden = true))
                     ),
-                    @ApiResponse(responseCode = "403", description = "Don't have permission to access / on this server",
-                            content = @Content(schema = @Schema(implementation = ErrorMessage.class))
-                    ),
-                    @ApiResponse(responseCode = "404", description = "Exam not found",
-                            content = @Content(schema = @Schema(implementation = ErrorMessage.class))
+                    @ApiResponse(responseCode = "404", description = "A exam with the specified ID was not found",
+                            content = @Content(schema = @Schema(hidden = true))
                     )
             })
     @PreAuthorize("hasRole('PATIENT')")
     @PutMapping("/{examId}")
-    public ResponseEntity<?> editExam(
+    public ResponseEntity<ExamResponse> editExam(
             @RequestBody ExamToUpdateRequest exam,
             @PathVariable("examId")
             @Parameter(
