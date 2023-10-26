@@ -3,6 +3,7 @@ package br.com.amparo.backend.controllers;
 import br.com.amparo.backend.controllers.dto.ErrorMessage;
 import br.com.amparo.backend.controllers.dto.ObjectMappingError;
 import br.com.amparo.backend.dto.doctor.DoctorResponse;
+import br.com.amparo.backend.dto.patient.PatientResponse;
 import br.com.amparo.backend.service.LinkService;
 import br.com.amparo.backend.service.security.SecurityUtils;
 import io.swagger.v3.oas.annotations.Operation;
@@ -112,5 +113,12 @@ public class LinkController {
     public ResponseEntity<List<DoctorResponse>> getAllLinked() {
         List<DoctorResponse> doctors = linkService.getAllDoctorOfPatient(SecurityUtils.getApiUser().getId());
         return ResponseEntity.ok(doctors);
+    }
+
+    @PreAuthorize("hasRole('DOCTOR')")
+    @GetMapping("/pacient")
+    public ResponseEntity<List<PatientResponse>> getAllPatientLinked() {
+        List<PatientResponse> patients = linkService.getAllPatientOfDoctor(SecurityUtils.getApiUser().getId());
+        return ResponseEntity.ok(patients);
     }
 }

@@ -2,6 +2,8 @@ package br.com.amparo.backend.controllers;
 
 import br.com.amparo.backend.controllers.dto.ErrorMessage;
 import br.com.amparo.backend.dto.medicine.MedicineResponse;
+import br.com.amparo.backend.dto.medicine.MedicineIncResponse;
+import br.com.amparo.backend.dto.medicine.MedicineIncompatibilityRequest;
 import br.com.amparo.backend.service.MedicineService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -17,6 +19,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import java.util.List;
 
 @RestController
 @RequestMapping("/medicine")
@@ -100,5 +103,31 @@ public class MedicineController {
             ) int pageSize
     ) {
         return ResponseEntity.ok(medicineService.findAllMedicines(pageNumber, pageSize));
+    }
+
+    @GetMapping("/incompatibility/{id}")
+    @PreAuthorize("hasRole('PATIENT') or hasRole('DOCTOR')")
+    public ResponseEntity<?> findAllIncompatibility(@PathVariable int id) {
+        List<MedicineIncResponse> incompatibilities = medicineService.findAllIncompatibility(id);
+        if (incompatibilities.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } else {
+            return ResponseEntity.ok(incompatibilities);
+        }
+    }
+
+    @PostMapping("/incompatibility/{id}")
+    @PreAuthorize("hasRole('PATIENT') or hasRole('DOCTOR')")
+    public ResponseEntity<?> findIncompatibility(@PathVariable int id,
+                                                 @RequestBody MedicineIncompatibilityRequest request) {
+        if (request.medicines().isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        List<MedicineIncResponse> incompatibilities = medicineService.findIncompatibility(id, request.medicines());
+        if (incompatibilities.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } else {
+            return ResponseEntity.ok(incompatibilities);
+        }
     }
 }

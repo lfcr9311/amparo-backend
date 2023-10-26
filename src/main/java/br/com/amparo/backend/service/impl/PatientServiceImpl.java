@@ -7,6 +7,7 @@ import br.com.amparo.backend.service.PatientService;
 import br.com.amparo.backend.service.UserService;
 import lombok.RequiredArgsConstructor;
 
+import java.util.List;
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -33,5 +34,10 @@ public class PatientServiceImpl implements PatientService {
     @Override
     public Optional<PatientResponse> findPatientById(String id) {
         return repository.findById(id);
+    }
+
+    @Override
+    public List<PatientResponse> findAll(List<String> patientIds) {
+        return repository.findAll(patientIds);
     }
 }

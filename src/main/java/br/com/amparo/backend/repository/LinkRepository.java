@@ -158,4 +158,18 @@ public class LinkRepository {
             return new ArrayList<>();
         }
     }
+
+    public List<String> getAllPatientForDoctorId(String doctorId) {
+        try {
+            String sql = """
+                    select id_patient
+                    from "DoctorPatient"
+                    where id_doctor = :id_doctor
+                    """;
+            return jdbcTemplate.queryForList(sql, Map.of("id_doctor", doctorId), String.class);
+        } catch (DataAccessException ex) {
+            log.error("Error trying to get all patients linked to doctorId: " + doctorId, ex);
+            return new ArrayList<>();
+        }
+    }
 }
