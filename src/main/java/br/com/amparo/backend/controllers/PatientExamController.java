@@ -184,7 +184,7 @@ public class PatientExamController {
                     example = "1"
             ) String examId
     ){
-        if (!Objects.equals(SecurityUtils.getApiUser().getId(), examService.findExamById(examId).get().id_patient())) {
+        if (!Objects.equals(SecurityUtils.getApiUser().getId(), examService.findExamById(examId).get().idPatient())) {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
         return examService.editExam(exam,examId)
