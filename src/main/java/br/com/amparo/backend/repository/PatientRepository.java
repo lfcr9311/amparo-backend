@@ -105,7 +105,7 @@ public class PatientRepository {
         }
     }
 
-    public Optional<PatientResponse> findById(String id, String pacient) {
+    public Optional<PatientResponse> findById(String id, String patient) {
         try {
             String sql = """
                     SELECT p."id"            as "id",
@@ -117,11 +117,11 @@ public class PatientRepository {
                            u.is_anonymous    as "isAnonymous"
                     FROM "Patient" p
                              LEFT JOIN "User" u ON u."id" = p."id"
-                    WHERE "id" = :id AND "id_pacient" = :patientId
+                    WHERE "id" = :id AND "id_patient" = :patientId
                     """;
             MapSqlParameterSource param = new MapSqlParameterSource(Map.of(
                     "id", UUID.fromString(id),
-                    "patientId",pacient
+                    "patientId",patient
             ));
             PatientResponse patientResponse = jdbcTemplate.queryForObject(sql, param, (rs, rowNum) -> new PatientResponse(
                     rs.getString("id"),
@@ -130,7 +130,9 @@ public class PatientRepository {
                     rs.getString("cellphone"),
                     rs.getString("profilePicture"),
                     rs.getBoolean("isAnonymous"),
-                    rs.getString("cpf")
+                    rs.getString("cpf"),
+                    rs.getString("birthDate"),
+                    rs.getString("numSus")
             ));
 
             return Optional.ofNullable(patientResponse);
