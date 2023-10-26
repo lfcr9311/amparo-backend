@@ -6,6 +6,11 @@ import br.com.amparo.backend.controllers.dto.FieldMappedError;
 import br.com.amparo.backend.controllers.dto.ObjectMappingError;
 import br.com.amparo.backend.service.PatientService;
 import br.com.amparo.backend.service.security.SecurityUtils;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +21,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 
 @RestController
@@ -30,14 +34,44 @@ public class PatientController {
     @Autowired
     PatientService patientService;
 
+    @Operation(operationId = "findByCPF", description = "Doctor find a patient by CPF",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Patient found"),
+                    @ApiResponse(responseCode = "401", description = "Token is not Valid",
+                            content = @Content(schema = @Schema(hidden = true))
+                    ),
+                    @ApiResponse(responseCode = "404", description = "A patient with the specified CPF was not found",
+                            content = @Content(schema = @Schema(hidden = true))
+                    )
+            })
     @GetMapping("/{cpf}")
     @PreAuthorize("hasRole('DOCTOR')")
-    public ResponseEntity<PatientResponse> findByCPF(@PathVariable String cpf) {
+    public ResponseEntity<PatientResponse> findByCPF(
+            @PathVariable
+            @Parameter(
+                    name = "cpf",
+                    description = "Patient CPF",
+                    example = "06073525049"
+            ) String cpf
+    ) {
         return patientService.findPatientByCpf(cpf)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
+    @Operation(operationId = "findById", description = "Find a patient by Id",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Patient found"),
+                    @ApiResponse(responseCode = "401", description = "Token is not Valid",
+                            content = @Content(schema = @Schema(hidden = true))
+                    ),
+                    @ApiResponse(responseCode = "403", description = "Forbidden",
+                            content = @Content(schema = @Schema(hidden = true))
+                    ),
+                    @ApiResponse(responseCode = "404", description = "A patient with the specified ID was not found",
+                            content = @Content(schema = @Schema(hidden = true))
+                    )
+            })
     @GetMapping
     @PreAuthorize("hasRole('PATIENT')")
     public ResponseEntity<PatientResponse> findById() {
@@ -47,6 +81,16 @@ public class PatientController {
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
+    @Operation(operationId = "editPatient", description = "Edit a patient",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Altered patient"),
+                    @ApiResponse(responseCode = "401", description = "Token is not Valid",
+                            content = @Content(schema = @Schema(hidden = true))
+                    ),
+                    @ApiResponse(responseCode = "404", description = "A patient with the specified ID was not found",
+                            content = @Content(schema = @Schema(hidden = true))
+                    )
+            })
     @PreAuthorize("hasRole('PATIENT')")
     @PutMapping
     public ResponseEntity<PatientResponse> editPatient(@RequestBody @Valid PatientToUpdateRequest patient) {
@@ -54,7 +98,6 @@ public class PatientController {
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
-
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<?> handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {

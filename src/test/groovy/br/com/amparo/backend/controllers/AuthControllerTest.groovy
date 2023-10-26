@@ -47,10 +47,10 @@ class AuthControllerTest extends Specification {
                 .andExpect(jsonPath('$.token').isNotEmpty())
     }
 
-    def "should return 401 when login and password does not exists"() {
+    def "should return 401 when login or password does not exists"() {
         given: "User has email and password"
         String email = "teste@teste-paciente.com.br"
-        String password = "pacient"
+        String password = "patient"
 
         when: "Login route is called"
         ResultActions result = mockMvc.perform(post("/auth/login")
@@ -60,7 +60,7 @@ class AuthControllerTest extends Specification {
 
         then: "Response must be 401, and has token in it"
         result.andExpect(status().isUnauthorized())
-                .andExpect(jsonPath('$.message').value("email of password invalid"))
+                .andExpect(jsonPath('$.message').value("email or password invalid"))
     }
 
     @Ignore

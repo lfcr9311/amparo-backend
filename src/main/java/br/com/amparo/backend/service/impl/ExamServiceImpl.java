@@ -8,6 +8,7 @@ import br.com.amparo.backend.repository.PatientRepository;
 import br.com.amparo.backend.service.ExamService;
 import lombok.RequiredArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -16,6 +17,7 @@ public class ExamServiceImpl implements ExamService {
     private final ExamRepository repository;
 
     private final PatientRepository patientRepository;
+
     @Override
     public Optional<ExamResponse> addExam(CreateExamRequest exam, String id) {
         if (patientRepository.findById(id).isEmpty()) {

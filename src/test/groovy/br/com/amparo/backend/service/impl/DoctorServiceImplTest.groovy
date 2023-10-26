@@ -67,6 +67,7 @@ class DoctorServiceImplTest extends Specification {
 
     def mockDoctorToUpdateRequest() {
         return new DoctorToUpdateRequest(
+                "user@email.com",
                 "name",
                 "12345678912",
                 "RS/123456",
