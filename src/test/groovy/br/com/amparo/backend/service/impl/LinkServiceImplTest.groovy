@@ -2,6 +2,7 @@ package br.com.amparo.backend.service.impl
 
 import br.com.amparo.backend.repository.LinkRepository
 import br.com.amparo.backend.service.DoctorService
+import br.com.amparo.backend.service.PatientService
 import spock.lang.Specification
 import spock.lang.Unroll
 
@@ -10,12 +11,14 @@ class LinkServiceImplTest extends Specification {
     LinkRepository linkRepository
     DoctorService doctorService
     LinkServiceImpl linkService
+    PatientService patientService
 
 
     def setup() {
         linkRepository = Mock(LinkRepository.class)
         doctorService = Mock(DoctorService.class)
-        linkService = new LinkServiceImpl(linkRepository, doctorService)
+        patientService = Mock(PatientService.class)
+        linkService = new LinkServiceImpl(linkRepository, doctorService, patientService)
     }
 
     def "should link doctor to patient"() {
