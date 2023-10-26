@@ -1,0 +1,1 @@
+ALTER TABLE "User" ALTER COLUMN cellphone DROP NOT NULL;

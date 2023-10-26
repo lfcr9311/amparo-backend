@@ -28,7 +28,7 @@ public class ExamRepository {
             String sql = """
                 INSERT INTO "Exam" ("id_patient", "exam_date", "description", "is_done", "exam_image", "exam_file")
                 VALUES (
-                    :id_patient,
+                    :idPatient,
                     :exam_date,
                     :description,
                     :is_done,
@@ -38,7 +38,7 @@ public class ExamRepository {
                 RETURNING "id";
                 """;
             MapSqlParameterSource param = new MapSqlParameterSource(Map.of(
-                    "id_patient", UUID.fromString(id),
+                    "idPatient", UUID.fromString(id),
                     "exam_date", exam.exam_date(),
                     "description", exam.description(),
                     "is_done", exam.is_done()

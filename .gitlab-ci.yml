@@ -11,10 +11,13 @@ stages:
   - build-test
   - package
   - deploy
+  - debug
 
 build-job:
   image: amazoncorretto:17-alpine3.18-jdk
   stage: build-test
+  except:
+    - debug
   script:
     - ./gradlew clean build
     - echo done
@@ -49,3 +52,11 @@ update-container-job:
     - docker rm amparo-api || true
     - docker pull $CI_DOCKER_REGISTRY_USERNAME/amparo-api
     - docker run -d --network amparo-net --name=amparo-api -p 8080:8080 --env SPRING_DATASOURCE_URL=jdbc:postgresql://amparo-database:5432/$CI_DATABASE_NAME --env SPRING_DATASOURCE_USERNAME=$CI_DATABASE_USER --env SPRING_DATASOURCE_PASSWORD=$CI_DATABASE_PASSWORD $CI_DOCKER_REGISTRY_USERNAME/amparo-api
+
+debug-job:
+
+  stage: debug
+  only:
+    - debug
+  script:
+    - docker logs --since=1h amparo-api

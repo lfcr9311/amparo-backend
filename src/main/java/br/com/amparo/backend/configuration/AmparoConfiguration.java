@@ -7,12 +7,12 @@ import br.com.amparo.backend.service.impl.*;
 import br.com.amparo.backend.service.impl.DoctorServiceImpl;
 import br.com.amparo.backend.service.impl.ExamServiceImpl;
 import br.com.amparo.backend.service.impl.MedicineServiceImpl;
+import br.com.amparo.backend.service.impl.ExamServiceImpl;
 import br.com.amparo.backend.service.impl.PatientServiceImpl;
 import br.com.amparo.backend.service.impl.UserServiceImpl;
 import br.com.amparo.backend.service.security.AuthService;
 import br.com.amparo.backend.service.security.CryptographyServiceSha256;
 import br.com.amparo.backend.service.security.TokenService;
-import io.swagger.v3.oas.models.links.Link;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -84,6 +84,16 @@ public class AmparoConfiguration {
     }
 
     @Bean
+    public DosageRepository dosageRepository(NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
+        return new DosageRepository(namedParameterJdbcTemplate);
+    }
+
+    @Bean
+    public DosageService dosageService(DosageRepository dosageRepository, PatientService patientService) {
+        return new DosageServiceImpl(dosageRepository, patientService);
+    }
+
+    @Bean
     public UserRepository userRepository(NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
         return new UserRepository(namedParameterJdbcTemplate);
     }
@@ -94,8 +104,8 @@ public class AmparoConfiguration {
     }
 
     @Bean
-    public LinkService linkService(LinkRepository linkRepository) {
-        return new LinkServiceImpl(linkRepository);
+    public LinkService linkService(LinkRepository linkRepository, DoctorService doctorService) {
+        return new LinkServiceImpl(linkRepository, doctorService);
     }
 
     @Bean
