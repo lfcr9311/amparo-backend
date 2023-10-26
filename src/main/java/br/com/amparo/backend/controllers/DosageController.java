@@ -9,6 +9,7 @@ import br.com.amparo.backend.service.DosageService;
 import br.com.amparo.backend.service.PatientService;
 import br.com.amparo.backend.service.security.SecurityUtils;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -98,7 +99,15 @@ public class DosageController {
                     )
             }
     )
-    public ResponseEntity<?> addDosage(@PathVariable int medicineId, @RequestBody AddDosageRequest request) {
+    public ResponseEntity<?> addDosage(
+            @PathVariable
+            @Parameter(
+                    name = "medicineId",
+                    description = "Medicine Id",
+                    example = "0"
+            ) int medicineId,
+            @RequestBody AddDosageRequest request
+    ) {
         try{
             Optional<DosageResponse> dosage = service.create(medicineId, request);
             if (dosage.isEmpty()) {
@@ -133,7 +142,15 @@ public class DosageController {
                     )
             }
     )
-    public ResponseEntity<?> updateDosage(@PathVariable String id, @RequestBody EditDosageRequest request) {
+    public ResponseEntity<?> updateDosage(
+            @PathVariable
+            @Parameter(
+                    name = "id",
+                    description = "Dosage Id",
+                    example = "54c00d38-9a04-4ebe-8c5e-ca5ce8cf851f"
+            ) String id,
+            @RequestBody EditDosageRequest request
+    ) {
         try{
             Optional<DosageResponse> dosage = service.update(id, request);
             if (dosage.isEmpty()) {
@@ -169,7 +186,14 @@ public class DosageController {
                     )
             }
     )
-    public ResponseEntity<?> getDosage(@PathVariable String id) {
+    public ResponseEntity<?> getDosage(
+            @PathVariable
+            @Parameter(
+                    name = "id",
+                    description = "Dosage Id",
+                    example = "54c00d38-9a04-4ebe-8c5e-ca5ce8cf851f"
+            ) String id
+    ) {
         try{
             Optional<DosageResponse> dosage = service.findById(id);
             if (dosage.isEmpty()) {
@@ -205,7 +229,14 @@ public class DosageController {
                     )
             }
     )
-    public ResponseEntity<?> deleteDosage(@PathVariable String id){
+    public ResponseEntity<?> deleteDosage(
+            @PathVariable
+            @Parameter(
+                    name = "id",
+                    description = "Dosage Id",
+                    example = "54c00d38-9a04-4ebe-8c5e-ca5ce8cf851f"
+            ) String id
+    ) {
         try{
             Optional<DosageResponse> dosage = service.findById(id);
             if (dosage.isEmpty()) {
