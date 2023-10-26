@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface ExamService {
-    Optional<ExamResponse> addExam(CreateExamRequest examRequest, String id);
+    Optional<ExamResponse> addExam(CreateExamRequest examRequest, String patientId);
 
     List<ExamResponse> listDoneExams(String id, int page, int size);
 

@@ -105,43 +105,6 @@ public class PatientRepository {
         }
     }
 
-    public Optional<PatientResponse> findById(String id, String patient) {
-        try {
-            String sql = """
-                    SELECT p."id"            as "id",
-                           p.cpf             as "cpf",
-                           u."email"         as "email",
-                           u.name            as "name",
-                           u.cellphone       as "cellphone",
-                           u.profile_picture as "profilePicture",
-                           u.is_anonymous    as "isAnonymous"
-                    FROM "Patient" p
-                             LEFT JOIN "User" u ON u."id" = p."id"
-                    WHERE "id" = :id AND "id_patient" = :patientId
-                    """;
-            MapSqlParameterSource param = new MapSqlParameterSource(Map.of(
-                    "id", UUID.fromString(id),
-                    "patientId",patient
-            ));
-            PatientResponse patientResponse = jdbcTemplate.queryForObject(sql, param, (rs, rowNum) -> new PatientResponse(
-                    rs.getString("id"),
-                    rs.getString("email"),
-                    rs.getString("name"),
-                    rs.getString("cellphone"),
-                    rs.getString("profilePicture"),
-                    rs.getBoolean("isAnonymous"),
-                    rs.getString("cpf"),
-                    rs.getString("birthDate"),
-                    rs.getString("numSus")
-            ));
-
-            return Optional.ofNullable(patientResponse);
-        } catch (DataAccessException e) {
-            log.error("Error trying to find patient by id: " + id + " Error: " + e.getMessage());
-            return Optional.empty();
-        }
-    }
-
     public Optional<PatientResponse> findById(String id) {
         try {
             String sql = """
@@ -172,10 +135,9 @@ public class PatientRepository {
                     rs.getString("birthDate"),
                     rs.getString("numSus")
             ));
-
             return Optional.ofNullable(patientResponse);
         } catch (DataAccessException e) {
-            log.error("Error trying to find patient by id: " + id + " Error: " + e.getMessage());
+            log.error("Error trying to find patient by id: " + id, e);
             return Optional.empty();
         }
     }

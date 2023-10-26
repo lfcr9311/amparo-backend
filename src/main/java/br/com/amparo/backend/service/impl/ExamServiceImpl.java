@@ -18,14 +18,8 @@ public class ExamServiceImpl implements ExamService {
 
     private final PatientRepository patientRepository;
     @Override
-    public Optional<ExamResponse> addExam( CreateExamRequest request, String examId) {
-       String loggedUserId = SecurityUtils.getCurrentUserId();
-       ExamResponse examResponse = repository.findExamById(examId).get();
-        if (patientRepository.findById(loggedUserId,examResponse.id_patient()).isEmpty()) {
-            throw new RuntimeException(loggedUserId);
-        }else {
-            return repository.addExam(request, examId);
-        }
+    public Optional<ExamResponse> addExam( CreateExamRequest request, String patientId) {
+            return repository.addExam(request, patientId);
     }
 
     @Override

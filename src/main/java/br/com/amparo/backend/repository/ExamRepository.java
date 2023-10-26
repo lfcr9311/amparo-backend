@@ -23,7 +23,7 @@ public class ExamRepository {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    public Optional<ExamResponse> addExam(CreateExamRequest exam, String id) {
+    public Optional<ExamResponse> addExam(CreateExamRequest exam, String patientId) {
         try {
             String sql = """
                 INSERT INTO "Exam" ("id_patient", "exam_date", "description", "is_done", "exam_image", "exam_file")
@@ -38,7 +38,7 @@ public class ExamRepository {
                 RETURNING "id";
                 """;
             MapSqlParameterSource param = new MapSqlParameterSource(Map.of(
-                    "idPatient", UUID.fromString(id),
+                    "idPatient", UUID.fromString(patientId),
                     "exam_date", exam.exam_date(),
                     "description", exam.description(),
                     "is_done", exam.is_done()
@@ -46,11 +46,11 @@ public class ExamRepository {
             param.addValue("exam_file", exam.file());
             param.addValue("exam_image", exam.image());
 
-            UUID examId = jdbcTemplate.queryForObject(sql, param, UUID.class);
-            return findExamById(examId.toString());
+            String examId = jdbcTemplate.queryForObject(sql, param, String.class);
+            return findExamById(examId);
         } catch (DataAccessException e) {
-            log.error("Error trying to add exam to patient: " + id + " Error: " + e.getMessage());
-            throw new ExamCreationException(id, exam.description(), exam.exam_date(), exam.is_done());
+            log.error("Error trying to add exam to patient: " + patientId, e);
+            throw new ExamCreationException(patientId, exam.description(), exam.exam_date(), exam.is_done());
         }
     }
 

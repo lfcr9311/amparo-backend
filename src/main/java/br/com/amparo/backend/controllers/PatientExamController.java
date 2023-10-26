@@ -34,7 +34,7 @@ public class PatientExamController {
         try {
             Optional<ExamResponse> examResponse = examService.addExam(exam, SecurityUtils.getApiUser().getId() );
             if (examResponse.isEmpty()){
-                return new ResponseEntity<>(new ErrorMessage("Exan error"), HttpStatus.BAD_REQUEST);
+                return new ResponseEntity<>(new ErrorMessage("Exam error"), HttpStatus.BAD_REQUEST);
             }else {
                 return new ResponseEntity<>(examResponse, HttpStatus.OK);
             }
