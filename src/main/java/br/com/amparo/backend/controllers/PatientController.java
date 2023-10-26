@@ -1,6 +1,5 @@
 package br.com.amparo.backend.controllers;
 
-import br.com.amparo.backend.controllers.dto.ErrorMessage;
 import br.com.amparo.backend.dto.patient.PatientResponse;
 import br.com.amparo.backend.dto.patient.PatientToUpdateRequest;
 import br.com.amparo.backend.controllers.dto.FieldMappedError;
@@ -40,8 +39,12 @@ public class PatientController {
                     @ApiResponse(responseCode = "200", description = "Patient found",
                             content = @Content(schema = @Schema(implementation = PatientResponse.class))
                     ),
-                    @ApiResponse(responseCode = "401", description = "Token is not Valid"),
-                    @ApiResponse(responseCode = "404", description = "A patient with the specified CPF was not found")
+                    @ApiResponse(responseCode = "401", description = "Token is not Valid",
+                            content = @Content(schema = @Schema(hidden = true))
+                    ),
+                    @ApiResponse(responseCode = "404", description = "A patient with the specified CPF was not found",
+                            content = @Content(schema = @Schema(hidden = true))
+                    )
             })
     @GetMapping("/{cpf}")
     @PreAuthorize("hasRole('DOCTOR')")
@@ -63,9 +66,15 @@ public class PatientController {
                     @ApiResponse(responseCode = "200", description = "Patient found",
                             content = @Content(schema = @Schema(implementation = PatientResponse.class))
                     ),
-                    @ApiResponse(responseCode = "401", description = "Token is not Valid"),
-                    @ApiResponse(responseCode = "403", description = "Forbidden"),
-                    @ApiResponse(responseCode = "404", description = "A patient with the specified ID was not found")
+                    @ApiResponse(responseCode = "401", description = "Token is not Valid",
+                            content = @Content(schema = @Schema(hidden = true))
+                    ),
+                    @ApiResponse(responseCode = "403", description = "Forbidden",
+                            content = @Content(schema = @Schema(hidden = true))
+                    ),
+                    @ApiResponse(responseCode = "404", description = "A patient with the specified ID was not found",
+                            content = @Content(schema = @Schema(hidden = true))
+                    )
             })
     @GetMapping
     @PreAuthorize("hasRole('PATIENT')")
@@ -81,7 +90,12 @@ public class PatientController {
                     @ApiResponse(responseCode = "200", description = "Altered patient",
                             content = @Content(schema = @Schema(implementation = PatientResponse.class))
                     ),
-                    @ApiResponse(responseCode = "401", description = "Token is not Valid")
+                    @ApiResponse(responseCode = "401", description = "Token is not Valid",
+                            content = @Content(schema = @Schema(hidden = true))
+                    ),
+                    @ApiResponse(responseCode = "404", description = "A patient with the specified ID was not found",
+                            content = @Content(schema = @Schema(hidden = true))
+                    )
             })
     @PreAuthorize("hasRole('PATIENT')")
     @PutMapping

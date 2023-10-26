@@ -38,8 +38,12 @@ public class DoctorController {
                     @ApiResponse(responseCode = "200", description = "Doctor found",
                             content = @Content(schema = @Schema(implementation = DoctorResponse.class))
                     ),
-                    @ApiResponse(responseCode = "401", description = "Token is not valid"),
-                    @ApiResponse(responseCode = "404", description = "A doctor with the specified ID was not found")
+                    @ApiResponse(responseCode = "401", description = "Token is not valid",
+                            content = @Content(schema = @Schema(hidden = true))
+                    ),
+                    @ApiResponse(responseCode = "404", description = "A doctor with the specified ID was not found",
+                            content = @Content(schema = @Schema(hidden = true))
+                    )
             })
     @GetMapping("/{id}")
     @PreAuthorize("hasRole('PATIENT')")
@@ -65,8 +69,15 @@ public class DoctorController {
                     @ApiResponse(responseCode = "200", description = "Doctor found",
                             content = @Content(schema = @Schema(implementation = DoctorResponse.class))
                     ),
-                    @ApiResponse(responseCode = "401", description = "Token is not valid"),
-                    @ApiResponse(responseCode = "403", description = "Forbidden")
+                    @ApiResponse(responseCode = "401", description = "Token is not valid",
+                            content = @Content(schema = @Schema(hidden = true))
+                    ),
+                    @ApiResponse(responseCode = "403", description = "Forbidden",
+                            content = @Content(schema = @Schema(hidden = true))
+                    ),
+                    @ApiResponse(responseCode = "404", description = "A doctor with the specified ID was not found",
+                            content = @Content(schema = @Schema(hidden = true))
+                    )
             })
     @PreAuthorize("hasRole('DOCTOR')")
     @GetMapping
@@ -82,7 +93,12 @@ public class DoctorController {
                     @ApiResponse(responseCode = "200", description = "Altered doctor",
                             content = @Content(schema = @Schema(implementation = DoctorResponse.class))
                     ),
-                    @ApiResponse(responseCode = "401", description = "Token is not valid")
+                    @ApiResponse(responseCode = "401", description = "Token is not valid",
+                            content = @Content(schema = @Schema(hidden = true))
+                    ),
+                    @ApiResponse(responseCode = "404", description = "A doctor with the specified ID was not found",
+                            content = @Content(schema = @Schema(hidden = true))
+                    )
             })
     @PreAuthorize("hasRole('DOCTOR')")
     @PutMapping

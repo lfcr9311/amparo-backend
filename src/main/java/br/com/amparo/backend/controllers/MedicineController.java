@@ -1,6 +1,5 @@
 package br.com.amparo.backend.controllers;
 
-import br.com.amparo.backend.controllers.dto.ErrorMessage;
 import br.com.amparo.backend.dto.medicine.MedicineResponse;
 import br.com.amparo.backend.dto.medicine.MedicineIncResponse;
 import br.com.amparo.backend.dto.medicine.MedicineIncompatibilityRequest;
@@ -37,18 +36,18 @@ public class MedicineController {
                     @ApiResponse(responseCode = "200", description = "Medicine found",
                             content = @Content(schema = @Schema(implementation = MedicineResponse.class))
                     ),
-                    @ApiResponse(responseCode = "404", description = "Medicine not found",
-                            content = @Content(schema = @Schema(implementation = ErrorMessage.class))
+                    @ApiResponse(responseCode = "404", description = "A medicine with the specified ID was not found",
+                            content = @Content(schema = @Schema(hidden = true))
                     )
             })
     @GetMapping("/{id}")
     @PreAuthorize("hasRole('PATIENT') or hasRole('DOCTOR')")
-    public ResponseEntity<?> findById(
+    public ResponseEntity<MedicineResponse> findById(
             @PathVariable
             @Parameter(
                     name = "id",
                     description = "Medicine Id",
-                    example = "10"
+                    example = "0"
             ) int id
     ) {
         return medicineService.findMedicineById(id)
@@ -61,13 +60,13 @@ public class MedicineController {
                     @ApiResponse(responseCode = "200", description = "Medicine found",
                             content = @Content(schema = @Schema(implementation = MedicineResponse.class))
                     ),
-                    @ApiResponse(responseCode = "404", description = "Medicine not found",
-                            content = @Content(schema = @Schema(implementation = ErrorMessage.class))
+                    @ApiResponse(responseCode = "404", description = "A medicine with the specified name was not found",
+                            content = @Content(schema = @Schema(hidden = true))
                     )
             })
     @GetMapping("/name/{name}")
     @PreAuthorize("hasRole('PATIENT') or hasRole('DOCTOR')")
-    public ResponseEntity<?> findByName(
+    public ResponseEntity<MedicineResponse> findByName(
             @PathVariable
             @Parameter(
                     name = "name",
@@ -84,11 +83,14 @@ public class MedicineController {
             responses = {
                     @ApiResponse(responseCode = "200", description = "Medicines found",
                             content = @Content(array = @ArraySchema(schema = @Schema(implementation = MedicineResponse.class)))
+                    ),
+                    @ApiResponse(responseCode = "404", description = "Medicines not found",
+                            content = @Content(schema = @Schema(hidden = true))
                     )
             })
     @GetMapping("/all")
     @PreAuthorize("hasRole('PATIENT') or hasRole('DOCTOR')")
-    public ResponseEntity<?> findAllMedicines (
+    public ResponseEntity<List<MedicineResponse>> findAllMedicines (
             @RequestParam(defaultValue = "1")
             @Parameter(
                 name = "pageNumber",
@@ -105,9 +107,25 @@ public class MedicineController {
         return ResponseEntity.ok(medicineService.findAllMedicines(pageNumber, pageSize));
     }
 
+    @Operation(operationId = "findAllIncompatibility", description = "Find a medicine incompatibilities",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Incompatibilities found",
+                            content = @Content(array = @ArraySchema(schema = @Schema(implementation = MedicineIncResponse.class)))
+                    ),
+                    @ApiResponse(responseCode = "404", description = "Incompatibilities not found",
+                            content = @Content(schema = @Schema(hidden = true))
+                    )
+            })
     @GetMapping("/incompatibility/{id}")
     @PreAuthorize("hasRole('PATIENT') or hasRole('DOCTOR')")
-    public ResponseEntity<?> findAllIncompatibility(@PathVariable int id) {
+    public ResponseEntity<List<MedicineIncResponse>> findAllIncompatibility(
+            @PathVariable
+            @Parameter(
+                    name = "id",
+                    description = "Medicine Id",
+                    example = "0"
+            ) int id
+    ) {
         List<MedicineIncResponse> incompatibilities = medicineService.findAllIncompatibility(id);
         if (incompatibilities.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -116,10 +134,29 @@ public class MedicineController {
         }
     }
 
+    @Operation(operationId = "findIncompatibility", description = "Add a medicine incompatibility",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Incompatibilities added",
+                            content = @Content(array = @ArraySchema(schema = @Schema(implementation = MedicineIncResponse.class)))
+                    ),
+                    @ApiResponse(responseCode = "400", description = "Bad request",
+                            content = @Content(schema = @Schema(hidden = true))
+                    ),
+                    @ApiResponse(responseCode = "404", description = "Incompatibilities not added",
+                            content = @Content(schema = @Schema(hidden = true))
+                    )
+            })
     @PostMapping("/incompatibility/{id}")
     @PreAuthorize("hasRole('PATIENT') or hasRole('DOCTOR')")
-    public ResponseEntity<?> findIncompatibility(@PathVariable int id,
-                                                 @RequestBody MedicineIncompatibilityRequest request) {
+    public ResponseEntity<List<MedicineIncResponse>> findIncompatibility(
+            @PathVariable
+            @Parameter(
+                    name = "id",
+                    description = "Medicine Id",
+                    example = "0"
+            ) int id,
+            @RequestBody MedicineIncompatibilityRequest request
+    ) {
         if (request.medicines().isEmpty()) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
