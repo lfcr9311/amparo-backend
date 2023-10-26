@@ -88,7 +88,7 @@ public class LinkController {
 
     @PreAuthorize("hasRole('DOCTOR')")
     @GetMapping("/pacient")
-    public ResponseEntity<List<PatientResponse>> getLinked() {
+    public ResponseEntity<List<PatientResponse>> getAllPatientLinked() {
         List<PatientResponse> patients = linkService.getAllPatientOfDoctor(SecurityUtils.getApiUser().getId());
         return ResponseEntity.ok(patients);
     }
