@@ -1,6 +1,7 @@
 package br.com.amparo.backend.controllers;
 
 import br.com.amparo.backend.dto.medicine.MedicineIncResponse;
+import br.com.amparo.backend.dto.medicine.MedicineIncompatibilityRequest;
 import br.com.amparo.backend.service.MedicineService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -50,23 +51,26 @@ public class MedicineController {
     @GetMapping("/incompatibility/{id}")
     @PreAuthorize("hasRole('PATIENT') or hasRole('DOCTOR')")
     public ResponseEntity<?> findAllIncompatibility(@PathVariable int id) {
-        Optional<List<MedicineIncResponse>> incompatibilities = medicineService.findAllIncompatibility(id);
-            if (incompatibilities.isEmpty()) {
-                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-            }else{
-                return ResponseEntity.ok(incompatibilities);
+        List<MedicineIncResponse> incompatibilities = medicineService.findAllIncompatibility(id);
+        if (incompatibilities.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } else {
+            return ResponseEntity.ok(incompatibilities);
         }
     }
 
-    @PostMapping("/incompatibility/{id}/with/{idInc}")
+    @PostMapping("/incompatibility/{id}")
     @PreAuthorize("hasRole('PATIENT') or hasRole('DOCTOR')")
-    public ResponseEntity<?> findIncompatibility(@PathVariable int id, @PathVariable int idInc) {
-        Optional<Optional<List<MedicineIncResponse>>> incompatibilities = Optional.ofNullable(medicineService.findIncompatibility(id));
-            if (incompatibilities.isEmpty()) {
-                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-
-            }else{
-                return ResponseEntity.ok(incompatibilities);
+    public ResponseEntity<?> findIncompatibility(@PathVariable int id,
+                                                 @RequestBody MedicineIncompatibilityRequest request) {
+        if (request.medicines().isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        List<MedicineIncResponse> incompatibilities = medicineService.findIncompatibility(id, request.medicines());
+        if (incompatibilities.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } else {
+            return ResponseEntity.ok(incompatibilities);
         }
     }
 }

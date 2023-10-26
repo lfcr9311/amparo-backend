@@ -28,11 +28,11 @@ public class MedicineServiceImpl implements MedicineService {
         return repository.findAllMedicines(pageNumber, pageSize);
     }
 
-    public Optional<List<MedicineIncResponse>> findAllIncompatibility(int id) {
+    public List<MedicineIncResponse> findAllIncompatibility(int id) {
         return repository.findAllIncompatibility(id);
     }
 
-    public Optional<List<MedicineIncResponse>> findIncompatibility(int id) {
-        return repository.findIncompatibility(id);
+    public List<MedicineIncResponse> findIncompatibility(int id, List<Integer> medicineIds) {
+        return repository.findIncompatibility(id, medicineIds);
     }
 }

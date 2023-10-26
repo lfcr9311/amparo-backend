@@ -1,6 +1,7 @@
 package br.com.amparo.backend.repository;
 
 import br.com.amparo.backend.dto.medicine.MedicineIncResponse;
+import br.com.amparo.backend.dto.medicine.MedicineIncompatibilityRequest;
 import br.com.amparo.backend.dto.medicine.MedicineResponse;
 import br.com.amparo.backend.exception.MedicineOperationException;
 import lombok.extern.slf4j.Slf4j;
@@ -68,7 +69,7 @@ public class MedicineRepository {
         }
     }
 
-    public Optional<List<MedicineIncResponse>> findAllIncompatibility(int id) {
+    public List<MedicineIncResponse> findAllIncompatibility(int id) {
         try {
             String sql = """
                     SELECT m."id" as "id_medicine_inc",
@@ -81,52 +82,45 @@ public class MedicineRepository {
             MapSqlParameterSource param = new MapSqlParameterSource(
                     Map.of("id", id)
             );
-            List<MedicineIncResponse> medicineIncResponse = jdbcTemplate.query(sql, param, (rs, rowNum) -> new MedicineIncResponse(
+            return jdbcTemplate.query(sql, param, (rs, rowNum) -> new MedicineIncResponse(
                     rs.getInt("id_medicine_inc"),
                     rs.getString("name_medicine_inc"),
                     rs.getString("severity")
             ));
-            if (medicineIncResponse.isEmpty()) {
-                return Optional.empty();
-            } else {
-                return Optional.of(medicineIncResponse);
-            }
         } catch (DataAccessException e) {
             log.error("Error trying to find medicine by id: " + id + " Error: " + e.getMessage());
-            return Optional.of(new ArrayList<>());
+            return new ArrayList<>();
         }
     }
 
-    public Optional<List<MedicineIncResponse>> findIncompatibility(int id) {
+    public List<MedicineIncResponse> findIncompatibility(int id, List<Integer> medicineIds) {
         try {
             String sql = """
-                SELECT m.name as medicine_name, 
-                       minc.name as incompability_name, 
-                       i.severity, i.description
-                FROM "Incompatibility" i
-                    JOIN "Medicine" m on i.id_medicine = m.id
-                    JOIN "Medicine" minc on i.id_medicine_inc = minc.id
-                WHERE i.id+id_medicine = :id_medicament
-                ORDER BY 2;
+            SELECT 
+                minc.id as id,
+                minc.name as medicine_name,
+                i.severity
+            FROM "Incompatibility" i
+                JOIN "Medicine" m on i.id_medicine = m.id
+                JOIN "Medicine" minc on i.id_medicine_inc = minc.id
+            WHERE i.id_medicine = :id AND i.id_medicine_inc IN (:medicineIds)
+            ORDER BY minc.name;
             """;
-            MapSqlParameterSource param = new MapSqlParameterSource(
-                    Map.of("id", id)
-            );
-            List<MedicineIncResponse> medicineIncResponse = jdbcTemplate.query(sql, param, (rs, rowNum) -> new MedicineIncResponse(
-                    rs.getInt("id_medicine_inc"),
-                    rs.getString("name_medicine_inc"),
+            MapSqlParameterSource param = new MapSqlParameterSource();
+            param.addValue("id", id);
+            param.addValue("medicineIds", medicineIds);
+
+            return jdbcTemplate.query(sql, param, (rs, rowNum) -> new MedicineIncResponse(
+                    rs.getInt("id"),
+                    rs.getString("medicine_name"),
                     rs.getString("severity")
             ));
-            if (medicineIncResponse.isEmpty()) {
-                return Optional.empty();
-            } else {
-                return Optional.of(medicineIncResponse);
-            }
         } catch (DataAccessException e) {
-            log.error("Error to try find medicine by " + id + " ERROR: " + e.getMessage());
-            return Optional.of(new ArrayList<>());
+            log.error("Error trying to find incompatibilities for medicine " + id, e);
+            return new ArrayList<>();
         }
     }
+
     public List<MedicineResponse> findAllMedicines(int pageNumber, int pageSize) {
         try {
             String sql = """
@@ -143,8 +137,7 @@ public class MedicineRepository {
                     .addValue("pageSize", pageSize)
                     .addValue("offset", offset);
 
-            List<MedicineResponse> medicines = jdbcTemplate.query(sql, param, getMedicineRowMapper());
-            return medicines;
+            return jdbcTemplate.query(sql, param, getMedicineRowMapper());
         } catch (DataAccessException e) {
             log.error("Error trying to find medicines by page: " + pageNumber + ". Error: " + e.getMessage());
             throw new MedicineOperationException(0, "null", "null", e);
