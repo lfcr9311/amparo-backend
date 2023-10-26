@@ -10,10 +10,7 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @Slf4j
 public class ExamRepository {
@@ -109,13 +106,12 @@ public class ExamRepository {
                 AND e."is_done" = true
                 LIMIT :size OFFSET :offset
                 """;
-
             MapSqlParameterSource param = new MapSqlParameterSource(Map.of(
                     "id", UUID.fromString(id),
                     "size", size,
                     "offset", offset
             ));
-            List<ExamResponse> exams = jdbcTemplate.query(sql, param, (rs, rowNum) -> new ExamResponse(
+            return jdbcTemplate.query(sql, param, (rs, rowNum) -> new ExamResponse(
                     rs.getString("id"),
                     rs.getString("description"),
                     rs.getTimestamp("examDate").toLocalDateTime(),
@@ -124,11 +120,9 @@ public class ExamRepository {
                     rs.getString("image"),
                     rs.getString("file")
             ));
-
-            return exams;
         } catch (DataAccessException e) {
-            log.error("Error trying to list pending exams from patient with id: " + id + " Error: " + e.getMessage());
-            throw new ExamOperationException(id, "", "", "");
+            log.error("Error trying to list pending exams from patient with id: " + id, e);
+            return new ArrayList<>();
         }
     }
 
@@ -155,7 +149,7 @@ public class ExamRepository {
                     "size", size,
                     "offset", offset
             ));
-            List<ExamResponse> exams = jdbcTemplate.query(sql, param, (rs, rowNum) -> new ExamResponse(
+            return jdbcTemplate.query(sql, param, (rs, rowNum) -> new ExamResponse(
                     rs.getString("id"),
                     rs.getString("description"),
                     rs.getTimestamp("examDate").toLocalDateTime(),
@@ -165,10 +159,9 @@ public class ExamRepository {
                     rs.getString("file")
             ));
 
-            return exams;
         } catch (DataAccessException e) {
-            log.error("Error trying to list pending exams from patient with id: " + id + " Error: " + e.getMessage());
-            throw new ExamOperationException(id, "", "", "");
+            log.error("Error trying to list pending exams from patient with id: " + id, e);
+            return new ArrayList<>();
         }
     }
 
