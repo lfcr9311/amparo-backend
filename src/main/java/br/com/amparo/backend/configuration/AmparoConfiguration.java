@@ -1,6 +1,7 @@
 package br.com.amparo.backend.configuration;
 
 import br.com.amparo.backend.configuration.security.AmparoSecurityConfiguration;
+import br.com.amparo.backend.controllers.FileController;
 import br.com.amparo.backend.repository.*;
 import br.com.amparo.backend.service.*;
 import br.com.amparo.backend.service.impl.*;
@@ -13,6 +14,10 @@ import br.com.amparo.backend.service.impl.UserServiceImpl;
 import br.com.amparo.backend.service.security.AuthService;
 import br.com.amparo.backend.service.security.CryptographyServiceSha256;
 import br.com.amparo.backend.service.security.TokenService;
+import com.amazonaws.auth.AWSStaticCredentialsProvider;
+import com.amazonaws.auth.BasicAWSCredentials;
+import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -27,6 +32,12 @@ public class AmparoConfiguration {
 
     @Value("${api.security.token.secret:secret}")
     private String tokenSecuritySecret;
+    @Value("${aws.region}")
+    private String region;
+    @Value("${aws.key}")
+    private String awsKey;
+    @Value("${aws.secret}")
+    private String awsSecret;
 
     @Bean
     public TokenService tokenService() {
@@ -36,6 +47,24 @@ public class AmparoConfiguration {
     @Bean
     public CryptographyService cryptographyService() {
         return new CryptographyServiceSha256(new Random());
+    }
+
+    @Bean
+    public AmazonS3 amazonS3() {
+        return AmazonS3ClientBuilder.standard()
+                .withRegion(region)
+                .withCredentials(new AWSStaticCredentialsProvider(new BasicAWSCredentials(awsKey, awsSecret)))
+                .build();
+    }
+
+    @Bean
+    public FileService fileService(AmazonS3 amazonS3) {
+        return new FileService(amazonS3);
+    }
+
+    @Bean
+    public FileController fileController(FileService fileService) {
+        return new FileController(fileService);
     }
 
     @Bean
