@@ -39,9 +39,9 @@ public class ExamRepository {
                 """;
             MapSqlParameterSource param = new MapSqlParameterSource(Map.of(
                     "idPatient", UUID.fromString(id),
-                    "exam_date", exam.exam_date(),
+                    "exam_date", exam.examDate(),
                     "description", exam.description(),
-                    "is_done", exam.is_done()
+                    "is_done", exam.isDone()
             ));
             param.addValue("exam_file", exam.file());
             param.addValue("exam_image", exam.image());
@@ -50,7 +50,7 @@ public class ExamRepository {
             return findExamById(examId.toString());
         } catch (DataAccessException e) {
             log.error("Error trying to add exam to patient: " + id + " Error: " + e.getMessage());
-            throw new ExamCreationException(id, exam.description(), exam.exam_date(), exam.is_done());
+            throw new ExamCreationException(id, exam.description(), exam.examDate(), exam.isDone());
         }
     }
 
@@ -177,21 +177,21 @@ public class ExamRepository {
         try{
             String sql = """
                     UPDATE "Exam"
-                    SET "description" = :description,
-                        "exam_date" = :exam_date,
-                        "is_done" = :is_done,
-                        "exam_image" = :exam_image,
-                        "exam_file" = :exam_file
+                    SET description = :description,
+                        exam_date = :examDate,
+                        is_done = :isDone,
+                        exam_image = :image,
+                        exam_file = :file
                     WHERE "id" = :id
                     """;
             MapSqlParameterSource param = new MapSqlParameterSource(Map.of(
                     "id", UUID.fromString(id),
                     "description", examRequest.description(),
-                    "exam_date", examRequest.examDate(),
-                    "is_done", examRequest.isDone()
+                    "examDate", examRequest.examDate(),
+                    "isDone", examRequest.isDone()
             ));
-            param.addValue("exam_image", examRequest.image());
-            param.addValue("exam_file", examRequest.file());
+            param.addValue("image", examRequest.image());
+            param.addValue("file", examRequest.file());
             jdbcTemplate.update(sql, param);
             return findExamById(id);
         } catch (DataAccessException e) {
