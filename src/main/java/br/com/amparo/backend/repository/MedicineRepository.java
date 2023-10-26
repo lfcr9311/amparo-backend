@@ -34,7 +34,7 @@ public class MedicineRepository {
                     "id", id
             ));
             MedicineResponse medicineResponse = jdbcTemplate.queryForObject(sql, param, (rs, rowNum) -> new MedicineResponse(
-                    rs.getInt(id),
+                    rs.getInt("id"),
                     rs.getString("name"),
                     rs.getString("leaflet")
             ));
