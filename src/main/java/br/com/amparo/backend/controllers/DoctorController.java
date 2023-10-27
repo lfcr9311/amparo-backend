@@ -94,7 +94,7 @@ public class DoctorController {
                     )
             })
     @PreAuthorize("hasRole('DOCTOR')")
-    @PutMapping()
+    @PutMapping
     public ResponseEntity<DoctorResponse> editDoctor(@RequestBody @Valid DoctorToUpdateRequest doctor) {
         return doctorService.editDoctor(doctor, SecurityUtils.getApiUser().getId())
                 .map(ResponseEntity::ok)
