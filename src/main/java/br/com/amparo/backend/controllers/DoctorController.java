@@ -74,6 +74,30 @@ public class DoctorController {
                             content = @Content(schema = @Schema(hidden = true))
                     )
             })
+
+    @PreAuthorize("hasRole('PATIENT')")
+    @GetMapping("/crm/{crm}/uf/{uf}")
+    public ResponseEntity<DoctorResponse> findByCrm(
+            @PathVariable
+            @Parameter(
+                    name = "crm",
+                    description = "Doctor CRM",
+                    example = "123456"
+            ) String crm,
+            @PathVariable
+            @Parameter(
+                    name = "uf",
+                    description = "Doctor UF",
+                    example = "SP"
+            ) String uf
+    ) {
+        return doctorService.findByCrm(crm, uf)
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    }
+
+
+
     @PreAuthorize("hasRole('DOCTOR')")
     @GetMapping()
     public ResponseEntity<DoctorResponse> getDoctor() {

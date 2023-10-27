@@ -30,6 +30,12 @@ public class DoctorServiceImpl implements DoctorService {
             return repository.updateDoctor(doctorToUpdateRequest.toDoctor(id));
         }
     }
+
+    @Override
+    public Optional<DoctorResponse> findByCrm(String crm, String uf) {
+        return repository.findByCrm(crm, uf);
+    }
+
     @Override
     public List<DoctorResponse> findAll(List<String> doctorIds) {
         return repository.findAll(doctorIds);

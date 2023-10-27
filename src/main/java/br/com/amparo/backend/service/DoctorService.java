@@ -11,4 +11,6 @@ public interface DoctorService {
     Optional<DoctorResponse> findDoctorById(String id);
     Optional<DoctorResponse> editDoctor(DoctorToUpdateRequest doctorToUpdateRequest, String id);
     List<DoctorResponse> findAll(List<String> doctorIds);
+
+    Optional<DoctorResponse> findByCrm(String crm, String uf);
 }
