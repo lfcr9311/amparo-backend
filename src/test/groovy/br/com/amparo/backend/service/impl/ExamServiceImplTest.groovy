@@ -95,7 +95,7 @@ class ExamServiceImplTest extends Specification {
         then:
         Assertions.assertThat(response.get(0)).usingRecursiveComparison().isEqualTo(mockExamResponse())
 
-        response.stream().forEach(exam -> exam.is_done())
+        response.stream().forEach(exam -> exam.isDone())
     }
 
     def "listPendingExams must throw exception when patient not found"() {
@@ -114,7 +114,7 @@ class ExamServiceImplTest extends Specification {
         thrown(RuntimeException.class)
     }
 
-    def "listPendingExams should return a list of done exams"() {
+    def "listPendingExams should return a list of pending exams"() {
         given:
         def id = "id"
         def page = 0
@@ -131,7 +131,7 @@ class ExamServiceImplTest extends Specification {
         then:
         Assertions.assertThat(response.get(0)).usingRecursiveComparison().isEqualTo(mockExamResponse())
 
-        response.stream().forEach(exam -> !exam.is_done())
+        response.stream().forEach(exam -> !exam.isDone())
     }
 
     def "findExamById should return exam"() {

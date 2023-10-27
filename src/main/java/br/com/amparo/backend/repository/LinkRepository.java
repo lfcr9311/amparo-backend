@@ -24,12 +24,12 @@ public class LinkRepository {
                 INSERT INTO "DoctorPatient" ("id_doctor", "id_patient")
                 VALUES (
                     :id_doctor,
-                    :id_patient
+                    :idPatient
                 )
                 """;
             jdbcTemplate.update(sql, Map.of(
                     "id_doctor", UUID.fromString(doctorId),
-                    "id_patient", UUID.fromString(patientId)
+                    "idPatient", UUID.fromString(patientId)
             ));
             return true;
         } catch (DataAccessException e) {
@@ -71,12 +71,12 @@ public class LinkRepository {
                     SELECT 1
                     FROM "DoctorPatient"
                     WHERE "id_doctor" = :id_doctor
-                    AND "id_patient" = :id_patient
+                    AND "id_patient" = :idPatient
                 );
                 """;
             MapSqlParameterSource param = new MapSqlParameterSource(Map.of(
                     "id_doctor", UUID.fromString(doctorId),
-                    "id_patient", UUID.fromString(patientId)
+                    "idPatient", UUID.fromString(patientId)
             ));
 
             return Boolean.TRUE.equals(jdbcTemplate.queryForObject(sql, param, Boolean.class));
@@ -155,6 +155,20 @@ public class LinkRepository {
             return jdbcTemplate.queryForList(sql, Map.of("id_patient", patientId), String.class);
         } catch (DataAccessException ex) {
             log.error("Error trying to get all doctors linked to patientId: " + patientId, ex);
+            return new ArrayList<>();
+        }
+    }
+
+    public List<String> getAllPatientForDoctorId(String doctorId) {
+        try {
+            String sql = """
+                    select id_patient
+                    from "DoctorPatient"
+                    where id_doctor = :id_doctor
+                    """;
+            return jdbcTemplate.queryForList(sql, Map.of("id_doctor", doctorId), String.class);
+        } catch (DataAccessException ex) {
+            log.error("Error trying to get all patients linked to doctorId: " + doctorId, ex);
             return new ArrayList<>();
         }
     }

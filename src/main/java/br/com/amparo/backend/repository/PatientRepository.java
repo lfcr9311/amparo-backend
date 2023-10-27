@@ -5,12 +5,11 @@ import br.com.amparo.backend.dto.patient.PatientResponse;
 import br.com.amparo.backend.exception.PatientOperationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessException;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 
-import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @Slf4j
 public class PatientRepository {
@@ -34,9 +33,9 @@ public class PatientRepository {
             MapSqlParameterSource param = new MapSqlParameterSource(Map.of(
                     "id", UUID.fromString(patient.getId()),
                     "cpf", patient.getCpf(),
-                    "birth_date", patient.getBirthDate(),
-                    "num_sus", patient.getNumSus()
+                    "birth_date", patient.getBirthDate()
             ));
+            param.addValue("num_sus", patient.getNumSus());
             jdbcTemplate.update(sql, param);
             return true;
         } catch (DataAccessException e) {
@@ -49,15 +48,15 @@ public class PatientRepository {
             String sql = """
                     UPDATE "Patient"
                     SET cpf = :cpf,
-                    birth_date = :birthDate,
-                    num_sus = :numSus
+                        birth_date = :birthDate,
+                        num_sus = :numSus
                     WHERE "id" = :id
                     """;
             MapSqlParameterSource param = new MapSqlParameterSource(Map.of(
                     "id", UUID.fromString(patient.getId()),
                     "cpf", patient.getCpf(),
-                    "birth_date", patient.getBirthDate(),
-                    "num_sus", patient.getNumSus()
+                    "birthDate", patient.getBirthDate(),
+                    "numSus", patient.getNumSus()
             ));
             jdbcTemplate.update(sql, param);
             return findByCpf(patient.getCpf());
@@ -141,5 +140,43 @@ public class PatientRepository {
             log.error("Error trying to find patient by id: " + id + " Error: " + e.getMessage());
             return Optional.empty();
         }
+    }
+
+    public List<PatientResponse> findAll(List<String> patientIds) {
+        try {
+            String sql = """
+                   SELECT 
+                          p.id              as "id",
+                          p."cpf"           as "cpf",
+                          u."email"         as "email",
+                          u.name            as "name",
+                          u.cellphone       as "cellphone",
+                          u.is_anonymous    as "isAnonymous",
+                          u.profile_picture as "profilePicture",
+                          p.birth_date      as "birthDate",
+                          p.num_sus         as "numSus"
+                   FROM "Patient" p
+                   LEFT JOIN "User" u ON u."id" = p."id"
+                   WHERE p."id" in (:ids)
+                   """;
+            return jdbcTemplate.query(sql, Map.of("ids", patientIds), getPatientResponseRowMapper());
+        } catch (DataAccessException ex) {
+            log.error("Error trying to get all patients baseOn Ids " + String.join(", ", patientIds));
+            return new ArrayList<>();
+        }
+    }
+
+    private static RowMapper<PatientResponse> getPatientResponseRowMapper() {
+        return (rs, rowNum) -> new PatientResponse(
+                rs.getString("id"),
+                rs.getString("email"),
+                rs.getString("name"),
+                rs.getString("cellphone"),
+                rs.getString("profilePicture"),
+                rs.getBoolean("isAnonymous"),
+                rs.getString("cpf"),
+                rs.getString("birthdate"),
+                rs.getString("numSus")
+        );
     }
 }

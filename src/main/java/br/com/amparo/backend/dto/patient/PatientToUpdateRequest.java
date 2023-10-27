@@ -17,13 +17,12 @@ public record PatientToUpdateRequest(
         String email,
         String cellphone,
         @NotNull
-        @Pattern(regexp = "[0-9]{11}", message = "CPF deve conter somente 11 números")
+        @Pattern(regexp = "[0-9]{11}", message = "CPF must contain only 11 numbers")
         String cpf,
         @NotNull
-        @Pattern(regexp = "^(0?[1-9]|[12][0-9]|3[01])/(0?[1-9]|1[0-2])/\\d{4}$", message = "Data deve ser DD/MM/AAAA")
+        @Pattern(regexp = "^(0?[1-9]|[12][0-9]|3[01])/(0?[1-9]|1[0-2])/\\d{4}$", message = "Date should be DD/MM/YYYY")
         String birthDate,
-        @NotBlank
-        @Pattern(regexp = "\\d{15}$", message = "Nº do SUS deve conter 15 dígitos")
+        @Pattern(regexp = "\\d{15}$", message = "SUS number must contain 15 digits")
         String numSus,
         String profilePicture) {
 

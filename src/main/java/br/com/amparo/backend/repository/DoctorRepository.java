@@ -46,12 +46,14 @@ public class DoctorRepository {
         try {
             String sql = """
                     UPDATE "Doctor"
-                    SET crm = :crm
+                    SET crm = :crm,
+                        uf = :uf
                     WHERE "id" = :id
                     """;
             MapSqlParameterSource param = new MapSqlParameterSource(Map.of(
                     "id", UUID.fromString(doctor.getId()),
-                    "crm", doctor.getCrm()
+                    "crm", doctor.getCrm(),
+                    "uf", doctor.getUf()
             ));
             jdbcTemplate.update(sql, param);
             return findDoctorById(doctor.getId());
@@ -119,7 +121,7 @@ public class DoctorRepository {
     public List<DoctorResponse> findAll(List<String> doctorIds) {
         try {
             String sql = """
-                    ELECT d."id"            as "id",
+                    SELECT d."id"            as "id",
                            d.crm             as "crm",
                            u."email"         as "email",
                            u.name            as "name",
