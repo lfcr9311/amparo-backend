@@ -19,6 +19,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.Objects;
 
 @RestController
@@ -96,10 +97,8 @@ public class DoctorController {
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
-
-
     @PreAuthorize("hasRole('DOCTOR')")
-    @GetMapping()
+    @GetMapping
     public ResponseEntity<DoctorResponse> getDoctor() {
         String userId = SecurityUtils.getCurrentUserId();
         return doctorService.findDoctorById(userId)
