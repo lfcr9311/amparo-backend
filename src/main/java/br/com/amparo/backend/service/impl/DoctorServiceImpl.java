@@ -31,13 +31,6 @@ public class DoctorServiceImpl implements DoctorService {
         }
     }
     @Override
-    public Optional<DoctorResponse> findByCrm(String crm) {
-        String uf = crm.substring(crm.length() - 2);
-        crm = crm.substring(0, crm.length() - 2);
-        return repository.findByCrm(crm, uf);
-    }
-
-    @Override
     public List<DoctorResponse> findAll(List<String> doctorIds) {
         return repository.findAll(doctorIds);
     }
