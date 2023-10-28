@@ -29,20 +29,32 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(PatientOperationException.class)
     public ResponseEntity<ErrorResponse> handlePatientOperationException(PatientOperationException e) {
-        String errorMessage = "Erro ao modificar paciente " +
+        String errorMessage = "Error to modify patient " +
                 "Email: " + e.getEmail() +
-                ", CPF: " + e.getCpf();
+                ", CPF: " + e.getCpf()   +
+                " "       + e.getMessage();
 
         ErrorResponse errorResponse = new ErrorResponse(errorMessage);
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(DoctorOperationException.class)
-    public ResponseEntity<ErrorResponse> handleDoctorOperationException(DoctorOperationException e) {
-        String errorMessage = "Erro ao modificar doutor " +
+    public ResponseEntity<ErrorResponse> handleDoctorModificationException(DoctorOperationException e) {
+        String errorMessage = "Error to modify doctor " +
                 "Email: " + e.getEmail() +
                 ", CRM: " + e.getCrm() +
-                ", UF: " + e.getUf();
+                ", UF: " + e.getUf() + " " + e.getMessage();
+
+        ErrorResponse errorResponse = new ErrorResponse(errorMessage);
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(DoctorOperationException.class)
+    public ResponseEntity<ErrorResponse> handleDoctorCreationException(DoctorOperationException e) {
+        String errorMessage = "Error while creating doctor " +
+                "Email: " + e.getEmail() +
+                ", CRM: " + e.getCrm() +
+                ", UF: " + e.getUf() + " " + e.getMessage();
 
         ErrorResponse errorResponse = new ErrorResponse(errorMessage);
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
@@ -50,10 +62,10 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(MedicineOperationException.class)
     public ResponseEntity<ErrorResponse> handleMedicineFindException(MedicineOperationException e) {
-        String errorMessage = "Erro ao modificar medicamento " +
-                "Id: " + e.getId() +
-                ", Nome: " + e.getName() +
-                ", Bula: " + e.getLeaflet();
+        String errorMessage = "Error to modify medication " +
+                "Id: "     + e.getId()      +
+                ", Name: " + e.getName()    +
+                " "        + e.getMessage();                ;
 
         ErrorResponse errorResponse = new ErrorResponse(errorMessage);
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
@@ -61,8 +73,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(CreationException.class)
     public ResponseEntity<ErrorResponse> handleCreationException(CreationException e) {
-        String errorMessage = "Erro ao criar entidade com identificador: " + e.getIdentifier();
-
+        String errorMessage = "Error to create entity: id: " + e.getIdentifier() + " Error: " + e.getMessage();
         ErrorResponse errorResponse = new ErrorResponse(errorMessage);
         return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
     }

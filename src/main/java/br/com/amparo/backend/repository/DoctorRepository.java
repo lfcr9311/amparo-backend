@@ -41,8 +41,6 @@ public class DoctorRepository {
             log.error("Error trying to create doctor: " + doctor.getId(), e);
             throw new DoctorOperationException(doctor.getEmail(), doctor.getCrm(), doctor.getUf(), e);
         }
-
-
     }
 
     public Optional<DoctorResponse> updateDoctor(Doctor doctor) {
