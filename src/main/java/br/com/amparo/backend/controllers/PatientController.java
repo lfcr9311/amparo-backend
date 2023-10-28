@@ -29,6 +29,7 @@ import java.util.List;
 @ControllerAdvice
 @Slf4j
 @Tag(name = "2. Patient")
+@CrossOrigin(origins = "*")
 public class PatientController {
 
     @Autowired
