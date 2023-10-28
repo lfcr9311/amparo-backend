@@ -84,8 +84,12 @@ public class DoctorRepository {
             MapSqlParameterSource param = new MapSqlParameterSource(Map.of(
                     "id", UUID.fromString(id)
             ));
-            DoctorResponse doctorResponse = jdbcTemplate.queryForObject(sql, param, getDoctorResponseRowMapper());
-            return Optional.ofNullable(doctorResponse);
+            List<DoctorResponse> doctorResponse = jdbcTemplate.query(sql, param, getDoctorResponseRowMapper());
+            if (doctorResponse.isEmpty()) {
+                return Optional.empty();
+            } else {
+                return Optional.ofNullable(doctorResponse.get(0));
+            }
         } catch (DataAccessException e) {
             log.error("Error trying to find doctor by id: " + id + " Error: " + e.getMessage());
             return Optional.empty();

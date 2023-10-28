@@ -85,7 +85,7 @@ public class PatientRepository {
             MapSqlParameterSource param = new MapSqlParameterSource(Map.of(
                     "cpf", cpf
             ));
-            PatientResponse patientResponse = jdbcTemplate.queryForObject(sql, param, (rs, rowNum) -> new PatientResponse(
+            List<PatientResponse> patientResponse = jdbcTemplate.query(sql, param, (rs, rowNum) -> new PatientResponse(
                     rs.getString("id"),
                     rs.getString("email"),
                     rs.getString("name"),
@@ -96,8 +96,11 @@ public class PatientRepository {
                     rs.getString("birthDate"),
                     rs.getString("numSus")
             ));
-
-            return Optional.ofNullable(patientResponse);
+            if (patientResponse.isEmpty()) {
+                return Optional.empty();
+            } else {
+                return Optional.ofNullable(patientResponse.get(0));
+            }
         } catch (DataAccessException e) {
             log.error("Error trying to find patient by cpf: " + cpf + " Error: " + e.getMessage());
             return Optional.empty();
@@ -123,7 +126,7 @@ public class PatientRepository {
             MapSqlParameterSource param = new MapSqlParameterSource(Map.of(
                     "id", UUID.fromString(id)
             ));
-            PatientResponse patientResponse = jdbcTemplate.queryForObject(sql, param, (rs, rowNum) -> new PatientResponse(
+            List<PatientResponse> patients = jdbcTemplate.query(sql, param, (rs, rowNum) -> new PatientResponse(
                     rs.getString("id"),
                     rs.getString("email"),
                     rs.getString("name"),
@@ -134,8 +137,11 @@ public class PatientRepository {
                     rs.getString("birthDate"),
                     rs.getString("numSus")
             ));
-
-            return Optional.ofNullable(patientResponse);
+            if (patients.isEmpty()) {
+                return Optional.empty();
+            } else {
+                return Optional.ofNullable(patients.get(0));
+            }
         } catch (DataAccessException e) {
             log.error("Error trying to find patient by id: " + id + " Error: " + e.getMessage());
             return Optional.empty();

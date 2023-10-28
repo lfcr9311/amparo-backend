@@ -69,7 +69,7 @@ public class ExamRepository {
             MapSqlParameterSource param = new MapSqlParameterSource(Map.of(
                     "id", UUID.fromString(id)
             ));
-            ExamResponse exam = jdbcTemplate.queryForObject(sql, param, (rs, rowNum) -> new ExamResponse(
+            List<ExamResponse> exam = jdbcTemplate.query(sql, param, (rs, rowNum) -> new ExamResponse(
                     rs.getString("id"),
                     rs.getString("description"),
                     rs.getTimestamp("examDate").toLocalDateTime(),
@@ -78,14 +78,14 @@ public class ExamRepository {
                     rs.getString("image"),
                     rs.getString("file")
             ));
-            if (exam == null) {
+            if (exam.isEmpty()) {
                 return Optional.empty();
             } else {
-                return Optional.of(exam);
+                return Optional.of(exam.get(0));
             }
         } catch (DataAccessException e) {
             log.error("Error trying to find exam by id: " + id + " Error: " + e.getMessage());
-            return Optional.empty();
+           throw new RuntimeException(e);
         }
     }
 
@@ -122,7 +122,7 @@ public class ExamRepository {
             ));
         } catch (DataAccessException e) {
             log.error("Error trying to list pending exams from patient with id: " + id, e);
-            return new ArrayList<>();
+            throw new RuntimeException(e);
         }
     }
 
@@ -158,10 +158,9 @@ public class ExamRepository {
                     rs.getString("image"),
                     rs.getString("file")
             ));
-
         } catch (DataAccessException e) {
             log.error("Error trying to list pending exams from patient with id: " + id, e);
-            return new ArrayList<>();
+            throw new RuntimeException(e);
         }
     }
 

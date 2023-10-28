@@ -36,10 +36,15 @@ public class UserTokenRepository {
                     WHERE u.email = :email;
                     """;
             MapSqlParameterSource parameterSource = new MapSqlParameterSource(Map.of("email", email));
-            return Optional.ofNullable(jdbcTemplate.queryForObject(sql, parameterSource, buildRowMapper()));
+            List<UserTokenEntity> users = jdbcTemplate.query(sql, parameterSource, buildRowMapper());
+            if (users.isEmpty()) {
+                return Optional.empty();
+            } else {
+                return Optional.ofNullable(users.get(0));
+            }
         } catch (DataAccessException ex) {
             log.error("Error trying to get tokeUser for email: " + email, ex);
-            return Optional.empty();
+            throw new RuntimeException(ex);
         }
     }
 

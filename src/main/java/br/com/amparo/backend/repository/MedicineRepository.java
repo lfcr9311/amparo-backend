@@ -33,12 +33,16 @@ public class MedicineRepository {
             MapSqlParameterSource param = new MapSqlParameterSource(Map.of(
                     "id", id
             ));
-            MedicineResponse medicineResponse = jdbcTemplate.queryForObject(sql, param, (rs, rowNum) -> new MedicineResponse(
+            List<MedicineResponse> medicineResponse = jdbcTemplate.query(sql, param, (rs, rowNum) -> new MedicineResponse(
                     rs.getInt("id"),
                     rs.getString("name"),
                     rs.getString("leaflet")
             ));
-            return Optional.ofNullable(medicineResponse);
+            if (medicineResponse.isEmpty()) {
+                return Optional.empty();
+            } else {
+                return Optional.ofNullable(medicineResponse.get(0));
+            }
         } catch (DataAccessException e) {
             log.error("Error trying to find medicine by id: " + id + " Error: " + e.getMessage());
             return Optional.empty();
@@ -57,12 +61,16 @@ public class MedicineRepository {
             MapSqlParameterSource param = new MapSqlParameterSource(
                     Map.of("name", name)
             );
-            MedicineResponse medicineResponse = jdbcTemplate.queryForObject(sql, param, (rs, rowNum) -> new MedicineResponse(
+            List<MedicineResponse> medicineResponse = jdbcTemplate.query(sql, param, (rs, rowNum) -> new MedicineResponse(
                     rs.getInt("id"),
                     rs.getString("name"),
                     rs.getString("leaflet")
             ));
-            return Optional.ofNullable(medicineResponse);
+            if (medicineResponse.isEmpty()) {
+                return Optional.empty();
+            } else {
+                return Optional.ofNullable(medicineResponse.get(0));
+            }
         } catch (DataAccessException e) {
             log.error("Error trying to find medicine by name: " + name + " Error: " + e.getMessage());
             return Optional.empty();

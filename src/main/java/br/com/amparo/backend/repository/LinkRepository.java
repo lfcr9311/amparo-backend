@@ -12,7 +12,7 @@ import java.util.*;
 @Slf4j
 public class LinkRepository {
 
-    private NamedParameterJdbcTemplate jdbcTemplate;
+    private final NamedParameterJdbcTemplate jdbcTemplate;
 
     public LinkRepository (NamedParameterJdbcTemplate jdbcTemplate){
         this.jdbcTemplate = jdbcTemplate;
@@ -40,10 +40,9 @@ public class LinkRepository {
 
     public boolean checkConnectionRequest(String doctorId, String patientId) {
         try {
-
             String sql = """
                     SELECT EXISTS(
-                        SELECT 1
+                        SELECT
                         FROM "DoctorPatient"
                         WHERE "id_doctor" = :id_doctor
                         AND "id_patient" = :id_patient
@@ -54,7 +53,13 @@ public class LinkRepository {
                     "id_patient", UUID.fromString(patientId)
             ));
 
-            return Boolean.FALSE.equals(jdbcTemplate.queryForObject(sql, param, Boolean.class));
+            List<Boolean> connection = jdbcTemplate.query(sql, param, (rs, rowNum) -> rs.getBoolean(1));
+
+            if (connection.isEmpty()) {
+                return false;
+            } else {
+                return connection.get(0);
+            }
 
         } catch (DataAccessException e) {
             log.error("Error trying to check connection between doctor: " + doctorId + " and patient: " +
@@ -79,7 +84,12 @@ public class LinkRepository {
                     "idPatient", UUID.fromString(patientId)
             ));
 
-            return Boolean.TRUE.equals(jdbcTemplate.queryForObject(sql, param, Boolean.class));
+            List<Boolean> connection = jdbcTemplate.query(sql, param, (rs, rowNum) -> rs.getBoolean(1));
+            if (connection.isEmpty()) {
+                return false;
+            } else {
+                return connection.get(0);
+            }
 
         } catch (DataAccessException e) {
             log.error("Error trying to check connection between doctor: " + doctorId + " and patient: " +
