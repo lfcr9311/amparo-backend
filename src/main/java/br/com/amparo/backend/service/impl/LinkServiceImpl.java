@@ -56,7 +56,7 @@ public class LinkServiceImpl implements LinkService {
 
     @Override
     public List<PatientResponse> getAllPatientOfDoctor(String doctorId) {
-        List<String> patientIds = linkRepository.getAllPatientForDoctorId(doctorId);
+        List<UUID> patientIds = linkRepository.getAllPatientForDoctorId(UUID.fromString(doctorId));
         return patientService.findAll(patientIds);
     }
 }

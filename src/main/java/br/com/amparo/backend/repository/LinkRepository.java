@@ -159,14 +159,14 @@ public class LinkRepository {
         }
     }
 
-    public List<String> getAllPatientForDoctorId(String doctorId) {
+    public List<UUID> getAllPatientForDoctorId(UUID doctorId) {
         try {
             String sql = """
                     select id_patient
                     from "DoctorPatient"
                     where id_doctor = :id_doctor
                     """;
-            return jdbcTemplate.queryForList(sql, Map.of("id_doctor", doctorId), String.class);
+            return jdbcTemplate.queryForList(sql, Map.of("id_doctor", doctorId), UUID.class);
         } catch (DataAccessException ex) {
             log.error("Error trying to get all patients linked to doctorId: " + doctorId, ex);
             return new ArrayList<>();

@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @RequiredArgsConstructor
 public class PatientServiceImpl implements PatientService {
@@ -37,7 +38,7 @@ public class PatientServiceImpl implements PatientService {
     }
 
     @Override
-    public List<PatientResponse> findAll(List<String> patientIds) {
+    public List<PatientResponse> findAll(List<UUID> patientIds) {
         return repository.findAll(patientIds);
     }
 }
