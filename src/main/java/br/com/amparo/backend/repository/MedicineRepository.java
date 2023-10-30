@@ -52,7 +52,7 @@ public class MedicineRepository {
                             m."name" as "name",
                             m."leaflet" as "leaflet"
                     FROM "Medicine" m
-                    WHERE m."name" = :name
+                    WHERE m."name" ILIKE :name
                     """;
             MapSqlParameterSource param = new MapSqlParameterSource(
                     Map.of("name", name)
