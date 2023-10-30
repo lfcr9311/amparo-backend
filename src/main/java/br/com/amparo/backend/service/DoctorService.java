@@ -8,7 +8,7 @@ import java.util.Optional;
 
 public interface DoctorService {
 
-    Optional<DoctorResponse> findDoctorById(String id);
-    Optional<DoctorResponse> editDoctor(DoctorToUpdateRequest doctorToUpdateRequest, String id);
+    DoctorResponse findDoctorById(String id);
+    DoctorResponse editDoctor(DoctorToUpdateRequest doctorToUpdateRequest, String id);
     List<DoctorResponse> findAll(List<String> doctorIds);
 }

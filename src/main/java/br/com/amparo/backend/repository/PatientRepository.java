@@ -2,6 +2,7 @@ package br.com.amparo.backend.repository;
 
 import br.com.amparo.backend.domain.entity.Patient;
 import br.com.amparo.backend.dto.patient.PatientResponse;
+import br.com.amparo.backend.exception.PatientCreationException;
 import br.com.amparo.backend.exception.PatientOperationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessException;
@@ -40,7 +41,7 @@ public class PatientRepository {
             return true;
         } catch (DataAccessException e) {
             log.error("Error trying to create patient: " + patient.getId() + " Error: " + e.getMessage());
-            throw new PatientOperationException(patient.getEmail(), patient.getCpf(), e);
+            throw new PatientCreationException(e, patient.getEmail(), patient.getCpf());
         }
     }
     public Optional<PatientResponse> updatePatient(Patient patient) {

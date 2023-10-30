@@ -2,7 +2,8 @@ package br.com.amparo.backend.repository;
 
 import br.com.amparo.backend.domain.entity.Doctor;
 import br.com.amparo.backend.dto.doctor.DoctorResponse;
-import br.com.amparo.backend.exception.DoctorOperationException;
+import br.com.amparo.backend.exception.DoctorCreationException;
+import br.com.amparo.backend.exception.DoctorModificationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.RowMapper;
@@ -36,10 +37,9 @@ public class DoctorRepository {
 
             jdbcTemplate.update(sql, param);
             return true;
-
         } catch (DataAccessException e) {
             log.error("Error trying to create doctor: " + doctor.getId(), e);
-            throw new DoctorOperationException(doctor.getEmail(), doctor.getCrm(), doctor.getUf(), e);
+            throw new DoctorCreationException(doctor.getEmail(), doctor.getCrm(), doctor.getUf(), e);
         }
     }
 
@@ -60,7 +60,7 @@ public class DoctorRepository {
             return findDoctorById(doctor.getId());
         } catch (DataAccessException e) {
             log.error("Error trying to update doctor: " + doctor.getId() + " Error: " + e.getMessage());
-            throw new DoctorOperationException(doctor.getEmail(), doctor.getCrm(), doctor.getUf(), e);
+            throw new DoctorModificationException(doctor.getEmail(), doctor.getCrm(), doctor.getUf(), e);
         }
     }
 
@@ -90,7 +90,7 @@ public class DoctorRepository {
             }
         } catch (DataAccessException e) {
             log.error("Error trying to find doctor by id: " + id + " Error: " + e.getMessage());
-            return Optional.empty();
+            throw new RuntimeException(e);
         }
     }
 
@@ -112,7 +112,7 @@ public class DoctorRepository {
             return jdbcTemplate.query(sql, Map.of("ids", doctorIds), getDoctorResponseRowMapper());
         } catch (DataAccessException ex) {
             log.error("Error trying to get all doctors baseOn Ids " + String.join(", ", doctorIds));
-            return new ArrayList<>();
+            throw new RuntimeException(ex);
         }
     }
 

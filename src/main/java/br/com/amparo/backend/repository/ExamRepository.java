@@ -47,7 +47,7 @@ public class ExamRepository {
             return findExamById(examId.toString());
         } catch (DataAccessException e) {
             log.error("Error trying to add exam to patient: " + id + " Error: " + e.getMessage());
-            throw new ExamCreationException(id, exam.description(), exam.examDate(), exam.isDone());
+            throw new ExamCreationException(e, exam.description(), exam.examDate(), exam.isDone());
         }
     }
 
