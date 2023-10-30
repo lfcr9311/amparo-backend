@@ -81,7 +81,7 @@ public class MedicineController {
                             content = @Content(schema = @Schema(hidden = true))
                     )
             })
-    @GetMapping("/all")
+    @GetMapping
     @PreAuthorize("hasRole('PATIENT') or hasRole('DOCTOR')")
     public ResponseEntity<List<MedicineResponse>> findAllMedicines (
             @RequestParam(defaultValue = "1")
