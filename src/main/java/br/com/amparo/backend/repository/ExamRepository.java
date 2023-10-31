@@ -75,8 +75,8 @@ public class ExamRepository {
                     rs.getTimestamp("examDate").toLocalDateTime(),
                     rs.getBoolean("isDone"),
                     rs.getString("patientId"),
-                    rs.getString("image"),
-                    rs.getString("file")
+                    rs.getString("file"),
+                    rs.getString("image")
             ));
             if (exam.isEmpty()) {
                 return Optional.empty();
@@ -155,8 +155,8 @@ public class ExamRepository {
                     rs.getTimestamp("examDate").toLocalDateTime(),
                     rs.getBoolean("isDone"),
                     rs.getString("patientId"),
-                    rs.getString("image"),
-                    rs.getString("file")
+                    rs.getString("file"),
+                    rs.getString("image")
             ));
         } catch (DataAccessException e) {
             log.error("Error trying to list pending exams from patient with id: " + id, e);

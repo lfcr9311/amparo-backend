@@ -94,7 +94,7 @@ public class DoctorRepository {
         }
     }
 
-    public List<DoctorResponse> findAll(List<String> doctorIds) {
+    public List<DoctorResponse> findAll(List<UUID> doctorIds) {
         try {
             String sql = """
                     SELECT d."id"            as "id",
@@ -111,7 +111,7 @@ public class DoctorRepository {
                     """;
             return jdbcTemplate.query(sql, Map.of("ids", doctorIds), getDoctorResponseRowMapper());
         } catch (DataAccessException ex) {
-            log.error("Error trying to get all doctors baseOn Ids " + String.join(", ", doctorIds));
+            log.error("Error trying to get all doctors baseOn Ids " + String.join(", ", doctorIds.toString()), ex);
             throw new RuntimeException(ex);
         }
     }

@@ -149,7 +149,7 @@ public class PatientRepository {
         }
     }
 
-    public List<PatientResponse> findAll(List<String> patientIds) {
+    public List<PatientResponse> findAll(List<UUID> patientIds) {
         try {
             String sql = """
                    SELECT 
@@ -168,7 +168,7 @@ public class PatientRepository {
                    """;
             return jdbcTemplate.query(sql, Map.of("ids", patientIds), getPatientResponseRowMapper());
         } catch (DataAccessException ex) {
-            log.error("Error trying to get all patients baseOn Ids " + String.join(", ", patientIds));
+            log.error("Error trying to get all patients baseOn Ids " + patientIds + " Error: " + ex.getMessage());
             return new ArrayList<>();
         }
     }
