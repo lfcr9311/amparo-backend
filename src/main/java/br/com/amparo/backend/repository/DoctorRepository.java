@@ -135,7 +135,7 @@ public class DoctorRepository {
                     """;
             return jdbcTemplate.query(sql, Map.of("ids", doctorIds), getDoctorResponseRowMapper());
         } catch (DataAccessException ex) {
-            log.error("Error trying to get all doctors baseOn Ids " + String.join(", ", doctorIds));
+            log.error("Error trying to get all doctors baseOn Ids " + doctorIds, ex);
             return new ArrayList<>();
         }
     }

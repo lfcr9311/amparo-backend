@@ -5,6 +5,7 @@ import br.com.amparo.backend.dto.doctor.DoctorToUpdateRequest;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 public interface DoctorService {
 

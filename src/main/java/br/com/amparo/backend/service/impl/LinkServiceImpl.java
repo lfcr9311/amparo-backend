@@ -10,6 +10,7 @@ import br.com.amparo.backend.service.PatientService;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
+import java.util.UUID;
 
 @RequiredArgsConstructor
 public class LinkServiceImpl implements LinkService {
@@ -49,13 +50,13 @@ public class LinkServiceImpl implements LinkService {
 
     @Override
     public List<DoctorResponse> getAllDoctorOfPatient(String patientId) {
-        List<String> doctorIds = linkRepository.getAllDoctorsForPatientId(patientId);
+        List<UUID> doctorIds = linkRepository.getAllDoctorsForPatientId(UUID.fromString(patientId));
         return doctorService.findAll(doctorIds);
     }
 
     @Override
     public List<PatientResponse> getAllPatientOfDoctor(String doctorId) {
-        List<String> patientIds = linkRepository.getAllPatientForDoctorId(doctorId);
+        List<UUID> patientIds = linkRepository.getAllPatientForDoctorId(UUID.fromString(doctorId));
         return patientService.findAll(patientIds);
     }
 }
