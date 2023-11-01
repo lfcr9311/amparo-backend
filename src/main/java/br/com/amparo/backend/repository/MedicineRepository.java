@@ -24,8 +24,8 @@ public class MedicineRepository {
     public Optional<MedicineResponse> findMedicineById(int id) {
         try {
             String sql = """
-                    SELECT  m."id" as "id",
-                            m."name" as "name",
+                    SELECT  m."id"      as "id",
+                            m."name"    as "name",
                             m."leaflet" as "leaflet"
                     FROM "Medicine" m
                     WHERE m."id" = :id
@@ -48,8 +48,8 @@ public class MedicineRepository {
     public Optional<MedicineResponse> findMedicineByName(String name) {
         try {
             String sql = """
-                    SELECT  m."id" as "id",
-                            m."name" as "name",
+                    SELECT  m."id"      as "id",
+                            m."name"    as "name",
                             m."leaflet" as "leaflet"
                     FROM "Medicine" m
                     WHERE m."name" ILIKE :name
@@ -72,8 +72,8 @@ public class MedicineRepository {
     public List<MedicineIncResponse> findAllIncompatibility(int id) {
         try {
             String sql = """
-                    SELECT m."id" as "id_medicine_inc",
-                            m."name" as "name_medicine_inc",
+                    SELECT m."id"        as "id_medicine_inc",
+                            m."name"     as "name_medicine_inc",
                             i."severity" as "severity"
                     FROM "Medicine" m
                     INNER JOIN "Incompatibility" i ON m."id" = i."id_medicine_inc"
@@ -97,8 +97,8 @@ public class MedicineRepository {
         try {
             String sql = """
             SELECT 
-                minc.id as id,
-                minc.name as medicine_name,
+                minc.id     as id,
+                minc.name   as medicine_name,
                 i.severity
             FROM "Incompatibility" i
                 JOIN "Medicine" m on i.id_medicine = m.id
@@ -124,8 +124,8 @@ public class MedicineRepository {
     public List<MedicineResponse> findAllMedicines(int pageNumber, int pageSize) {
         try {
             String sql = """
-                    SELECT  m."id" as "id",
-                            m."name" as "name",
+                    SELECT  m."id"      as "id",
+                            m."name"    as "name",
                             m."leaflet" as "leaflet"
                     FROM "Medicine" m
                     LIMIT :pageSize OFFSET :offset
