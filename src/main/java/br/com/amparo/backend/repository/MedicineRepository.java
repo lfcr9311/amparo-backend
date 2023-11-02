@@ -52,16 +52,19 @@ public class MedicineRepository {
                             m."name"    as "name",
                             m."leaflet" as "leaflet"
                     FROM "Medicine" m
-                    WHERE m."name" ILIKE '%' || :name || '%'
+                    WHERE m."name" ILIKE :name
                     """;
             MapSqlParameterSource param = new MapSqlParameterSource(
                     Map.of("name", name)
             );
-            MedicineResponse medicineResponse = jdbcTemplate.queryForObject(sql, param, (rs, rowNum) -> new MedicineResponse(
-                    rs.getInt("id"),
-                    rs.getString("name"),
-                    rs.getString("leaflet")
-            ));
+            MedicineResponse medicineResponse = jdbcTemplate.queryForObject(sql, param, (rs, rowNum) ->
+                    new MedicineResponse(
+                        rs.getInt("id"),
+                        rs.getString("name"),
+                        rs.getString("leaflet")
+                    )
+            );
+            param.addValue("name", "%" + name + "%");
             return Optional.ofNullable(medicineResponse);
         } catch (DataAccessException e) {
             log.error("Error trying to find medicine by name: " + name + " Error: " + e.getMessage());
