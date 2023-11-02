@@ -1,48 +1,62 @@
 package br.com.amparo.backend.configuration;
 
-import br.com.amparo.backend.controllers.dto.FieldMappedError;
+import br.com.amparo.backend.configuration.security.ValidationError;
 import br.com.amparo.backend.controllers.dto.ObjectMappingError;
 import br.com.amparo.backend.domain.exception.ErrorResponse;
-import br.com.amparo.backend.exception.CreationException;
-import br.com.amparo.backend.exception.DoctorOperationException;
-import br.com.amparo.backend.exception.MedicineOperationException;
-import br.com.amparo.backend.exception.PatientOperationException;
+import br.com.amparo.backend.exception.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<?> handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
-        List<FieldMappedError> errors = e.getBindingResult().getAllErrors()
+        List<FieldError> fieldErrors = e.getBindingResult().getFieldErrors();
+        List<ValidationError> errors = fieldErrors
                 .stream()
-                .map(it -> new FieldMappedError(it.getDefaultMessage()))
-                .toList();
+                .map(fieldError -> new ValidationError(fieldError.getField(), fieldError.getDefaultMessage()))
+                .collect(Collectors.toList());
         return ResponseEntity.badRequest().body(new ObjectMappingError(errors));
     }
 
     @ExceptionHandler(PatientOperationException.class)
     public ResponseEntity<ErrorResponse> handlePatientOperationException(PatientOperationException e) {
-        String errorMessage = "Erro ao modificar paciente " +
+        String errorMessage = "Error to modify patient " +
                 "Email: " + e.getEmail() +
-                ", CPF: " + e.getCpf();
+                ", CPF: " + e.getCpf()   +
+                " "       + e.getMessage();
 
         ErrorResponse errorResponse = new ErrorResponse(errorMessage);
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler(DoctorOperationException.class)
-    public ResponseEntity<ErrorResponse> handleDoctorOperationException(DoctorOperationException e) {
-        String errorMessage = "Erro ao modificar doutor " +
+    @ExceptionHandler(DoctorModificationException.class)
+    public ResponseEntity<ErrorResponse> handleDoctorModificationException(DoctorModificationException e) {
+        String errorMessage = "Error to modify doctor " +
                 "Email: " + e.getEmail() +
-                ", CRM: " + e.getCrm() +
-                ", UF: " + e.getUf();
+                ", CRM: " + e.getCrm()   +
+                ", UF: "  + e.getUf()    +
+                " "       + e.getMessage();
+
+        ErrorResponse errorResponse = new ErrorResponse(errorMessage);
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(DoctorCreationException.class)
+    public ResponseEntity<ErrorResponse> handleDoctorCreationException(DoctorCreationException e) {
+        String errorMessage = "Error while creating doctor" +
+                "Email: " + e.getEmail() +
+                ", CRM: " + e.getCrm()   +
+                ", UF: "  + e.getUf()    +
+                " "       + e.getMessage();
 
         ErrorResponse errorResponse = new ErrorResponse(errorMessage);
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
@@ -50,10 +64,10 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(MedicineOperationException.class)
     public ResponseEntity<ErrorResponse> handleMedicineFindException(MedicineOperationException e) {
-        String errorMessage = "Erro ao modificar medicamento " +
-                "Id: " + e.getId() +
-                ", Nome: " + e.getName() +
-                ", Bula: " + e.getLeaflet();
+        String errorMessage = "Error to modify medication " +
+                "Id: "     + e.getId()      +
+                ", Name: " + e.getName()    +
+                " "        + e.getMessage();                ;
 
         ErrorResponse errorResponse = new ErrorResponse(errorMessage);
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
@@ -61,9 +75,15 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(CreationException.class)
     public ResponseEntity<ErrorResponse> handleCreationException(CreationException e) {
-        String errorMessage = "Erro ao criar entidade com identificador: " + e.getIdentifier();
-
+        String errorMessage = "Error to create entity: Error: " + e.getMessage();
         ErrorResponse errorResponse = new ErrorResponse(errorMessage);
         return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler(NotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleNotFoundException(NotFoundException e) {
+        String errorMessage = e.getMessage() + " not found.";
+        ErrorResponse errorResponse = new ErrorResponse(errorMessage);
+        return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
     }
 }
