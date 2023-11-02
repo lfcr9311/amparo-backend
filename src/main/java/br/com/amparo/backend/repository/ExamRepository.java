@@ -40,14 +40,14 @@ public class ExamRepository {
                     "description", exam.description(),
                     "is_done", exam.isDone()
             ));
-            param.addValue("exam_file", exam.file());
             param.addValue("exam_image", exam.image());
+            param.addValue("exam_file", exam.file());
 
             UUID examId = jdbcTemplate.queryForObject(sql, param, UUID.class);
             return findExamById(examId.toString());
         } catch (DataAccessException e) {
             log.error("Error trying to add exam to patient: " + id + " Error: " + e.getMessage());
-            throw new ExamCreationException(id, exam.description(), exam.examDate(), exam.isDone());
+            throw new ExamCreationException(e, exam.description(), exam.examDate(), exam.isDone());
         }
     }
 
@@ -69,23 +69,23 @@ public class ExamRepository {
             MapSqlParameterSource param = new MapSqlParameterSource(Map.of(
                     "id", UUID.fromString(id)
             ));
-            ExamResponse exam = jdbcTemplate.queryForObject(sql, param, (rs, rowNum) -> new ExamResponse(
+            List<ExamResponse> exam = jdbcTemplate.query(sql, param, (rs, rowNum) -> new ExamResponse(
                     rs.getString("id"),
                     rs.getString("description"),
                     rs.getTimestamp("examDate").toLocalDateTime(),
                     rs.getBoolean("isDone"),
                     rs.getString("patientId"),
-                    rs.getString("image"),
-                    rs.getString("file")
+                    rs.getString("file"),
+                    rs.getString("image")
             ));
-            if (exam == null) {
+            if (exam.isEmpty()) {
                 return Optional.empty();
             } else {
-                return Optional.of(exam);
+                return Optional.of(exam.get(0));
             }
         } catch (DataAccessException e) {
             log.error("Error trying to find exam by id: " + id + " Error: " + e.getMessage());
-            return Optional.empty();
+           throw new RuntimeException(e);
         }
     }
 
@@ -122,7 +122,7 @@ public class ExamRepository {
             ));
         } catch (DataAccessException e) {
             log.error("Error trying to list pending exams from patient with id: " + id, e);
-            return new ArrayList<>();
+            throw new RuntimeException(e);
         }
     }
 
@@ -155,13 +155,12 @@ public class ExamRepository {
                     rs.getTimestamp("examDate").toLocalDateTime(),
                     rs.getBoolean("isDone"),
                     rs.getString("patientId"),
-                    rs.getString("image"),
-                    rs.getString("file")
+                    rs.getString("file"),
+                    rs.getString("image")
             ));
-
         } catch (DataAccessException e) {
             log.error("Error trying to list pending exams from patient with id: " + id, e);
-            return new ArrayList<>();
+            throw new RuntimeException(e);
         }
     }
 

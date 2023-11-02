@@ -70,8 +70,7 @@ public class AuthService {
         SaltedPassword passwordPatient = this.cryptographicService.encrypt(patient.getPassword());
         String id = userRepository.create(patient, passwordPatient);
         patient.setId(id);
-        boolean created = patientRepository.create(patient);
-        if (!created) throw new PatientCreationException(patient.getCpf());
+        patientRepository.create(patient);
         return patient;
     }
 
@@ -81,11 +80,10 @@ public class AuthService {
             throw new UserAlreadyExistsException();
         }
         Doctor doctor = userRequest.toDoctor();
-        SaltedPassword passwordDoctor = this.cryptographicService.encrypt(doctor.getPassword());
+        SaltedPassword passwordDoctor = this.cryptographicService.encrypt(userRequest.getPassword());
         String id = userRepository.create(doctor, passwordDoctor);
         doctor.setId(id);
-        boolean created = doctorRepository.create(doctor);
-        if (!created) throw new DoctorCreationException(userRequest.getCrm(),userRequest.getUf());
+        doctorRepository.create(doctor);
         return doctor;
     }
 }
