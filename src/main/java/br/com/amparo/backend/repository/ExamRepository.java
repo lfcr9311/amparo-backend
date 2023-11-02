@@ -40,8 +40,8 @@ public class ExamRepository {
                     "description", exam.description(),
                     "is_done", exam.isDone()
             ));
-            param.addValue("exam_file", exam.file());
             param.addValue("exam_image", exam.image());
+            param.addValue("exam_file", exam.file());
 
             UUID examId = jdbcTemplate.queryForObject(sql, param, UUID.class);
             return findExamById(examId.toString());
@@ -75,8 +75,8 @@ public class ExamRepository {
                     rs.getTimestamp("examDate").toLocalDateTime(),
                     rs.getBoolean("isDone"),
                     rs.getString("patientId"),
-                    rs.getString("image"),
-                    rs.getString("file")
+                    rs.getString("file"),
+                    rs.getString("image")
             ));
             if (exam == null) {
                 return Optional.empty();
