@@ -9,6 +9,7 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
@@ -36,10 +37,15 @@ public class UserRepository {
                     WHERE email = :email
                     """;
             MapSqlParameterSource param = new MapSqlParameterSource("email", email);
-            return Optional.ofNullable(jdbcTemplate.queryForObject(sql, param, buildRowMapper()));
+            List<User> users = jdbcTemplate.query(sql, param, buildRowMapper());
+            if (users.isEmpty()) {
+                return Optional.empty();
+            } else {
+                return Optional.ofNullable(users.get(0));
+            }
         } catch (DataAccessException e) {
-            log.error("Error trying to get user with email: " + email + " Error: "+ e.getMessage());
-            return Optional.empty();
+            log.error("Error trying to get user with email: " + email, e);
+            throw new RuntimeException(e);
         }
     }
 
@@ -58,7 +64,12 @@ public class UserRepository {
                     WHERE id = :id
                     """;
             MapSqlParameterSource param = new MapSqlParameterSource("id", UUID.fromString(id));
-            return Optional.ofNullable(jdbcTemplate.queryForObject(sql, param, buildRowMapper()));
+            List<User> users = jdbcTemplate.query(sql, param, buildRowMapper());
+            if (users.isEmpty()) {
+                return Optional.empty();
+            } else {
+                return Optional.ofNullable(users.get(0));
+            }
         } catch (DataAccessException e) {
             log.error("Error trying to get user with id: " + id + " Error: " + e.getMessage());
             return Optional.empty();

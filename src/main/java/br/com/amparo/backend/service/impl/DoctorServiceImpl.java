@@ -2,6 +2,7 @@ package br.com.amparo.backend.service.impl;
 
 import br.com.amparo.backend.dto.doctor.DoctorResponse;
 import br.com.amparo.backend.dto.doctor.DoctorToUpdateRequest;
+import br.com.amparo.backend.exception.NotFoundException;
 import br.com.amparo.backend.repository.DoctorRepository;
 import br.com.amparo.backend.service.DoctorService;
 import br.com.amparo.backend.service.UserService;
@@ -18,17 +19,27 @@ public class DoctorServiceImpl implements DoctorService {
     private final DoctorRepository repository;
 
     @Override
-    public Optional<DoctorResponse> findDoctorById(String id) {
-        return repository.findDoctorById(id);
+        public DoctorResponse findDoctorById(String id) {
+        Optional<DoctorResponse> doctor = repository.findDoctorById(id);
+        if (doctor.isEmpty()) {
+            throw new NotFoundException("Doctor");
+        } else {
+            return doctor.get();
+        }
     }
 
     @Override
-    public Optional<DoctorResponse> editDoctor(DoctorToUpdateRequest doctorToUpdateRequest, String id) {
+    public DoctorResponse editDoctor(DoctorToUpdateRequest doctorToUpdateRequest, String id) {
         if (repository.findDoctorById(id).isEmpty()) {
-            return Optional.empty();
+            throw new NotFoundException("Doctor");
         } else {
             userService.updateUser(doctorToUpdateRequest.toDoctor(id));
-            return repository.updateDoctor(doctorToUpdateRequest.toDoctor(id));
+            Optional<DoctorResponse> doctor = repository.updateDoctor(doctorToUpdateRequest.toDoctor(id));
+            if (doctor.isEmpty()){
+                throw new RuntimeException("Fatal Error: Doctor might not be updated");
+            } else {
+                return doctor.get();
+            }
         }
     }
     @Override

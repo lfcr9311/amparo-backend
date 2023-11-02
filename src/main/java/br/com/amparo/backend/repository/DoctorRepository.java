@@ -2,7 +2,8 @@ package br.com.amparo.backend.repository;
 
 import br.com.amparo.backend.domain.entity.Doctor;
 import br.com.amparo.backend.dto.doctor.DoctorResponse;
-import br.com.amparo.backend.exception.DoctorOperationException;
+import br.com.amparo.backend.exception.DoctorCreationException;
+import br.com.amparo.backend.exception.DoctorModificationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.RowMapper;
@@ -36,10 +37,9 @@ public class DoctorRepository {
 
             jdbcTemplate.update(sql, param);
             return true;
-
         } catch (DataAccessException e) {
             log.error("Error trying to create doctor: " + doctor.getId(), e);
-            throw new DoctorOperationException(doctor.getEmail(), doctor.getCrm(), doctor.getUf(), e);
+            throw new DoctorCreationException(doctor.getEmail(), doctor.getCrm(), doctor.getUf(), e);
         }
     }
     public Optional<DoctorResponse> updateDoctor(Doctor doctor) {
@@ -59,7 +59,7 @@ public class DoctorRepository {
             return findDoctorById(doctor.getId());
         } catch (DataAccessException e) {
             log.error("Error trying to update doctor: " + doctor.getId() + " Error: " + e.getMessage());
-            throw new DoctorOperationException(doctor.getEmail(), doctor.getCrm(), doctor.getUf(), e);
+            throw new DoctorModificationException(doctor.getEmail(), doctor.getCrm(), doctor.getUf(), e);
         }
     }
     public Optional<DoctorResponse> findByCrm(String crm, String uf) {
@@ -111,14 +111,18 @@ public class DoctorRepository {
             MapSqlParameterSource param = new MapSqlParameterSource(Map.of(
                     "id", UUID.fromString(id)
             ));
-            DoctorResponse doctorResponse = jdbcTemplate.queryForObject(sql, param, getDoctorResponseRowMapper());
-            return Optional.ofNullable(doctorResponse);
+            List<DoctorResponse> doctorResponse = jdbcTemplate.query(sql, param, getDoctorResponseRowMapper());
+            if (doctorResponse.isEmpty()) {
+                return Optional.empty();
+            } else {
+                return Optional.ofNullable(doctorResponse.get(0));
+            }
         } catch (DataAccessException e) {
             log.error("Error trying to find doctor by id: " + id + " Error: " + e.getMessage());
-            return Optional.empty();
+            throw new RuntimeException(e);
         }
     }
-    public List<DoctorResponse> findAll(List<String> doctorIds) {
+    public List<DoctorResponse> findAll(List<UUID> doctorIds) {
         try {
             String sql = """
                     SELECT d."id"            as "id",
@@ -135,8 +139,8 @@ public class DoctorRepository {
                     """;
             return jdbcTemplate.query(sql, Map.of("ids", doctorIds), getDoctorResponseRowMapper());
         } catch (DataAccessException ex) {
-            log.error("Error trying to get all doctors baseOn Ids " + doctorIds, ex);
-            return new ArrayList<>();
+            log.error("Error trying to get all doctors baseOn Ids " + String.join(", ", doctorIds.toString()), ex);
+            throw new RuntimeException(ex);
         }
     }
     private static RowMapper<DoctorResponse> getDoctorResponseRowMapper() {
