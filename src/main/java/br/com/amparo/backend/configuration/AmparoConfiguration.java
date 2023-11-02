@@ -2,6 +2,7 @@ package br.com.amparo.backend.configuration;
 
 import br.com.amparo.backend.configuration.security.AmparoSecurityConfiguration;
 import br.com.amparo.backend.controllers.FileController;
+import br.com.amparo.backend.dto.exam.ExamResponse;
 import br.com.amparo.backend.repository.*;
 import br.com.amparo.backend.service.*;
 import br.com.amparo.backend.service.impl.*;
@@ -149,5 +150,10 @@ public class AmparoConfiguration {
 
         return new AuthService(tokenService, userTokenRepository, cryptographyService,
                 userRepository, patientRepository, doctorRepository);
+    }
+
+    @Bean
+    public DoctorPatientService doctorPatientService(ExamService examService) {
+        return new DoctorPatientServiceImpl(examService);
     }
 }
