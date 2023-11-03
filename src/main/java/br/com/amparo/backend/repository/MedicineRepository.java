@@ -93,7 +93,7 @@ public class MedicineRepository {
             return jdbcTemplate.query(sql, param, (rs, rowNum) -> new MedicineIncResponse(
                     rs.getInt("id_medicine_inc"),
                     rs.getString("name_medicine_inc"),
-                    rs.getString("severity")
+                    rs.getInt("severity")
             ));
         } catch (DataAccessException e) {
             log.error("Error trying to find medicine by id: " + id + " Error: " + e.getMessage());
@@ -104,7 +104,7 @@ public class MedicineRepository {
     public List<MedicineIncResponse> findIncompatibility(int id, List<Integer> medicineIds) {
         try {
             String sql = """
-            SELECT 
+            SELECT
                 minc.id as id,
                 minc.name as medicine_name,
                 i.severity
@@ -121,7 +121,7 @@ public class MedicineRepository {
             return jdbcTemplate.query(sql, param, (rs, rowNum) -> new MedicineIncResponse(
                     rs.getInt("id"),
                     rs.getString("medicine_name"),
-                    rs.getString("severity")
+                    rs.getInt("severity")
             ));
         } catch (DataAccessException e) {
             log.error("Error trying to find incompatibilities for medicine " + id, e);
