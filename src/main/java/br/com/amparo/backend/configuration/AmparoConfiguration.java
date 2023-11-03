@@ -151,9 +151,4 @@ public class AmparoConfiguration {
         return new AuthService(tokenService, userTokenRepository, cryptographyService,
                 userRepository, patientRepository, doctorRepository);
     }
-
-    @Bean
-    public DoctorPatientService doctorPatientService(ExamService examService) {
-        return new DoctorPatientServiceImpl(examService);
-    }
 }

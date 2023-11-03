@@ -1,7 +1,7 @@
 package br.com.amparo.backend.controllers;
 
 import br.com.amparo.backend.dto.exam.ExamResponse;
-import br.com.amparo.backend.service.DoctorPatientService;
+import br.com.amparo.backend.service.ExamService;
 import br.com.amparo.backend.service.LinkService;
 import br.com.amparo.backend.service.security.SecurityUtils;
 import io.swagger.v3.oas.annotations.Operation;
@@ -23,14 +23,14 @@ import java.util.List;
 @RequiredArgsConstructor
 @ControllerAdvice
 @Slf4j
-@Tag(name = "10. DoctorPatient controller")
-public class DoctorPatientController {
+@Tag(name = "10. DoctorExam controller")
+public class DoctorExamController {
 
     @Autowired
     private LinkService linkService;
 
     @Autowired
-    private DoctorPatientService doctorPatientService;
+    private ExamService examService;
 
     @Operation(operationId = "findDoneExamsPatient", description = "Doctor access to a patient's done exams",
             responses = {
@@ -40,7 +40,7 @@ public class DoctorPatientController {
                     )
             })
     @PreAuthorize("hasRole('DOCTOR')")
-    @GetMapping("/patient/{patientId}/exams/done")
+    @GetMapping("/exams/{patientId}/done")
     public ResponseEntity<List<ExamResponse>> findDoneExamsToPatient(
             @PathVariable
             @Parameter(
@@ -67,7 +67,7 @@ public class DoctorPatientController {
             throw new RuntimeException("Connection not found");
         }
 
-        return ResponseEntity.ok(doctorPatientService.findDoneExamsToPatient(patientId, pageNumber, pageSize));
+        return ResponseEntity.ok(examService.listDoneExams(patientId, pageNumber, pageSize));
     }
 
     @Operation(operationId = "findPendingExamsPatient", description = "Doctor access to a patient's pending exams",
@@ -78,7 +78,7 @@ public class DoctorPatientController {
                     )
             })
     @PreAuthorize("hasRole('DOCTOR')")
-    @GetMapping("/patient/{patientId}/exams/pending")
+    @GetMapping("/exams/{patientId}/pending")
     public ResponseEntity<List<ExamResponse>> findPendingExamsToPatient(
             @PathVariable
             @Parameter(
@@ -105,6 +105,37 @@ public class DoctorPatientController {
             throw new RuntimeException("Connection not found");
         }
 
-        return ResponseEntity.ok(doctorPatientService.findPendingExamsToPatient(patientId, pageNumber, pageSize));
+        return ResponseEntity.ok(examService.listPendingExams(patientId, pageNumber, pageSize));
+    }
+
+    @PreAuthorize("hasRole('DOCTOR')")
+    @GetMapping("/exams/{patientId}")
+    public ResponseEntity<List<ExamResponse>> findAllExamsToPatient(
+            @PathVariable
+            @Parameter(
+                    name = "id",
+                    description = "Patient Id",
+                    example = "66e9b9bd-0c27-4fb2-ba78-0ed898d2a3b6"
+            ) String patientId,
+            @Parameter(
+                    name = "pageNumber",
+                    description = "Current page number",
+                    required = true
+            )
+            @RequestParam(defaultValue = "1") int pageNumber,
+            @Parameter(
+                    name = "pageSize",
+                    description = "Number of items per page",
+                    required = true
+            )
+            @RequestParam(defaultValue = "10") int pageSize
+    ) {
+        boolean connection = linkService.checkConnection(SecurityUtils.getApiUser().getId(), patientId);
+        if (!connection) {
+            // Necessário fornecer tratamento adequado (melhorar depois)
+            throw new RuntimeException("Connection not found");
+        }
+
+        return ResponseEntity.ok(examService.listAllExamsToPatient(patientId, pageNumber, pageSize));
     }
 }
