@@ -1,7 +1,7 @@
 package br.com.amparo.backend.configuration;
 
 import br.com.amparo.backend.configuration.security.ValidationError;
-import br.com.amparo.backend.controllers.dto.ObjectMappingError;
+import br.com.amparo.backend.dto.ObjectMappingError;
 import br.com.amparo.backend.domain.exception.ErrorResponse;
 import br.com.amparo.backend.exception.*;
 import org.springframework.http.HttpStatus;

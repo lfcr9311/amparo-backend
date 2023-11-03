@@ -1,4 +1,4 @@
-package br.com.amparo.backend.controllers.dto;
+package br.com.amparo.backend.dto;
 
 public record LoginTokenResponse(String token) {
 }

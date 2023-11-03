@@ -44,7 +44,7 @@ public class ExamRepository {
             param.addValue("exam_file", exam.file());
 
             UUID examId = jdbcTemplate.queryForObject(sql, param, UUID.class);
-            return findExamById(examId.toString());
+            return findExamById(examId.toString(), id);
         } catch (DataAccessException e) {
             log.error("Error trying to add exam to patient: " + id + " Error: " + e.getMessage());
             throw new ExamCreationException(e, exam.description(), exam.examDate(), exam.isDone());
@@ -52,7 +52,7 @@ public class ExamRepository {
     }
 
 
-    public Optional<ExamResponse> findExamById (String id){
+    public Optional<ExamResponse> findExamById (String id, String patientId){
         try{
             String sql = """
                     SELECT e."id"            as "id",
@@ -63,11 +63,12 @@ public class ExamRepository {
                            e."exam_image"    as "image",
                            e."exam_file"     as "file"
                     FROM "Exam" e
-                    WHERE e."id" = :id
+                    WHERE e."id" = :id and e."id_patient" = :patientId
                     """;
 
             MapSqlParameterSource param = new MapSqlParameterSource(Map.of(
-                    "id", UUID.fromString(id)
+                    "id", UUID.fromString(id),
+                    "patientId", UUID.fromString(patientId)
             ));
             List<ExamResponse> exam = jdbcTemplate.query(sql, param, (rs, rowNum) -> new ExamResponse(
                     rs.getString("id"),
@@ -117,8 +118,8 @@ public class ExamRepository {
                     rs.getTimestamp("examDate").toLocalDateTime(),
                     rs.getBoolean("isDone"),
                     rs.getString("patientId"),
-                    rs.getString("image"),
-                    rs.getString("file")
+                    rs.getString("file"),
+                    rs.getString("image")
             ));
         } catch (DataAccessException e) {
             log.error("Error trying to list pending exams from patient with id: " + id, e);
@@ -165,7 +166,7 @@ public class ExamRepository {
     }
 
 
-    public Optional<ExamResponse> editExam (ExamToUpdateRequest examRequest, String id){
+    public Optional<ExamResponse> editExam (ExamToUpdateRequest examRequest, String id, String patientId){
         try{
             String sql = """
                     UPDATE "Exam"
@@ -174,10 +175,11 @@ public class ExamRepository {
                         is_done = :isDone,
                         exam_image = :image,
                         exam_file = :file
-                    WHERE "id" = :id
+                    WHERE "id" = :id and "id_patient" = :id_patient
                     """;
             MapSqlParameterSource param = new MapSqlParameterSource(Map.of(
                     "id", UUID.fromString(id),
+                    "id_patient", UUID.fromString(patientId),
                     "description", examRequest.description(),
                     "examDate", examRequest.examDate(),
                     "isDone", examRequest.isDone()
@@ -185,7 +187,7 @@ public class ExamRepository {
             param.addValue("image", examRequest.image());
             param.addValue("file", examRequest.file());
             jdbcTemplate.update(sql, param);
-            return findExamById(id);
+            return findExamById(id, patientId);
         } catch (DataAccessException e) {
             log.error("Error trying to edit exam with id: " + id + " Error: " + e.getMessage());
             throw new ExamOperationException(id, examRequest.description(), "", examRequest.examDate().toString());
