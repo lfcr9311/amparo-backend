@@ -40,7 +40,7 @@ public class DoctorExamController {
                     )
             })
     @PreAuthorize("hasRole('DOCTOR')")
-    @GetMapping("/exams/{patientId}/done")
+    @GetMapping("/exams/done/{patientId}")
     public ResponseEntity<List<ExamResponse>> findDoneExamsToPatient(
             @PathVariable
             @Parameter(
@@ -78,7 +78,7 @@ public class DoctorExamController {
                     )
             })
     @PreAuthorize("hasRole('DOCTOR')")
-    @GetMapping("/exams/{patientId}/pending")
+    @GetMapping("/exams/pending/{patientId}")
     public ResponseEntity<List<ExamResponse>> findPendingExamsToPatient(
             @PathVariable
             @Parameter(
