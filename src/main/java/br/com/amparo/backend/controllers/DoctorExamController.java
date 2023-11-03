@@ -70,7 +70,7 @@ public class DoctorExamController {
         return ResponseEntity.ok(examService.listDoneExams(patientId, pageNumber, pageSize));
     }
 
-    @Operation(operationId = "findPendingExamsPatient", description = "Doctor access to a patient's pending exams",
+    @Operation(operationId = "findAllExamsToPatient", description = "Doctor access to a patient's exams",
             responses = {
                     @ApiResponse(responseCode = "200", description = "Pending exams found"),
                     @ApiResponse(responseCode = "500", description = "Connection not found",
@@ -136,6 +136,6 @@ public class DoctorExamController {
             throw new RuntimeException("Connection not found");
         }
 
-        return ResponseEntity.ok(examService.listAllExamsToPatient(patientId, pageNumber, pageSize));
+        return ResponseEntity.ok(examService.listAllExams(patientId, pageNumber, pageSize));
     }
 }

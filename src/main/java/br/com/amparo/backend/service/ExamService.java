@@ -3,7 +3,6 @@ package br.com.amparo.backend.service;
 import br.com.amparo.backend.dto.exam.CreateExamRequest;
 import br.com.amparo.backend.dto.exam.ExamResponse;
 import br.com.amparo.backend.dto.exam.ExamToUpdateRequest;
-
 import java.util.List;
 import java.util.Optional;
 
@@ -13,6 +12,8 @@ public interface ExamService {
     List<ExamResponse> listDoneExams(String id, int page, int size);
 
     List<ExamResponse> listPendingExams(String id, int page, int size);
+
+    List<ExamResponse> listAllExams(String id, int page, int size);
 
     Optional<ExamResponse> findExamById(String id);
 

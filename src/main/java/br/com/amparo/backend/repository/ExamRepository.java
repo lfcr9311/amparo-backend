@@ -9,7 +9,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
-
 import java.util.*;
 
 @Slf4j
@@ -164,6 +163,42 @@ public class ExamRepository {
         }
     }
 
+    public List<ExamResponse> listAllExams(String id, int page, int size) {
+        try {
+            int offset = (page - 1) * size;
+
+            String sql = """
+                SELECT e."id"            as "id",
+                       e."description"   as "description",
+                       e."exam_date"     as "examDate",
+                       e."is_done"       as "isDone",
+                       e."id_patient"    as "patientId",
+                       e."exam_image"    as "image",
+                       e."exam_file"     as "file"
+                FROM "Exam" e
+                WHERE e."id_patient" = :id
+                LIMIT :size OFFSET :offset
+                """;
+
+            MapSqlParameterSource param = new MapSqlParameterSource(Map.of(
+                    "id", UUID.fromString(id),
+                    "size", size,
+                    "offset", offset
+            ));
+            return jdbcTemplate.query(sql, param, (rs, rowNum) -> new ExamResponse(
+                    rs.getString("id"),
+                    rs.getString("description"),
+                    rs.getTimestamp("examDate").toLocalDateTime(),
+                    rs.getBoolean("isDone"),
+                    rs.getString("patientId"),
+                    rs.getString("file"),
+                    rs.getString("image")
+            ));
+        } catch (DataAccessException e) {
+            log.error("Error trying to list all exams from patient with id: " + id, e);
+            throw new RuntimeException(e);
+        }
+    }
 
     public Optional<ExamResponse> editExam (ExamToUpdateRequest examRequest, String id){
         try{

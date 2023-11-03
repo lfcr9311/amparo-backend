@@ -44,6 +44,15 @@ public class ExamServiceImpl implements ExamService {
     }
 
     @Override
+    public List<ExamResponse> listAllExams(String id, int page, int size) {
+        if (patientRepository.findById(id).isEmpty()) {
+            // Deixa assim por enquanto, quando tratarmos corretamente as exceptions, vamos mudar
+            throw new RuntimeException("Patient not found");
+        }
+        return repository.listAllExams(id, page, size);
+    }
+
+    @Override
     public Optional<ExamResponse> findExamById(String id) {
         return repository.findExamById(id);
     }
