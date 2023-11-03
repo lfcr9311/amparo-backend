@@ -17,4 +17,6 @@ public interface DosageService {
     DosageResponse delete(String dosageId);
 
     List<DosageResponse> findAll(int pageNumber, int pageSize);
+
+    List<DosageResponse> listAllDosagesToPatient(String id, int pageNumber, int pageSize);
 }

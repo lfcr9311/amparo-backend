@@ -64,6 +64,14 @@ public class DosageServiceImpl implements DosageService {
     }
 
     @Override
+    public List<DosageResponse> listAllDosagesToPatient(String patientId, int pageNumber, int pageSize) {
+        if(patientService.findPatientById(patientId).isEmpty()){
+            throw new NotFoundException("Patient");
+        } else return repository.listDosage(patientId, pageNumber, pageSize);
+    }
+
+
+    @Override
     public Optional<DosageResponse> update(String dosageId, EditDosageRequest request) {
         String patientId = SecurityUtils.getApiUser().getId();
         if (patientService.findPatientById(patientId).isEmpty()) {
