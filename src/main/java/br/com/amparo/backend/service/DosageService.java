@@ -1,5 +1,6 @@
 package br.com.amparo.backend.service;
 
+import br.com.amparo.backend.domain.security.ApiUser;
 import br.com.amparo.backend.dto.dosage.AddDosageRequest;
 import br.com.amparo.backend.dto.dosage.DosageResponse;
 import br.com.amparo.backend.dto.dosage.EditDosageRequest;
@@ -18,5 +19,5 @@ public interface DosageService {
 
     List<DosageResponse> findAll(int pageNumber, int pageSize);
 
-    List<DosageResponse> listAllDosagesToPatient(String id, int pageNumber, int pageSize);
+    List<DosageResponse> listAllDosagesToPatient(String id, int pageNumber, int pageSize, ApiUser user);
 }

@@ -1,5 +1,7 @@
 package br.com.amparo.backend.controllers;
 
+import br.com.amparo.backend.domain.security.ApiUser;
+import br.com.amparo.backend.dto.ErrorMessage;
 import br.com.amparo.backend.dto.dosage.DosageResponse;
 import br.com.amparo.backend.service.DosageService;
 import br.com.amparo.backend.service.LinkService;
@@ -19,7 +21,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/doctor")
+@RequestMapping("/doctor/dosages")
 @RequiredArgsConstructor
 @ControllerAdvice
 @Slf4j
@@ -29,21 +31,16 @@ public class DoctorDosageController {
     @Autowired
     private DosageService dosageService;
 
-    @Autowired
-    private LinkService linkService;
 
     @Operation(operationId = "listAllDosagesToPatient", description = "Doctor access to a patient's dosages",
             responses = {
                     @ApiResponse(responseCode = "200", description = "Dosages found"),
-                    @ApiResponse(responseCode = "403", description = "Forbidden",
-                            content = @Content(schema = @Schema(hidden = true))
-                    ),
-                    @ApiResponse(responseCode = "404", description = "Dosage or patient with the specified ID was not found",
-                            content = @Content(schema = @Schema(hidden = true))
+                    @ApiResponse(responseCode = "404", description = "Dosage or patient not found",
+                            content = @Content(schema = @Schema(implementation = ErrorMessage.class))
                     )
             })
     @PreAuthorize("hasRole('DOCTOR')")
-    @GetMapping("/dosages/{patientId}")
+    @GetMapping("/{patientId}")
     public ResponseEntity<List<DosageResponse>> listAllDosagesToPatient(
             @PathVariable
             @Parameter(
@@ -64,11 +61,7 @@ public class DoctorDosageController {
                     example = "10"
             ) int pageSize
     ) {
-        boolean connection = linkService.checkConnection(SecurityUtils.getApiUser().getId(), patientId);
-        if (!connection) {
-            throw new RuntimeException("Connection not found");
-        }
-
-        return ResponseEntity.ok(dosageService.listAllDosagesToPatient(patientId, pageNumber, pageSize));
+        ApiUser user = SecurityUtils.getApiUser();
+        return ResponseEntity.ok(dosageService.listAllDosagesToPatient(patientId, pageNumber, pageSize, user));
     }
 }
