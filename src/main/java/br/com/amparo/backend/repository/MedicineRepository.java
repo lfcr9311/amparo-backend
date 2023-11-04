@@ -70,16 +70,6 @@ public class MedicineRepository {
                         rs.getString("leaflet")
                     )
             );
-            List<MedicineResponse> medicineResponse = jdbcTemplate.query(sql, param, (rs, rowNum) -> new MedicineResponse(
-                    rs.getInt("id"),
-                    rs.getString("name"),
-                    rs.getString("leaflet")
-            ));
-            if (medicineResponse.isEmpty()) {
-                return Optional.empty();
-            } else {
-                return Optional.ofNullable(medicineResponse.get(0));
-            }
         } catch (DataAccessException e) {
             log.error("Error trying to find medicine by name: " + name + " Error: " + e.getMessage());
             return new ArrayList<>();
