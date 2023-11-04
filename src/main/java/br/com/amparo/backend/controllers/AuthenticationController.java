@@ -1,8 +1,8 @@
 package br.com.amparo.backend.controllers;
 
-import br.com.amparo.backend.controllers.dto.ErrorMessage;
-import br.com.amparo.backend.controllers.dto.LoginTokenResponse;
-import br.com.amparo.backend.controllers.dto.ObjectMappingError;
+import br.com.amparo.backend.dto.ErrorMessage;
+import br.com.amparo.backend.dto.LoginTokenResponse;
+import br.com.amparo.backend.dto.ObjectMappingError;
 import br.com.amparo.backend.domain.entity.Doctor;
 import br.com.amparo.backend.domain.entity.Patient;
 import br.com.amparo.backend.dto.CreateUserRequest;

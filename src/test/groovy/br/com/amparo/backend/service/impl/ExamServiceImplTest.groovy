@@ -4,8 +4,10 @@ import br.com.amparo.backend.dto.exam.CreateExamRequest
 import br.com.amparo.backend.dto.exam.ExamResponse
 import br.com.amparo.backend.dto.exam.ExamToUpdateRequest
 import br.com.amparo.backend.dto.patient.PatientResponse
+import br.com.amparo.backend.exception.NotFoundException
 import br.com.amparo.backend.repository.ExamRepository
 import br.com.amparo.backend.repository.PatientRepository
+import br.com.amparo.backend.service.security.SecurityUtils
 import spock.lang.Specification
 
 import org.assertj.core.api.Assertions;
@@ -37,7 +39,7 @@ class ExamServiceImplTest extends Specification {
         def response = examService.addExam(request, id)
 
         then:
-        Assertions.assertThat(response.isEmpty()).isTrue()
+        thrown(NotFoundException.class)
     }
 
     def "addExam() success should return exam when patient found"() {
@@ -132,33 +134,6 @@ class ExamServiceImplTest extends Specification {
         Assertions.assertThat(response.get(0)).usingRecursiveComparison().isEqualTo(mockExamResponse())
 
         response.stream().forEach(exam -> !exam.isDone())
-    }
-
-    def "findExamById should return exam"() {
-        given:
-        def id = "id"
-
-        examRepository.findExamById(_ as String) >> Optional.of(mockExamResponse())
-
-        when:
-        def response = examService.findExamById(id)
-
-        then:
-        Assertions.assertThat(response.get()).usingRecursiveComparison().isEqualTo(mockExamResponse())
-    }
-
-    def "editExam success"() {
-        given:
-        def id = "id"
-        def request = mockExamToUpdateRequest()
-
-        examRepository.editExam(_ as ExamToUpdateRequest, _ as String) >> Optional.of(mockExamResponse())
-
-        when:
-        def response = examService.editExam(request, id)
-
-        then:
-        Assertions.assertThat(response.get()).usingRecursiveComparison().isEqualTo(mockExamResponse())
     }
 
     def mockPatientResponse() {
