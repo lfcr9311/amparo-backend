@@ -1,9 +1,9 @@
 package br.com.amparo.backend.controllers;
 
 import br.com.amparo.backend.domain.security.ApiUser;
+import br.com.amparo.backend.dto.ErrorMessage;
 import br.com.amparo.backend.dto.exam.ExamResponse;
 import br.com.amparo.backend.service.ExamService;
-import br.com.amparo.backend.service.LinkService;
 import br.com.amparo.backend.service.security.SecurityUtils;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -26,14 +26,15 @@ import java.util.List;
 @Slf4j
 @Tag(name = "10. DoctorExam controller")
 public class DoctorExamController {
+
     @Autowired
     private ExamService examService;
 
     @Operation(operationId = "findDoneExamsPatient", description = "Doctor access to a patient's done exams",
             responses = {
                     @ApiResponse(responseCode = "200", description = "Done exams found"),
-                    @ApiResponse(responseCode = "500", description = "Connection not found",
-                            content = @Content(schema = @Schema(hidden = true))
+                    @ApiResponse(responseCode = "404", description = "Patient or Connection not found",
+                            content = @Content(schema = @Schema(implementation = ErrorMessage.class))
                     )
             })
     @PreAuthorize("hasRole('DOCTOR')")
@@ -62,11 +63,11 @@ public class DoctorExamController {
         return ResponseEntity.ok(examService.listDoneExams(patientId, pageNumber, pageSize, user));
     }
 
-    @Operation(operationId = "findAllExamsToPatient", description = "Doctor access to a patient's exams",
+    @Operation(operationId = "findDoneExamsPatient", description = "Doctor access to a patient's done exams",
             responses = {
-                    @ApiResponse(responseCode = "200", description = "Pending exams found"),
-                    @ApiResponse(responseCode = "500", description = "Connection not found",
-                            content = @Content(schema = @Schema(hidden = true))
+                    @ApiResponse(responseCode = "200", description = "Done exams found"),
+                    @ApiResponse(responseCode = "404", description = "Patient or Connection not found",
+                            content = @Content(schema = @Schema(implementation = ErrorMessage.class))
                     )
             })
     @PreAuthorize("hasRole('DOCTOR')")
@@ -95,6 +96,13 @@ public class DoctorExamController {
         return ResponseEntity.ok(examService.listPendingExams(patientId, pageNumber, pageSize, user));
     }
 
+    @Operation(operationId = "findAllExamsPatient", description = "Doctor access to a patient's exams",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "All exams found"),
+                    @ApiResponse(responseCode = "404", description = "Patient or Connection not found",
+                            content = @Content(schema = @Schema(implementation = ErrorMessage.class))
+                    )
+            })
     @PreAuthorize("hasRole('DOCTOR')")
     @GetMapping("/{patientId}")
     public ResponseEntity<List<ExamResponse>> findAllExamsToPatient(
