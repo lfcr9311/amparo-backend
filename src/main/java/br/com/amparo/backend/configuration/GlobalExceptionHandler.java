@@ -29,7 +29,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(PatientOperationException.class)
     public ResponseEntity<ErrorResponse> handlePatientOperationException(PatientOperationException e) {
-        String errorMessage = "Error to modify patient " +
+        String errorMessage = "Erro ao modificar o paciente " +
                 "Email: " + e.getEmail() +
                 ", CPF: " + e.getCpf()   +
                 " "       + e.getMessage();
@@ -40,7 +40,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(DoctorModificationException.class)
     public ResponseEntity<ErrorResponse> handleDoctorModificationException(DoctorModificationException e) {
-        String errorMessage = "Error to modify doctor " +
+        String errorMessage = "Erro ao modificar o médico " +
                 "Email: " + e.getEmail() +
                 ", CRM: " + e.getCrm()   +
                 ", UF: "  + e.getUf()    +
@@ -52,7 +52,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(DoctorCreationException.class)
     public ResponseEntity<ErrorResponse> handleDoctorCreationException(DoctorCreationException e) {
-        String errorMessage = "Error while creating doctor" +
+        String errorMessage = "Erro ao criar o médico" +
                 "Email: " + e.getEmail() +
                 ", CRM: " + e.getCrm()   +
                 ", UF: "  + e.getUf()    +
@@ -64,7 +64,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(MedicineOperationException.class)
     public ResponseEntity<ErrorResponse> handleMedicineFindException(MedicineOperationException e) {
-        String errorMessage = "Error to modify medication " +
+        String errorMessage = "Erro ao modificar a medicação " +
                 "Id: "     + e.getId()      +
                 ", Name: " + e.getName()    +
                 " "        + e.getMessage();                ;
@@ -75,14 +75,14 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(CreationException.class)
     public ResponseEntity<ErrorResponse> handleCreationException(CreationException e) {
-        String errorMessage = "Error to create entity: Error: " + e.getMessage();
+        String errorMessage = "Erro ao criar a entidade: Erro: " + e.getMessage();
         ErrorResponse errorResponse = new ErrorResponse(errorMessage);
         return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @ExceptionHandler(NotFoundException.class)
     public ResponseEntity<ErrorResponse> handleNotFoundException(NotFoundException e) {
-        String errorMessage = e.getMessage() + " not found.";
+        String errorMessage = e.getMessage() + " Não Encontrado.";
         ErrorResponse errorResponse = new ErrorResponse(errorMessage);
         return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
     }
