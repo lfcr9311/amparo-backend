@@ -46,7 +46,7 @@ docker compose build
 ```
 after this, execute:
 ```bash
-docker composen up 
+docker compose up 
 ```
 And your application should be running.
 
