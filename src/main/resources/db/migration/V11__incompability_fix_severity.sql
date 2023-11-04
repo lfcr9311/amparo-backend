@@ -1,5 +1,5 @@
 alter table "Incompatibility"
-    alter column severity type SMALLINT;
+    alter column severity type SMALLINT using severity::smallint;
 
 
 update "Incompatibility"
