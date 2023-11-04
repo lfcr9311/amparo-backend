@@ -20,7 +20,7 @@ public class MedicineServiceImpl implements MedicineService {
     }
 
     @Override
-    public Optional<MedicineResponse> findMedicineByName(String name) {
+    public List<MedicineResponse> findMedicineByName(String name) {
         return repository.findMedicineByName(name);
     }
 
