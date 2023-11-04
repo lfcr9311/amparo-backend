@@ -3,6 +3,7 @@ package br.com.amparo.backend.service.impl
 import br.com.amparo.backend.domain.entity.Doctor
 import br.com.amparo.backend.dto.doctor.DoctorResponse
 import br.com.amparo.backend.dto.doctor.DoctorToUpdateRequest
+import br.com.amparo.backend.exception.NotFoundException
 import br.com.amparo.backend.repository.DoctorRepository
 import br.com.amparo.backend.service.UserService
 import spock.lang.Specification
@@ -31,7 +32,7 @@ class DoctorServiceImplTest extends Specification {
         doctorRepository.findDoctorById(_ as String) >> Optional.of(expectedResponse)
 
         when:
-        def response = service.findDoctorById(id).get()
+        def response = service.findDoctorById(id)
 
         then:
         Assertions.assertThat(response).usingRecursiveComparison().isEqualTo(expectedResponse)
@@ -48,7 +49,7 @@ class DoctorServiceImplTest extends Specification {
         def response = service.editDoctor(request, id)
 
         then:
-        Assertions.assertThat(response.isEmpty()).isTrue()
+        thrown NotFoundException
     }
 
     def "editDoctor with existing doctor"() {
@@ -59,7 +60,7 @@ class DoctorServiceImplTest extends Specification {
         doctorRepository.findDoctorById(id) >> Optional.of(mockDoctorResponse())
         doctorRepository.updateDoctor(_ as Doctor) >> Optional.of(mockDoctorResponse())
         when:
-        def response = service.editDoctor(request, id).get()
+        def response = service.editDoctor(request, id)
 
         then:
         Assertions.assertThat(response).usingRecursiveComparison().isEqualTo(mockDoctorResponse())

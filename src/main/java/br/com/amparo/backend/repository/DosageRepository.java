@@ -3,6 +3,7 @@ package br.com.amparo.backend.repository;
 import br.com.amparo.backend.dto.dosage.AddDosageRequest;
 import br.com.amparo.backend.dto.dosage.DosageResponse;
 import br.com.amparo.backend.dto.dosage.EditDosageRequest;
+import br.com.amparo.backend.exception.CreationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -62,7 +63,7 @@ public class DosageRepository {
             }
         } catch(Exception e) {
             log.error("Error trying to add dosage: " + patientId, e);
-            throw new RuntimeException(e);
+            throw new CreationException(e);
         }
     }
 
@@ -142,7 +143,7 @@ public class DosageRepository {
         }
     }
 
-    public Optional<DosageResponse> deleteDosage(DosageResponse dosage) {
+    public int deleteDosage(DosageResponse dosage) {
         try {
             String sql = """
                 DELETE FROM "Dosage"
@@ -152,8 +153,7 @@ public class DosageRepository {
                     "id", UUID.fromString(dosage.id()),
                     "patientId", UUID.fromString(dosage.idPatient())
             ));
-            jdbcTemplate.update(sql, param);
-            return Optional.of(dosage);
+            return jdbcTemplate.update(sql, param);
         } catch (Exception e) {
             log.error("Error trying to delete dosage: " + dosage.id(), e);
             throw new RuntimeException(e);

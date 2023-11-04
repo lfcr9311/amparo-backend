@@ -4,9 +4,7 @@ import lombok.Getter;
 
 @Getter
 public class CreationException extends RuntimeException{
-    private final String identifier;
-
-    public CreationException(String identifier) {
-        this.identifier = identifier;
+    public CreationException(Exception e) {
+        super(e);
     }
 }
