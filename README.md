@@ -48,6 +48,10 @@ after this, execute:
 ```bash
 docker compose up 
 ```
+If you don't want to lock the terminal, run the command:
+````bash
+docker compose up -d
+````
 And your application should be running.
 
 - #### If you want to run locally to debug the application.  
