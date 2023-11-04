@@ -33,13 +33,13 @@ class MedicineServiceImplTest extends Specification {
         given:
         def name = "name"
         def medicine = mockMedicineResponse()
-        repository.findMedicineByName(name) >> Optional.of(medicine)
+        repository.findMedicineByName(name) >> [medicine]
 
         when:
-        def result = service.findMedicineByName(name).get()
+        def result = service.findMedicineByName(name)
 
         then:
-        Assertions.assertThat(result).usingRecursiveComparison().isEqualTo(medicine)
+        Assertions.assertThat(result).usingRecursiveComparison().isEqualTo([medicine])
     }
 
     def "should find all medicines"() {

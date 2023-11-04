@@ -1,19 +1,17 @@
 package br.com.amparo.backend.controllers;
 
-import br.com.amparo.backend.controllers.dto.ErrorMessage;
+import br.com.amparo.backend.dto.ErrorMessage;
 import br.com.amparo.backend.dto.dosage.AddDosageRequest;
 import br.com.amparo.backend.dto.dosage.DosageResponse;
 import br.com.amparo.backend.dto.dosage.EditDosageRequest;
 import br.com.amparo.backend.exception.PatientNotFoundException;
 import br.com.amparo.backend.service.DosageService;
 import br.com.amparo.backend.service.PatientService;
-import br.com.amparo.backend.service.security.SecurityUtils;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,8 +21,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 @RestController
