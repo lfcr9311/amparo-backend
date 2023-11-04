@@ -2,6 +2,7 @@ package br.com.amparo.backend.configuration;
 
 import br.com.amparo.backend.configuration.security.AmparoSecurityConfiguration;
 import br.com.amparo.backend.controllers.FileController;
+import br.com.amparo.backend.controllers.InformationController;
 import br.com.amparo.backend.repository.*;
 import br.com.amparo.backend.service.*;
 import br.com.amparo.backend.service.impl.*;
@@ -149,5 +150,20 @@ public class AmparoConfiguration {
 
         return new AuthService(tokenService, userTokenRepository, cryptographyService,
                 userRepository, patientRepository, doctorRepository);
+    }
+
+    @Bean
+    public InformationRepository informationRepository(NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
+        return new InformationRepository(namedParameterJdbcTemplate);
+    }
+
+    @Bean
+    public InformationService informationService(InformationRepository informationRepository) {
+        return new InformationServiceImpl(informationRepository);
+    }
+
+    @Bean
+    public InformationController informationController(InformationService informationService) {
+        return new InformationController(informationService);
     }
 }
