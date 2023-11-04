@@ -161,9 +161,4 @@ public class AmparoConfiguration {
     public InformationService informationService(InformationRepository informationRepository) {
         return new InformationServiceImpl(informationRepository);
     }
-
-    @Bean
-    public InformationController informationController(InformationService informationService) {
-        return new InformationController(informationService);
-    }
 }
