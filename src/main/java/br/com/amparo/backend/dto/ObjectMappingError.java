@@ -1,4 +1,4 @@
-package br.com.amparo.backend.controllers.dto;
+package br.com.amparo.backend.dto;
 
 import br.com.amparo.backend.configuration.security.ValidationError;
 
