@@ -69,4 +69,26 @@ public class InformationRepository {
             return new ArrayList<>();
         }
     }
+
+    public List<InformationResponse> findByTitle(String title) {
+        try {
+            String sql = """
+                    SELECT "title", "link", "image", "description"
+                    FROM "Information"
+                    WHERE "title" = :title
+                    """;
+            MapSqlParameterSource param = new MapSqlParameterSource(Map.of(
+                    "title", title
+            ));
+            return jdbcTemplate.query(sql, param, (rs, rowNum) -> new InformationResponse(
+                    rs.getString("title"),
+                    rs.getString("link"),
+                    rs.getString("image"),
+                    rs.getString("description")
+            ));
+        } catch (DataAccessException e) {
+            log.error("Error on find information: ", e.getMessage());
+            return new ArrayList<>();
+        }
+    }
 }

@@ -32,11 +32,17 @@ public class InformationController {
         return new ResponseEntity<>(informationService.create(information), HttpStatus.CREATED);
     }
 
-    @GetMapping ("/findAll")
+    @GetMapping
     @PreAuthorize("hasRole('PATIENT') or hasRole('DOCTOR')")
-    public ResponseEntity<List<InformationResponse>> findAll(){
+    public ResponseEntity<List<InformationResponse>> findAll() {
         return ResponseEntity.ok(informationService.findAll());
-        
+
+    }
+
+    @GetMapping("/{title}")
+    @PreAuthorize("hasRole('PATIENT') or hasRole('DOCTOR')")
+    public ResponseEntity<List<InformationResponse>> findByTitle(@PathVariable String title) {
+        return ResponseEntity.ok(informationService.findByTitle(title));
     }
 
 }

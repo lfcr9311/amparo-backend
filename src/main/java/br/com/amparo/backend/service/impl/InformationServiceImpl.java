@@ -6,6 +6,7 @@ import br.com.amparo.backend.repository.InformationRepository;
 import br.com.amparo.backend.service.InformationService;
 import br.com.amparo.backend.service.security.SecurityUtils;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 
@@ -22,5 +23,12 @@ public class InformationServiceImpl implements InformationService {
     public List<InformationResponse> findAll() {
         return informationRepository.findAll(SecurityUtils.getApiUser().getId());
     }
+
+    @Override
+    public List<InformationResponse> findByTitle(String title) {
+        return informationRepository.findByTitle(title);
+    }
+
+
 
 }
