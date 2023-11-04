@@ -1,5 +1,6 @@
 package br.com.amparo.backend.controllers;
 
+import br.com.amparo.backend.domain.security.ApiUser;
 import br.com.amparo.backend.dto.exam.ExamResponse;
 import br.com.amparo.backend.service.ExamService;
 import br.com.amparo.backend.service.LinkService;
@@ -57,7 +58,8 @@ public class DoctorExamController {
             )
             @RequestParam(defaultValue = "10") int pageSize
     ) {
-        return ResponseEntity.ok(examService.listDoneExams(patientId, pageNumber, pageSize));
+        ApiUser user = SecurityUtils.getApiUser();
+        return ResponseEntity.ok(examService.listDoneExams(patientId, pageNumber, pageSize, user));
     }
 
     @Operation(operationId = "findAllExamsToPatient", description = "Doctor access to a patient's exams",
@@ -89,7 +91,8 @@ public class DoctorExamController {
             )
             @RequestParam(defaultValue = "10") int pageSize
     ) {
-        return ResponseEntity.ok(examService.listPendingExams(patientId, pageNumber, pageSize));
+        ApiUser user = SecurityUtils.getApiUser();
+        return ResponseEntity.ok(examService.listPendingExams(patientId, pageNumber, pageSize, user));
     }
 
     @PreAuthorize("hasRole('DOCTOR')")
@@ -114,6 +117,7 @@ public class DoctorExamController {
             )
             @RequestParam(defaultValue = "10") int pageSize
     ) {
-        return ResponseEntity.ok(examService.listAllExams(patientId, pageNumber, pageSize));
+        ApiUser user = SecurityUtils.getApiUser();
+        return ResponseEntity.ok(examService.listAllExams(patientId, pageNumber, pageSize, user));
     }
 }

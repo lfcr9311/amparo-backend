@@ -1,5 +1,7 @@
 package br.com.amparo.backend.service.impl
 
+import br.com.amparo.backend.domain.security.ApiUser
+import br.com.amparo.backend.dto.UserType
 import br.com.amparo.backend.dto.exam.CreateExamRequest
 import br.com.amparo.backend.dto.exam.ExamResponse
 import br.com.amparo.backend.dto.exam.ExamToUpdateRequest
@@ -7,7 +9,9 @@ import br.com.amparo.backend.dto.patient.PatientResponse
 import br.com.amparo.backend.exception.NotFoundException
 import br.com.amparo.backend.repository.ExamRepository
 import br.com.amparo.backend.repository.PatientRepository
+import br.com.amparo.backend.service.LinkService
 import br.com.amparo.backend.service.security.SecurityUtils
+import org.springframework.security.core.authority.SimpleGrantedAuthority
 import spock.lang.Specification
 
 import org.assertj.core.api.Assertions;
@@ -22,10 +26,16 @@ class ExamServiceImplTest extends Specification {
 
     ExamServiceImpl examService
 
+    LinkService linkService
+
+    ApiUser apiUser = new ApiUser("id", "email", "name",
+            "token", List.of(new SimpleGrantedAuthority(UserType.PATIENT.roleName)))
+
     def setup() {
         examRepository = Mock(ExamRepository.class)
         patientRepository = Mock(PatientRepository.class)
-        examService = new ExamServiceImpl(examRepository, patientRepository)
+        linkService = Mock(LinkService.class)
+        examService = new ExamServiceImpl(examRepository, patientRepository, linkService)
     }
 
     def "addExam() should return empty when patient not found"() {
@@ -92,7 +102,7 @@ class ExamServiceImplTest extends Specification {
         examRepository.listDoneExams("id", 0, 10) >> List.of(mockExamResponse())
 
         when:
-        def response = examService.listDoneExams(id, page, size)
+        def response = examService.listDoneExams(id, page, size, apiUser)
 
         then:
         Assertions.assertThat(response.get(0)).usingRecursiveComparison().isEqualTo(mockExamResponse())
@@ -128,7 +138,7 @@ class ExamServiceImplTest extends Specification {
         examRepository.listPendingExams("id", 0, 10) >> List.of(mockExamResponse())
 
         when:
-        def response = examService.listPendingExams(id, page, size)
+        def response = examService.listPendingExams(id, page, size,apiUser)
 
         then:
         Assertions.assertThat(response.get(0)).usingRecursiveComparison().isEqualTo(mockExamResponse())

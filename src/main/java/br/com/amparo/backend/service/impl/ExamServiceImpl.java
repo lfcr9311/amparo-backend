@@ -1,5 +1,6 @@
 package br.com.amparo.backend.service.impl;
 
+import br.com.amparo.backend.domain.security.ApiUser;
 import br.com.amparo.backend.dto.exam.CreateExamRequest;
 import br.com.amparo.backend.dto.exam.ExamResponse;
 import br.com.amparo.backend.dto.exam.ExamToUpdateRequest;
@@ -22,40 +23,40 @@ public class ExamServiceImpl implements ExamService {
     @Override
     public Optional<ExamResponse> addExam(CreateExamRequest exam, String id) {
         if (patientRepository.findById(id).isEmpty()) {
-            throw new NotFoundException("Patient");
+            throw new NotFoundException("Patient not found");
         }
         return repository.addExam(exam, id);
     }
 
     @Override
-    public List<ExamResponse> listDoneExams(String id, int page, int size) {
+    public List<ExamResponse> listDoneExams(String id, int page, int size, ApiUser apiUser) {
         if (patientRepository.findById(id).isEmpty()) {
-            throw new NotFoundException("Patient");
+            throw new NotFoundException("Patient not found");
         }
-        if (SecurityUtils.getApiUser().isDoctor() && !linkService.checkConnection(SecurityUtils.getApiUser().getId(), id)) {
+        if (apiUser.isDoctor() && !linkService.checkConnection(apiUser.getId(), id)) {
             throw new NotFoundException("Connection");
         }
         return repository.listDoneExams(id, page, size);
     }
 
     @Override
-    public List<ExamResponse> listPendingExams(String id, int page, int size) {
+    public List<ExamResponse> listPendingExams(String id, int page, int size, ApiUser apiUser) {
         if (patientRepository.findById(id).isEmpty()) {
-            throw new NotFoundException("Patient");
+            throw new NotFoundException("Patient not found");
         }
 
-        if (SecurityUtils.getApiUser().isDoctor() && !linkService.checkConnection(SecurityUtils.getApiUser().getId(), id)) {
+        if (apiUser.isDoctor() && !linkService.checkConnection(apiUser.getId(), id)) {
             throw new NotFoundException("Connection");
         }
         return repository.listPendingExams(id, page, size);
     }
 
     @Override
-    public List<ExamResponse> listAllExams(String id, int page, int size) {
+    public List<ExamResponse> listAllExams(String id, int page, int size, ApiUser apiUser) {
         if (patientRepository.findById(id).isEmpty()) {
-            throw new NotFoundException("Patient");
+            throw new NotFoundException("Patient not found");
         }
-        if (SecurityUtils.getApiUser().isDoctor() && !linkService.checkConnection(SecurityUtils.getApiUser().getId(), id)) {
+        if (apiUser.isDoctor() && !linkService.checkConnection(apiUser.getId(), id)) {
             throw new NotFoundException("Connection");
         }
         return repository.listAllExams(id, page, size);
@@ -64,7 +65,7 @@ public class ExamServiceImpl implements ExamService {
     @Override
     public Optional<ExamResponse> findExamById(String id) {
         if (patientRepository.findById(SecurityUtils.getApiUser().getId()).isEmpty()) {
-            throw new NotFoundException("Patient");
+            throw new NotFoundException("Patient not found");
         }
         return repository.findExamById(id, SecurityUtils.getApiUser().getId());
     }
@@ -72,7 +73,7 @@ public class ExamServiceImpl implements ExamService {
     @Override
     public Optional<ExamResponse> editExam(ExamToUpdateRequest examRequest, String id) {
         if (patientRepository.findById(SecurityUtils.getApiUser().getId()).isEmpty()) {
-            throw new NotFoundException("Patient");
+            throw new NotFoundException("Patient not found");
         }
         return repository.editExam(examRequest, id, SecurityUtils.getApiUser().getId());
     }
