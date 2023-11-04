@@ -1,8 +1,13 @@
 package br.com.amparo.backend.controllers;
 
+import br.com.amparo.backend.controllers.dto.ErrorMessage;
 import br.com.amparo.backend.domain.entity.Information;
 import br.com.amparo.backend.dto.information.InformationResponse;
 import br.com.amparo.backend.service.InformationService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -28,12 +33,65 @@ public class InformationController {
 
     @PostMapping
     @PreAuthorize("hasRole('DOCTOR')")
-    public ResponseEntity<InformationResponse> create(@RequestBody Information information){
+    @Operation(
+            summary = "Create Information",
+            description = "Create a new information",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "201",
+                            description = "Information created successfully",
+                            content = @Content(schema = @Schema(implementation = InformationResponse.class))
+                    ),
+                    @ApiResponse(
+                            responseCode = "403",
+                            description = "Forbidden",
+                            content = @Content(schema = @Schema(implementation = ErrorMessage.class))
+                    ),
+                    @ApiResponse(
+                            responseCode = "404",
+                            description = "Not Found",
+                            content = @Content(schema = @Schema(implementation = ErrorMessage.class))
+                    ),
+                    @ApiResponse(
+                            responseCode = "500",
+                            description = "Internal Server Error",
+                            content = @Content(schema = @Schema(implementation = ErrorMessage.class))
+                    )
+            }
+    )
+    public ResponseEntity<InformationResponse> create(@RequestBody Information information) {
         return new ResponseEntity<>(informationService.create(information), HttpStatus.CREATED);
     }
 
     @GetMapping
     @PreAuthorize("hasRole('PATIENT') or hasRole('DOCTOR')")
+    @Operation(
+            summary = "List Information",
+            description = "List all information",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Information retrieved successfully",
+                            content = @Content(schema = @Schema(implementation = InformationResponse.class))
+                    ),
+                    @ApiResponse(
+                            responseCode = "403",
+                            description = "Forbidden",
+                            content = @Content(schema = @Schema(implementation = ErrorMessage.class))
+                    ),
+                    @ApiResponse(
+                            responseCode = "404",
+                            description = "Not Found",
+                            content = @Content(schema = @Schema(implementation = ErrorMessage.class))
+                    ),
+                    @ApiResponse(
+                            responseCode = "500",
+                            description = "Internal Server Error",
+                            content = @Content(schema = @Schema(implementation = ErrorMessage.class))
+                    )
+            }
+
+    )
     public ResponseEntity<List<InformationResponse>> findAll() {
         return ResponseEntity.ok(informationService.findAll());
 
@@ -41,6 +99,33 @@ public class InformationController {
 
     @GetMapping("/{title}")
     @PreAuthorize("hasRole('PATIENT') or hasRole('DOCTOR')")
+    @Operation(
+            summary = "Find Information by Title",
+            description = "Find information by title",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Information retrieved successfully",
+                            content = @Content(schema = @Schema(implementation = InformationResponse.class))
+                    ),
+                    @ApiResponse(
+                            responseCode = "403",
+                            description = "Forbidden",
+                            content = @Content(schema = @Schema(implementation = ErrorMessage.class))
+                    ),
+                    @ApiResponse(
+                            responseCode = "404",
+                            description = "Not Found",
+                            content = @Content(schema = @Schema(implementation = ErrorMessage.class))
+                    ),
+                    @ApiResponse(
+                            responseCode = "500",
+                            description = "Internal Server Error",
+                            content = @Content(schema = @Schema(implementation = ErrorMessage.class))
+                    )
+            }
+
+    )
     public ResponseEntity<List<InformationResponse>> findByTitle(@PathVariable String title) {
         return ResponseEntity.ok(informationService.findByTitle(title));
     }

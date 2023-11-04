@@ -44,7 +44,7 @@ public class InformationRepository {
             jdbcTemplate.update(sql, param);
             return new InformationResponse(information.getTitle(), information.getLink(), information.getImage(), information.getDescription());
         } catch (DataAccessException e) {
-            log.error("Error on create information: ", e.getMessage());
+            log.error(e.getMessage());
             throw new InformationCreationException(e, information.getTitle(), information.getLink(), information.getImage(), information.getDescription());
         }
     }
@@ -65,7 +65,7 @@ public class InformationRepository {
                     rs.getString("description")
             ));
         } catch (DataAccessException e) {
-            log.error("Error on find information: ", e.getMessage());
+            log.error(e.getMessage());
             return new ArrayList<>();
         }
     }
@@ -87,7 +87,7 @@ public class InformationRepository {
                     rs.getString("description")
             ));
         } catch (DataAccessException e) {
-            log.error("Error on find information: ", e.getMessage());
+            log.error(e.getMessage());
             return new ArrayList<>();
         }
     }
