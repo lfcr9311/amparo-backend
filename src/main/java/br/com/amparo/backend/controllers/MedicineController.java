@@ -61,7 +61,7 @@ public class MedicineController {
             })
     @GetMapping("/name/{name}")
     @PreAuthorize("hasRole('PATIENT') or hasRole('DOCTOR')")
-    public ResponseEntity<MedicineResponse> findByName(
+    public ResponseEntity<List<MedicineResponse>> findByName(
             @PathVariable
             @Parameter(
                     name = "name",
@@ -69,9 +69,7 @@ public class MedicineController {
                     example = "Ibuprofen"
             ) String name
     ) {
-        return medicineService.findMedicineByName(name)
-                .map(ResponseEntity::ok)
-                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+        return ResponseEntity.ok(medicineService.findMedicineByName(name));
     }
 
     @Operation(operationId = "findAllMedicines", description = "Find all medicines",

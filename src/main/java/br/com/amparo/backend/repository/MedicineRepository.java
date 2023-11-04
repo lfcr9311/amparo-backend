@@ -1,7 +1,6 @@
 package br.com.amparo.backend.repository;
 
 import br.com.amparo.backend.dto.medicine.MedicineIncResponse;
-import br.com.amparo.backend.dto.medicine.MedicineIncompatibilityRequest;
 import br.com.amparo.backend.dto.medicine.MedicineResponse;
 import br.com.amparo.backend.exception.MedicineOperationException;
 import lombok.extern.slf4j.Slf4j;
@@ -10,8 +9,10 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
-
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 @Slf4j
 public class MedicineRepository {
@@ -45,7 +46,7 @@ public class MedicineRepository {
         }
     }
 
-    public Optional<MedicineResponse> findMedicineByName(String name) {
+    public List<MedicineResponse> findMedicineByName(String name) {
         try {
             String sql = """
                     SELECT  m."id"      as "id",
@@ -55,20 +56,19 @@ public class MedicineRepository {
                     WHERE m."name" ILIKE :name
                     """;
             MapSqlParameterSource param = new MapSqlParameterSource(
-                    Map.of("name", name)
+                    Map.of("name", "%" + name + "%")
             );
-            MedicineResponse medicineResponse = jdbcTemplate.queryForObject(sql, param, (rs, rowNum) ->
+
+            return jdbcTemplate.query(sql, param, (rs, rowNum) ->
                     new MedicineResponse(
                         rs.getInt("id"),
                         rs.getString("name"),
                         rs.getString("leaflet")
                     )
             );
-            param.addValue("name", "%" + name + "%");
-            return Optional.ofNullable(medicineResponse);
         } catch (DataAccessException e) {
             log.error("Error trying to find medicine by name: " + name + " Error: " + e.getMessage());
-            return Optional.empty();
+            return new ArrayList<>();
         }
     }
 
