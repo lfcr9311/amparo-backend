@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Objects;
 
 @RestController
-@RequestMapping("/patient/{id}/exam")
+@RequestMapping("/patient/exam")
 @RequiredArgsConstructor
 @ControllerAdvice
 @Slf4j
@@ -41,19 +41,8 @@ public class PatientExamController {
             })
     @PreAuthorize("hasRole('PATIENT')")
     @PostMapping
-    public ResponseEntity<ExamResponse> addExam(
-            @RequestBody CreateExamRequest exam,
-            @PathVariable
-            @Parameter(
-                    name = "id",
-                    description = "Patient Id",
-                    example = "66e9b9bd-0c27-4fb2-ba78-0ed898d2a3b6"
-            ) String id
-    ){
-        if (!Objects.equals(id, SecurityUtils.getApiUser().getId())) {
-            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
-        }
-        return examService.addExam(exam, id)
+    public ResponseEntity<ExamResponse> addExam(@RequestBody CreateExamRequest exam){
+        return examService.addExam(exam, SecurityUtils.getApiUser().getId())
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
@@ -66,14 +55,9 @@ public class PatientExamController {
                     )
             })
     @PreAuthorize("hasRole('PATIENT')")
-    @GetMapping("/done/list")
+    @GetMapping("/done")
     public ResponseEntity<List<ExamResponse>> listDoneExams(
             @PathVariable
-            @Parameter(
-                    name = "id",
-                    description = "Patient Id",
-                    example = "66e9b9bd-0c27-4fb2-ba78-0ed898d2a3b6"
-            ) String id,
             @Parameter(
                     name = "pageNumber",
                     description = "Current page number",
@@ -87,10 +71,7 @@ public class PatientExamController {
             )
             @RequestParam(defaultValue = "10") int pageSize
     ){
-        if (!Objects.equals(id, SecurityUtils.getApiUser().getId())) {
-            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
-        }
-        return ResponseEntity.ok(examService.listDoneExams(id, pageNumber, pageSize));
+        return ResponseEntity.ok(examService.listDoneExams(SecurityUtils.getApiUser().getId(), pageNumber, pageSize));
     }
 
     @Operation(operationId = "listPendingExams", description = "List pending exams",
@@ -101,14 +82,9 @@ public class PatientExamController {
                     )
             })
     @PreAuthorize("hasRole('PATIENT')")
-    @GetMapping("/pending/list")
+    @GetMapping("/pending")
     public ResponseEntity<List<ExamResponse>> listPendingExams(
             @PathVariable
-            @Parameter(
-                    name = "id",
-                    description = "Patient Id",
-                    example = "66e9b9bd-0c27-4fb2-ba78-0ed898d2a3b6"
-            ) String id,
             @Parameter(
                     name = "pageNumber",
                     description = "Current page number",
@@ -122,10 +98,7 @@ public class PatientExamController {
             )
             @RequestParam(defaultValue = "10") int pageSize
     ){
-        if (!Objects.equals(id, SecurityUtils.getApiUser().getId())) {
-            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
-        }
-        return ResponseEntity.ok(examService.listPendingExams(id, pageNumber, pageSize));
+        return ResponseEntity.ok(examService.listPendingExams(SecurityUtils.getApiUser().getId(), pageNumber, pageSize));
     }
 
     @Operation(operationId = "findExamById", description = "Find a exam by Id",
@@ -146,18 +119,8 @@ public class PatientExamController {
                     name = "examId",
                     description = "Exam Id",
                     example = "77a9c8jd-0c00-4fb2-ca68-0ed898d2a3c7"
-            ) String examId,
-            @PathVariable("id")
-            @Parameter(
-                    name = "id",
-                    description = "Patient Id",
-                    example = "66e9b9bd-0c27-4fb2-ba78-0ed898d2a3b6"
-            ) String id
+            ) String examId
     ) {
-        if (!Objects.equals(id, SecurityUtils.getApiUser().getId())) {
-            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
-        }
-
         return examService.findExamById(examId)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
@@ -184,9 +147,6 @@ public class PatientExamController {
                     example = "1"
             ) String examId
     ){
-        if (!Objects.equals(SecurityUtils.getApiUser().getId(), examService.findExamById(examId).get().idPatient())) {
-            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
-        }
         return examService.editExam(exam,examId)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));

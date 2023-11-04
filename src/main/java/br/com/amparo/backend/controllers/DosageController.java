@@ -1,19 +1,17 @@
 package br.com.amparo.backend.controllers;
 
-import br.com.amparo.backend.controllers.dto.ErrorMessage;
+import br.com.amparo.backend.dto.ErrorMessage;
 import br.com.amparo.backend.dto.dosage.AddDosageRequest;
 import br.com.amparo.backend.dto.dosage.DosageResponse;
 import br.com.amparo.backend.dto.dosage.EditDosageRequest;
 import br.com.amparo.backend.exception.PatientNotFoundException;
 import br.com.amparo.backend.service.DosageService;
 import br.com.amparo.backend.service.PatientService;
-import br.com.amparo.backend.service.security.SecurityUtils;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,8 +21,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -64,16 +60,7 @@ public class DosageController {
             }
     )
     public ResponseEntity<?> listDosages(@RequestParam(defaultValue = "1") int pageNumber, @RequestParam(defaultValue = "10") int pageSize) {
-        try{
-            List<DosageResponse> dosages = service.findAll(pageNumber, pageSize);
-            if (dosages.isEmpty()) {
-                return new ResponseEntity<>(new ErrorMessage("No dosages found"), HttpStatus.NOT_FOUND);
-            } else {
-                return new ResponseEntity<>(dosages, HttpStatus.OK);
-            }
-        } catch (PatientNotFoundException ex){
-            return new ResponseEntity<>(new ErrorMessage("Patient not Found"), HttpStatus.NOT_FOUND);
-        }
+            return new ResponseEntity<>(service.findAll(pageNumber, pageSize), HttpStatus.OK);
     }
 
     @PreAuthorize("hasRole('PATIENT')")
@@ -108,16 +95,7 @@ public class DosageController {
             ) int medicineId,
             @RequestBody AddDosageRequest request
     ) {
-        try{
-            Optional<DosageResponse> dosage = service.create(medicineId, request);
-            if (dosage.isEmpty()) {
-                return new ResponseEntity<>(new ErrorMessage("Bad request"), HttpStatus.BAD_REQUEST);
-            } else {
-                return new ResponseEntity<>(dosage, HttpStatus.OK);
-            }
-        } catch (PatientNotFoundException e){
-            return new ResponseEntity<>(new ErrorMessage("Patient not Found"), HttpStatus.NOT_FOUND);
-        }
+            return new ResponseEntity<>(service.create(medicineId, request), HttpStatus.OK);
     }
     @PreAuthorize("hasRole('PATIENT')")
     @PutMapping("/{id}")
@@ -151,16 +129,7 @@ public class DosageController {
             ) String id,
             @RequestBody EditDosageRequest request
     ) {
-        try{
-            Optional<DosageResponse> dosage = service.update(id, request);
-            if (dosage.isEmpty()) {
-                return new ResponseEntity<>(new ErrorMessage("Dosage not found"),HttpStatus.NOT_FOUND);
-            } else {
-                return new ResponseEntity<>(dosage, HttpStatus.OK);
-            }
-        } catch (PatientNotFoundException ex){
-            return new ResponseEntity<>(new ErrorMessage("Patient not Found"), HttpStatus.NOT_FOUND);
-        }
+       return new ResponseEntity<>(service.update(id, request), HttpStatus.OK);
     }
 
     @PreAuthorize("hasRole('PATIENT')")
@@ -237,22 +206,6 @@ public class DosageController {
                     example = "54c00d38-9a04-4ebe-8c5e-ca5ce8cf851f"
             ) String id
     ) {
-        try{
-            Optional<DosageResponse> dosage = service.findById(id);
-            if (dosage.isEmpty()) {
-                return new ResponseEntity<>(new ErrorMessage("Dosage not found"),HttpStatus.NOT_FOUND);
-            } else {
-                Optional<DosageResponse> deletedDosage = service.delete(dosage.get());
-                if (deletedDosage.isEmpty()){
-                    return new ResponseEntity<>(new ErrorMessage("Error deleting Dosage"), HttpStatus.INTERNAL_SERVER_ERROR);
-                } else {
-                    return new ResponseEntity<>(dosage, HttpStatus.OK);
-                }
-            }
-        } catch (PatientNotFoundException ex){
-            return new ResponseEntity<>(new ErrorMessage("Patient not Found"), HttpStatus.NOT_FOUND);
-        } catch (RuntimeException ex) {
-            return new ResponseEntity<>(new ErrorMessage("Error deleting Dosage"), HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        return new ResponseEntity<>(service.delete(id), HttpStatus.OK);
     }
 }

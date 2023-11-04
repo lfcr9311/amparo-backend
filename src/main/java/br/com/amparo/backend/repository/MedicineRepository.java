@@ -34,12 +34,16 @@ public class MedicineRepository {
             MapSqlParameterSource param = new MapSqlParameterSource(Map.of(
                     "id", id
             ));
-            MedicineResponse medicineResponse = jdbcTemplate.queryForObject(sql, param, (rs, rowNum) -> new MedicineResponse(
+            List<MedicineResponse> medicineResponse = jdbcTemplate.query(sql, param, (rs, rowNum) -> new MedicineResponse(
                     rs.getInt("id"),
                     rs.getString("name"),
                     rs.getString("leaflet")
             ));
-            return Optional.ofNullable(medicineResponse);
+            if (medicineResponse.isEmpty()) {
+                return Optional.empty();
+            } else {
+                return Optional.ofNullable(medicineResponse.get(0));
+            }
         } catch (DataAccessException e) {
             log.error("Error trying to find medicine by id: " + id + " Error: " + e.getMessage());
             return Optional.empty();
@@ -66,6 +70,16 @@ public class MedicineRepository {
                         rs.getString("leaflet")
                     )
             );
+            List<MedicineResponse> medicineResponse = jdbcTemplate.query(sql, param, (rs, rowNum) -> new MedicineResponse(
+                    rs.getInt("id"),
+                    rs.getString("name"),
+                    rs.getString("leaflet")
+            ));
+            if (medicineResponse.isEmpty()) {
+                return Optional.empty();
+            } else {
+                return Optional.ofNullable(medicineResponse.get(0));
+            }
         } catch (DataAccessException e) {
             log.error("Error trying to find medicine by name: " + name + " Error: " + e.getMessage());
             return new ArrayList<>();
@@ -88,7 +102,7 @@ public class MedicineRepository {
             return jdbcTemplate.query(sql, param, (rs, rowNum) -> new MedicineIncResponse(
                     rs.getInt("id_medicine_inc"),
                     rs.getString("name_medicine_inc"),
-                    rs.getString("severity")
+                    rs.getInt("severity")
             ));
         } catch (DataAccessException e) {
             log.error("Error trying to find medicine by id: " + id + " Error: " + e.getMessage());
@@ -99,9 +113,9 @@ public class MedicineRepository {
     public List<MedicineIncResponse> findIncompatibility(int id, List<Integer> medicineIds) {
         try {
             String sql = """
-            SELECT 
-                minc.id     as id,
-                minc.name   as medicine_name,
+            SELECT
+                minc.id as id,
+                minc.name as medicine_name,
                 i.severity
             FROM "Incompatibility" i
                 JOIN "Medicine" m on i.id_medicine = m.id
@@ -116,7 +130,7 @@ public class MedicineRepository {
             return jdbcTemplate.query(sql, param, (rs, rowNum) -> new MedicineIncResponse(
                     rs.getInt("id"),
                     rs.getString("medicine_name"),
-                    rs.getString("severity")
+                    rs.getInt("severity")
             ));
         } catch (DataAccessException e) {
             log.error("Error trying to find incompatibilities for medicine " + id, e);
