@@ -19,16 +19,12 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/doctor")
+@RequestMapping("/doctor/exams")
 @RequiredArgsConstructor
 @ControllerAdvice
 @Slf4j
 @Tag(name = "10. DoctorExam controller")
 public class DoctorExamController {
-
-    @Autowired
-    private LinkService linkService;
-
     @Autowired
     private ExamService examService;
 
@@ -40,7 +36,7 @@ public class DoctorExamController {
                     )
             })
     @PreAuthorize("hasRole('DOCTOR')")
-    @GetMapping("/exams/done/{patientId}")
+    @GetMapping("/done/{patientId}")
     public ResponseEntity<List<ExamResponse>> findDoneExamsToPatient(
             @PathVariable
             @Parameter(
@@ -61,12 +57,6 @@ public class DoctorExamController {
             )
             @RequestParam(defaultValue = "10") int pageSize
     ) {
-        boolean connection = linkService.checkConnection(SecurityUtils.getApiUser().getId(), patientId);
-        if (!connection) {
-            // Necessário fornecer tratamento adequado (melhorar depois)
-            throw new RuntimeException("Connection not found");
-        }
-
         return ResponseEntity.ok(examService.listDoneExams(patientId, pageNumber, pageSize));
     }
 
@@ -78,7 +68,7 @@ public class DoctorExamController {
                     )
             })
     @PreAuthorize("hasRole('DOCTOR')")
-    @GetMapping("/exams/pending/{patientId}")
+    @GetMapping("/pending/{patientId}")
     public ResponseEntity<List<ExamResponse>> findPendingExamsToPatient(
             @PathVariable
             @Parameter(
@@ -99,17 +89,11 @@ public class DoctorExamController {
             )
             @RequestParam(defaultValue = "10") int pageSize
     ) {
-        boolean connection = linkService.checkConnection(SecurityUtils.getApiUser().getId(), patientId);
-        if (!connection) {
-            // Necessário fornecer tratamento adequado (melhorar depois)
-            throw new RuntimeException("Connection not found");
-        }
-
         return ResponseEntity.ok(examService.listPendingExams(patientId, pageNumber, pageSize));
     }
 
     @PreAuthorize("hasRole('DOCTOR')")
-    @GetMapping("/exams/{patientId}")
+    @GetMapping("/{patientId}")
     public ResponseEntity<List<ExamResponse>> findAllExamsToPatient(
             @PathVariable
             @Parameter(
@@ -130,12 +114,6 @@ public class DoctorExamController {
             )
             @RequestParam(defaultValue = "10") int pageSize
     ) {
-        boolean connection = linkService.checkConnection(SecurityUtils.getApiUser().getId(), patientId);
-        if (!connection) {
-            // Necessário fornecer tratamento adequado (melhorar depois)
-            throw new RuntimeException("Connection not found");
-        }
-
         return ResponseEntity.ok(examService.listAllExams(patientId, pageNumber, pageSize));
     }
 }

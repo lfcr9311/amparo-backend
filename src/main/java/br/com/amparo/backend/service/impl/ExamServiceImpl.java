@@ -7,18 +7,17 @@ import br.com.amparo.backend.exception.NotFoundException;
 import br.com.amparo.backend.repository.ExamRepository;
 import br.com.amparo.backend.repository.PatientRepository;
 import br.com.amparo.backend.service.ExamService;
+import br.com.amparo.backend.service.LinkService;
 import br.com.amparo.backend.service.security.SecurityUtils;
 import lombok.RequiredArgsConstructor;
-
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 @RequiredArgsConstructor
 public class ExamServiceImpl implements ExamService {
     private final ExamRepository repository;
-
     private final PatientRepository patientRepository;
+    private final LinkService linkService;
 
     @Override
     public Optional<ExamResponse> addExam(CreateExamRequest exam, String id) {
@@ -33,6 +32,9 @@ public class ExamServiceImpl implements ExamService {
         if (patientRepository.findById(id).isEmpty()) {
             throw new NotFoundException("Patient");
         }
+        if (SecurityUtils.getApiUser().isDoctor() && !linkService.checkConnection(SecurityUtils.getApiUser().getId(), id)) {
+            throw new NotFoundException("Connection");
+        }
         return repository.listDoneExams(id, page, size);
     }
 
@@ -41,14 +43,20 @@ public class ExamServiceImpl implements ExamService {
         if (patientRepository.findById(id).isEmpty()) {
             throw new NotFoundException("Patient");
         }
+
+        if (SecurityUtils.getApiUser().isDoctor() && !linkService.checkConnection(SecurityUtils.getApiUser().getId(), id)) {
+            throw new NotFoundException("Connection");
+        }
         return repository.listPendingExams(id, page, size);
     }
 
     @Override
     public List<ExamResponse> listAllExams(String id, int page, int size) {
         if (patientRepository.findById(id).isEmpty()) {
-            // Deixa assim por enquanto, quando tratarmos corretamente as exceptions, vamos mudar
-            throw new RuntimeException("Patient not found");
+            throw new NotFoundException("Patient");
+        }
+        if (SecurityUtils.getApiUser().isDoctor() && !linkService.checkConnection(SecurityUtils.getApiUser().getId(), id)) {
+            throw new NotFoundException("Connection");
         }
         return repository.listAllExams(id, page, size);
     }

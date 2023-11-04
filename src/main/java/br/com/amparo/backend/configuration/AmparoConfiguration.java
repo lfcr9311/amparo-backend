@@ -99,8 +99,8 @@ public class AmparoConfiguration {
     }
 
     @Bean
-    public ExamService examService(ExamRepository examRepository, PatientRepository patientRepository) {
-        return new ExamServiceImpl(examRepository, patientRepository);
+    public ExamService examService(ExamRepository examRepository, PatientRepository patientRepository, LinkService linkService) {
+        return new ExamServiceImpl(examRepository, patientRepository, linkService);
     }
 
     @Bean
