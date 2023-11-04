@@ -1,7 +1,6 @@
 package br.com.amparo.backend.repository;
 
 import br.com.amparo.backend.dto.medicine.MedicineIncResponse;
-import br.com.amparo.backend.dto.medicine.MedicineIncompatibilityRequest;
 import br.com.amparo.backend.dto.medicine.MedicineResponse;
 import br.com.amparo.backend.exception.MedicineOperationException;
 import lombok.extern.slf4j.Slf4j;
@@ -10,8 +9,10 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
-
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 @Slf4j
 public class MedicineRepository {
@@ -24,8 +25,8 @@ public class MedicineRepository {
     public Optional<MedicineResponse> findMedicineById(int id) {
         try {
             String sql = """
-                    SELECT  m."id" as "id",
-                            m."name" as "name",
+                    SELECT  m."id"      as "id",
+                            m."name"    as "name",
                             m."leaflet" as "leaflet"
                     FROM "Medicine" m
                     WHERE m."id" = :id
@@ -49,39 +50,37 @@ public class MedicineRepository {
         }
     }
 
-    public Optional<MedicineResponse> findMedicineByName(String name) {
+    public List<MedicineResponse> findMedicineByName(String name) {
         try {
             String sql = """
-                    SELECT  m."id" as "id",
-                            m."name" as "name",
+                    SELECT  m."id"      as "id",
+                            m."name"    as "name",
                             m."leaflet" as "leaflet"
                     FROM "Medicine" m
-                    WHERE m."name" = :name
+                    WHERE m."name" ILIKE :name
                     """;
             MapSqlParameterSource param = new MapSqlParameterSource(
-                    Map.of("name", name)
+                    Map.of("name", "%" + name + "%")
             );
-            List<MedicineResponse> medicineResponse = jdbcTemplate.query(sql, param, (rs, rowNum) -> new MedicineResponse(
-                    rs.getInt("id"),
-                    rs.getString("name"),
-                    rs.getString("leaflet")
-            ));
-            if (medicineResponse.isEmpty()) {
-                return Optional.empty();
-            } else {
-                return Optional.ofNullable(medicineResponse.get(0));
-            }
+
+            return jdbcTemplate.query(sql, param, (rs, rowNum) ->
+                    new MedicineResponse(
+                        rs.getInt("id"),
+                        rs.getString("name"),
+                        rs.getString("leaflet")
+                    )
+            );
         } catch (DataAccessException e) {
             log.error("Error trying to find medicine by name: " + name + " Error: " + e.getMessage());
-            return Optional.empty();
+            return new ArrayList<>();
         }
     }
 
     public List<MedicineIncResponse> findAllIncompatibility(int id) {
         try {
             String sql = """
-                    SELECT m."id" as "id_medicine_inc",
-                            m."name" as "name_medicine_inc",
+                    SELECT m."id"        as "id_medicine_inc",
+                            m."name"     as "name_medicine_inc",
                             i."severity" as "severity"
                     FROM "Medicine" m
                     INNER JOIN "Incompatibility" i ON m."id" = i."id_medicine_inc"
@@ -132,8 +131,8 @@ public class MedicineRepository {
     public List<MedicineResponse> findAllMedicines(int pageNumber, int pageSize) {
         try {
             String sql = """
-                    SELECT  m."id" as "id",
-                            m."name" as "name",
+                    SELECT  m."id"      as "id",
+                            m."name"    as "name",
                             m."leaflet" as "leaflet"
                     FROM "Medicine" m
                     LIMIT :pageSize OFFSET :offset
