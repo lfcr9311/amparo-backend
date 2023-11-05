@@ -1,15 +1,14 @@
 package br.com.amparo.backend.repository;
 
+import br.com.amparo.backend.domain.entity.Doctor;
 import br.com.amparo.backend.domain.entity.Information;
 import br.com.amparo.backend.dto.information.InformationResponse;
-import br.com.amparo.backend.service.security.SecurityUtils;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 
 @Slf4j
@@ -20,7 +19,7 @@ public class InformationRepository {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    public InformationResponse create(Information information, String doctorId) {
+    public InformationResponse create(Information information, Doctor id) {
         try {
             String sql = """
                     INSERT INTO "Information" ("title", "link", "image", "description", "id_doctor", "created_at")
@@ -29,12 +28,12 @@ public class InformationRepository {
                     :link, 
                     :image, 
                     :description, 
-                    :idDoctor,
+                    :id,
                     Now()
                     );
                     """;
             MapSqlParameterSource param = new MapSqlParameterSource(Map.of(
-                    "idDoctor", doctorId
+                    "id_doctor", id
             ));
             param.addValue("title", information.getTitle());
             param.addValue("link", information.getLink());

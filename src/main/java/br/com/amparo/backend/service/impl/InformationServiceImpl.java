@@ -1,5 +1,6 @@
 package br.com.amparo.backend.service.impl;
 
+import br.com.amparo.backend.domain.entity.Doctor;
 import br.com.amparo.backend.domain.entity.Information;
 import br.com.amparo.backend.dto.information.InformationResponse;
 import br.com.amparo.backend.repository.InformationRepository;
@@ -15,8 +16,8 @@ public class InformationServiceImpl implements InformationService {
     private final InformationRepository informationRepository;
 
     @Override
-    public InformationResponse create(Information information, String doctorId) {
-        return informationRepository.create(information, doctorId);
+    public InformationResponse create(Information information, Doctor id) {
+        return informationRepository.create(information, id);
     }
 
     @Override
