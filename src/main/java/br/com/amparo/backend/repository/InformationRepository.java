@@ -2,6 +2,7 @@ package br.com.amparo.backend.repository;
 
 import br.com.amparo.backend.domain.entity.Information;
 import br.com.amparo.backend.dto.information.InformationResponse;
+import br.com.amparo.backend.service.security.SecurityUtils;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import lombok.extern.slf4j.Slf4j;
@@ -22,43 +23,44 @@ public class InformationRepository {
     public InformationResponse create(Information information, String doctorId) {
         try {
             String sql = """
-                    INSERT INTO "Information" ("title", "link", "image", "description", "id_doctor")
+                    INSERT INTO "Information" ("title", "link", "image", "description", "id_doctor", "created_at")
                     VALUES (
                     :title, 
                     :link, 
                     :image, 
                     :description, 
-                    :idDoctor)
+                    :idDoctor,
+                    Now()
+                    );
                     """;
             MapSqlParameterSource param = new MapSqlParameterSource(Map.of(
-                    "idDoctor", UUID.fromString(doctorId)
+                    "idDoctor", doctorId
             ));
             param.addValue("title", information.getTitle());
             param.addValue("link", information.getLink());
             param.addValue("image", information.getImage());
             param.addValue("description", information.getDescription());
             jdbcTemplate.update(sql, param);
-            return new InformationResponse(information.getTitle(), information.getLink(), information.getImage(), information.getDescription());
+            return new InformationResponse(information.getTitle(), information.getLink(), information.getImage(), information.getDescription(), "Now()");
         } catch (Exception e) {
             log.error(e.getMessage());
             throw new RuntimeException(e);
         }
     }
 
-    public List<InformationResponse> findAll(String id) {
+    public List<InformationResponse> findAll() {
         try {
             String sql = """
                     SELECT *
                     FROM "Information"
                     """;
-            MapSqlParameterSource param = new MapSqlParameterSource(Map.of(
-                    "id", id
-            ));
+            MapSqlParameterSource param = new MapSqlParameterSource();
             return jdbcTemplate.query(sql, param, (rs, rowNum) -> new InformationResponse(
                     rs.getString("title"),
                     rs.getString("link"),
                     rs.getString("image"),
-                    rs.getString("description")
+                    rs.getString("description"),
+                    rs.getString("created_at")
             ));
         } catch (Exception e) {
             log.error(e.getMessage());
@@ -71,16 +73,17 @@ public class InformationRepository {
             String sql = """
                     SELECT "title", "link", "image", "description"
                     FROM "Information"
-                    WHERE "title" = :title
+                    WHERE "title" ILIKE :title
                     """;
             MapSqlParameterSource param = new MapSqlParameterSource(Map.of(
-                    "title", title
+                    "title", "%" + title + "%"
             ));
             return jdbcTemplate.query(sql, param, (rs, rowNum) -> new InformationResponse(
                     rs.getString("title"),
                     rs.getString("link"),
                     rs.getString("image"),
-                    rs.getString("description")
+                    rs.getString("description"),
+                    rs.getString("created_at")
             ));
         } catch (Exception e) {
             log.error(e.getMessage());

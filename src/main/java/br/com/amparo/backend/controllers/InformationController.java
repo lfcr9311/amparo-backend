@@ -1,7 +1,7 @@
 package br.com.amparo.backend.controllers;
 
-import br.com.amparo.backend.controllers.dto.ErrorMessage;
 import br.com.amparo.backend.domain.entity.Information;
+import br.com.amparo.backend.dto.ErrorMessage;
 import br.com.amparo.backend.dto.information.InformationResponse;
 import br.com.amparo.backend.service.InformationService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -59,8 +59,8 @@ public class InformationController {
                     )
             }
     )
-    public ResponseEntity<InformationResponse> create(@RequestBody Information information) {
-        return new ResponseEntity<>(informationService.create(information), HttpStatus.CREATED);
+    public ResponseEntity<InformationResponse> create(@RequestBody Information information, String doctorId) {
+        return new ResponseEntity<>(informationService.create(information, doctorId), HttpStatus.CREATED);
     }
 
     @GetMapping

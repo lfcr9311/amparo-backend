@@ -2,14 +2,12 @@ package br.com.amparo.backend.configuration;
 
 import br.com.amparo.backend.configuration.security.AmparoSecurityConfiguration;
 import br.com.amparo.backend.controllers.FileController;
-import br.com.amparo.backend.controllers.InformationController;
 import br.com.amparo.backend.repository.*;
 import br.com.amparo.backend.service.*;
 import br.com.amparo.backend.service.impl.*;
 import br.com.amparo.backend.service.impl.DoctorServiceImpl;
 import br.com.amparo.backend.service.impl.ExamServiceImpl;
 import br.com.amparo.backend.service.impl.MedicineServiceImpl;
-import br.com.amparo.backend.service.impl.ExamServiceImpl;
 import br.com.amparo.backend.service.impl.PatientServiceImpl;
 import br.com.amparo.backend.service.impl.UserServiceImpl;
 import br.com.amparo.backend.service.security.AuthService;

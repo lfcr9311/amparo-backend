@@ -15,20 +15,19 @@ public class InformationServiceImpl implements InformationService {
     private final InformationRepository informationRepository;
 
     @Override
-    public InformationResponse create(Information information) {
-        return informationRepository.create(information, SecurityUtils.getApiUser().getId());
+    public InformationResponse create(Information information, String doctorId) {
+        return informationRepository.create(information, doctorId);
     }
 
     @Override
     public List<InformationResponse> findAll() {
-        return informationRepository.findAll(SecurityUtils.getApiUser().getId());
+        return informationRepository.findAll();
     }
 
     @Override
     public List<InformationResponse> findByTitle(String title) {
         return informationRepository.findByTitle(title);
     }
-
 
 
 }
