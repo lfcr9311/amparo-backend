@@ -9,7 +9,7 @@ import java.util.Optional;
 public interface MedicineService {
 
     Optional<MedicineResponse> findMedicineById(int id);
-    Optional<MedicineResponse> findMedicineByName(String name);
+    List<MedicineResponse> findMedicineByName(String name);
     List<MedicineIncResponse> findAllIncompatibility(int id);
     List<MedicineResponse> findAllMedicines(int pageNumber, int pageSize);
     List<MedicineIncResponse> findIncompatibility(int id, List<Integer> medicineIds);
