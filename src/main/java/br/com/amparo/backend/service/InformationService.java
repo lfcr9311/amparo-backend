@@ -8,7 +8,7 @@ import org.springframework.http.ResponseEntity;
 import java.util.List;
 
 public interface InformationService {
-    InformationResponse create(Information information, Doctor id);
+    InformationResponse create(Information information, String id) throws IllegalAccessException;
 
     List<InformationResponse> findAll();
 

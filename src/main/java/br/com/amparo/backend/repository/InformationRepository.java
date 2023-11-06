@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 
 @Slf4j
@@ -19,7 +20,7 @@ public class InformationRepository {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    public InformationResponse create(Information information, Doctor id) {
+    public InformationResponse create(Information information, String id) {
         try {
             String sql = """
                     INSERT INTO "Information" ("title", "link", "image", "description", "id_doctor", "created_at")
@@ -33,7 +34,7 @@ public class InformationRepository {
                     );
                     """;
             MapSqlParameterSource param = new MapSqlParameterSource(Map.of(
-                    "id_doctor", id
+                    "id_doctor", UUID.fromString(id)
             ));
             param.addValue("title", information.getTitle());
             param.addValue("link", information.getLink());

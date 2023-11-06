@@ -16,7 +16,10 @@ public class InformationServiceImpl implements InformationService {
     private final InformationRepository informationRepository;
 
     @Override
-    public InformationResponse create(Information information, Doctor id) {
+    public InformationResponse create(Information information, String id) throws IllegalAccessException {
+        if( id!= SecurityUtils.getApiUser().getId()) {
+            throw new IllegalAccessException();
+        }
         return informationRepository.create(information, id);
     }
 

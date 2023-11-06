@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.ErrorResponse;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -60,8 +61,12 @@ public class InformationController {
                     )
             }
     )
-    public ResponseEntity<InformationResponse> create(@RequestBody Information information, Doctor id) {
-        return new ResponseEntity<>(informationService.create(information, id), HttpStatus.CREATED);
+    public ResponseEntity<?> create(@RequestBody Information information, String id) throws IllegalAccessException {
+        try {
+            return new ResponseEntity<>(informationService.create(information, id), HttpStatus.CREATED);
+        } catch (IllegalAccessException e) {
+            return new ResponseEntity<>(new ErrorMessage("Forbidden"), HttpStatus.FORBIDDEN);
+        }
     }
 
     @GetMapping
