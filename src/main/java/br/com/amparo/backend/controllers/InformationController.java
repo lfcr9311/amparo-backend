@@ -33,7 +33,7 @@ public class InformationController {
     @Autowired
     private final InformationService informationService;
 
-    @PostMapping
+    @PostMapping("/{id}")
     @PreAuthorize("hasRole('DOCTOR')")
     @Operation(
             summary = "Create Information",
@@ -61,7 +61,7 @@ public class InformationController {
                     )
             }
     )
-    public ResponseEntity<?> create(@RequestBody Information information, String id) throws IllegalAccessException {
+    public ResponseEntity<?> create(@RequestBody Information information, @PathVariable String id) throws IllegalAccessException {
         try {
             return new ResponseEntity<>(informationService.create(information, id), HttpStatus.CREATED);
         } catch (IllegalAccessException e) {

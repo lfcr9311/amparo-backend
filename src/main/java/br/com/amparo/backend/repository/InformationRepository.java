@@ -34,7 +34,7 @@ public class InformationRepository {
                     );
                     """;
             MapSqlParameterSource param = new MapSqlParameterSource(Map.of(
-                    "id_doctor", UUID.fromString(id)
+                    "id", UUID.fromString(id)
             ));
             param.addValue("title", information.getTitle());
             param.addValue("link", information.getLink());

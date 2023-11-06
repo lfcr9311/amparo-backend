@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;
+import java.util.Objects;
 
 @RequiredArgsConstructor
 public class InformationServiceImpl implements InformationService {
@@ -17,7 +18,7 @@ public class InformationServiceImpl implements InformationService {
 
     @Override
     public InformationResponse create(Information information, String id) throws IllegalAccessException {
-        if( id!= SecurityUtils.getApiUser().getId()) {
+        if(!Objects.equals(id, SecurityUtils.getApiUser().getId())) {
             throw new IllegalAccessException();
         }
         return informationRepository.create(information, id);
