@@ -136,4 +136,9 @@ public class InformationController {
         return ResponseEntity.ok(informationService.findByTitle(title));
     }
 
+    @GetMapping("/orderByDate")
+    @PreAuthorize("(hasRole('PATIENT') or hasRole('DOCTOR'))")
+    public ResponseEntity<List<InformationResponse>> orderByDate() {
+        return ResponseEntity.ok(informationService.orderByDate());
+    }
 }

@@ -90,4 +90,25 @@ public class InformationRepository {
             throw new RuntimeException(e);
         }
     }
+
+    public List<InformationResponse> orderByDate() {
+        try {
+            String sql = """
+                    SELECT *
+                    FROM "Information"
+                    ORDER BY "created_at" DESC
+                    """;
+            MapSqlParameterSource param = new MapSqlParameterSource();
+            return jdbcTemplate.query(sql, param, (rs, rowNum) -> new InformationResponse(
+                    rs.getString("title"),
+                    rs.getString("link"),
+                    rs.getString("image"),
+                    rs.getString("description"),
+                    rs.getString("created_at")
+            ));
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            throw new RuntimeException(e);
+        }
+    }
 }

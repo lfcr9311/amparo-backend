@@ -14,5 +14,7 @@ public interface InformationService {
 
     List<InformationResponse> findByTitle(String title);
 
+    List<InformationResponse> orderByDate();
+
 
 }

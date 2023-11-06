@@ -18,7 +18,7 @@ public class InformationServiceImpl implements InformationService {
 
     @Override
     public InformationResponse create(Information information, String id) throws IllegalAccessException {
-        if(!Objects.equals(id, SecurityUtils.getApiUser().getId())) {
+        if (!Objects.equals(id, SecurityUtils.getApiUser().getId())) {
             throw new IllegalAccessException();
         }
         return informationRepository.create(information, id);
@@ -34,5 +34,8 @@ public class InformationServiceImpl implements InformationService {
         return informationRepository.findByTitle(title);
     }
 
-
+    @Override
+    public List<InformationResponse> orderByDate() {
+        return informationRepository.orderByDate();
+    }
 }
