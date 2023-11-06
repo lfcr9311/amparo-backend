@@ -71,7 +71,7 @@ public class InformationRepository {
     public List<InformationResponse> findByTitle(String title) {
         try {
             String sql = """
-                    SELECT "title", "link", "image", "description"
+                    SELECT "title", "link", "image", "description", "created_at"
                     FROM "Information"
                     WHERE "title" ILIKE :title
                     """;
