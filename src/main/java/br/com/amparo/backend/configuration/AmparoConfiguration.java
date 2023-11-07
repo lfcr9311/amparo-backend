@@ -2,6 +2,7 @@ package br.com.amparo.backend.configuration;
 
 import br.com.amparo.backend.configuration.security.AmparoSecurityConfiguration;
 import br.com.amparo.backend.controllers.FileController;
+import br.com.amparo.backend.dto.exam.ExamResponse;
 import br.com.amparo.backend.repository.*;
 import br.com.amparo.backend.service.*;
 import br.com.amparo.backend.service.impl.*;
@@ -98,8 +99,8 @@ public class AmparoConfiguration {
     }
 
     @Bean
-    public ExamService examService(ExamRepository examRepository, PatientRepository patientRepository) {
-        return new ExamServiceImpl(examRepository, patientRepository);
+    public ExamService examService(ExamRepository examRepository, PatientRepository patientRepository, LinkService linkService) {
+        return new ExamServiceImpl(examRepository, patientRepository, linkService);
     }
 
     @Bean

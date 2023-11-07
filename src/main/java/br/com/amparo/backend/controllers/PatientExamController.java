@@ -1,5 +1,6 @@
 package br.com.amparo.backend.controllers;
 
+import br.com.amparo.backend.domain.security.ApiUser;
 import br.com.amparo.backend.dto.exam.CreateExamRequest;
 import br.com.amparo.backend.dto.exam.ExamResponse;
 import br.com.amparo.backend.dto.exam.ExamToUpdateRequest;
@@ -71,7 +72,8 @@ public class PatientExamController {
             )
             @RequestParam(defaultValue = "10") int pageSize
     ){
-        return ResponseEntity.ok(examService.listDoneExams(SecurityUtils.getApiUser().getId(), pageNumber, pageSize));
+        ApiUser user = SecurityUtils.getApiUser();
+        return ResponseEntity.ok(examService.listDoneExams(user.getId(), pageNumber, pageSize, user));
     }
 
     @Operation(operationId = "listPendingExams", description = "List pending exams",
@@ -98,7 +100,8 @@ public class PatientExamController {
             )
             @RequestParam(defaultValue = "10") int pageSize
     ){
-        return ResponseEntity.ok(examService.listPendingExams(SecurityUtils.getApiUser().getId(), pageNumber, pageSize));
+        ApiUser user = SecurityUtils.getApiUser();
+        return ResponseEntity.ok(examService.listPendingExams(user.getId(), pageNumber, pageSize, user));
     }
 
     @Operation(operationId = "findExamById", description = "Find a exam by Id",
