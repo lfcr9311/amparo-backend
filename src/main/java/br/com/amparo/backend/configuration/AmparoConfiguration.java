@@ -9,7 +9,6 @@ import br.com.amparo.backend.service.impl.*;
 import br.com.amparo.backend.service.impl.DoctorServiceImpl;
 import br.com.amparo.backend.service.impl.ExamServiceImpl;
 import br.com.amparo.backend.service.impl.MedicineServiceImpl;
-import br.com.amparo.backend.service.impl.ExamServiceImpl;
 import br.com.amparo.backend.service.impl.PatientServiceImpl;
 import br.com.amparo.backend.service.impl.UserServiceImpl;
 import br.com.amparo.backend.service.security.AuthService;
@@ -150,5 +149,15 @@ public class AmparoConfiguration {
 
         return new AuthService(tokenService, userTokenRepository, cryptographyService,
                 userRepository, patientRepository, doctorRepository);
+    }
+
+    @Bean
+    public InformationRepository informationRepository(NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
+        return new InformationRepository(namedParameterJdbcTemplate);
+    }
+
+    @Bean
+    public InformationService informationService(InformationRepository informationRepository) {
+        return new InformationServiceImpl(informationRepository);
     }
 }
