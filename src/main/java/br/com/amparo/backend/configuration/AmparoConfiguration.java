@@ -118,8 +118,11 @@ public class AmparoConfiguration {
     }
 
     @Bean
-    public DosageService dosageService(DosageRepository dosageRepository, PatientService patientService) {
-        return new DosageServiceImpl(dosageRepository, patientService);
+    public DosageService dosageService(DosageRepository dosageRepository,
+                                       PatientService patientService,
+                                       LinkService linkService
+    ) {
+        return new DosageServiceImpl(dosageRepository, patientService, linkService);
     }
 
     @Bean

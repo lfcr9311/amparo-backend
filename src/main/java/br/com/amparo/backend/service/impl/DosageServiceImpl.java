@@ -1,11 +1,13 @@
 package br.com.amparo.backend.service.impl;
 
+import br.com.amparo.backend.domain.security.ApiUser;
 import br.com.amparo.backend.dto.dosage.AddDosageRequest;
 import br.com.amparo.backend.dto.dosage.DosageResponse;
 import br.com.amparo.backend.dto.dosage.EditDosageRequest;
 import br.com.amparo.backend.exception.NotFoundException;
 import br.com.amparo.backend.repository.DosageRepository;
 import br.com.amparo.backend.service.DosageService;
+import br.com.amparo.backend.service.LinkService;
 import br.com.amparo.backend.service.PatientService;
 import br.com.amparo.backend.service.security.SecurityUtils;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +19,8 @@ import java.util.Optional;
 public class DosageServiceImpl implements DosageService {
     private final DosageRepository repository;
     private final PatientService patientService;
+    private final LinkService linkService;
+
     @Override
     public Optional<DosageResponse> create(int medicineId, AddDosageRequest request) {
         String patientId = SecurityUtils.getApiUser().getId();
@@ -62,6 +66,20 @@ public class DosageServiceImpl implements DosageService {
             throw new NotFoundException("Patient");
         } else return repository.listDosage(patientId, pageNumber, pageSize);
     }
+
+    @Override
+    public List<DosageResponse> listAllDosagesToPatient(String patientId, int pageNumber, int pageSize, ApiUser user) {
+        if (user.isDoctor() && !linkService.checkConnection(user.getId(), patientId)) {
+            throw new NotFoundException("Connection");
+        }
+
+        if(patientService.findPatientById(patientId).isEmpty()){
+            throw new NotFoundException("Patient");
+        }
+
+        return repository.listDosage(patientId, pageNumber, pageSize);
+    }
+
 
     @Override
     public Optional<DosageResponse> update(String dosageId, EditDosageRequest request) {
