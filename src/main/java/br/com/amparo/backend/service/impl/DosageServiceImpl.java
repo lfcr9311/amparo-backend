@@ -43,6 +43,25 @@ public class DosageServiceImpl implements DosageService {
     }
 
     @Override
+    public List<DosageResponse> findByPatientId(String patientId, int pageNumber, int pageSize) {
+        ApiUser user = SecurityUtils.getApiUser();
+        if (user.isDoctor() && !linkService.checkConnection(user.getId(), patientId)) {
+            throw new NotFoundException("Connection");
+        }
+
+        if(patientService.findPatientById(patientId).isEmpty()){
+            throw new NotFoundException("Patient");
+        }
+
+        List<DosageResponse> dosage = repository.listDosage(patientId, pageNumber, pageSize);
+        if (dosage.isEmpty()) {
+            throw new NotFoundException("Dosage");
+        } else {
+            return dosage;
+        }
+    }
+
+    @Override
     public DosageResponse delete(String dosageId) {
         Optional<DosageResponse> dosage = findById(dosageId);
         if (dosage.isEmpty()){

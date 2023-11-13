@@ -175,6 +175,56 @@ public class DosageController {
         }
     }
 
+    @PreAuthorize("hasRole('DOCTOR')")
+    @GetMapping("/patient/{patientId}")
+    @Operation(
+            summary = "Get Dosages by Patient",
+            description = "Get all dosages of a specific patient",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Dosages retrieved successfully",
+                            content = @Content(schema = @Schema(implementation = DosageResponse.class))
+                    ),
+                    @ApiResponse(
+                            responseCode = "403",
+                            description = "Forbidden",
+                            content = @Content(schema = @Schema(implementation = ErrorMessage.class))
+                    ),
+                    @ApiResponse(
+                            responseCode = "404",
+                            description = "Patient not found",
+                            content = @Content(schema = @Schema(implementation = ErrorMessage.class))
+                    )
+            }
+    )
+    public ResponseEntity<?> getDosagesByPatient(
+            @PathVariable
+            @Parameter(
+                    name = "patientId",
+                    description = "Patient Id",
+                    example = "54c00d38-9a04-4ebe-8c5e-ca5ce8cf851f"
+            ) String patientId,
+            @RequestParam(defaultValue = "1")
+            @Parameter(
+                    name = "pageNumber",
+                    description = "Current page number",
+                    example = "1"
+            ) int pageNumber,
+            @RequestParam(defaultValue = "10")
+            @Parameter(
+                    name = "pageSize",
+                    description = "Number of items per page",
+                    example = "10"
+            ) int pageSize
+    ) {
+        try{
+            return new ResponseEntity<>(service.findByPatientId(patientId, pageNumber, pageSize), HttpStatus.OK);
+        } catch (PatientNotFoundException ex){
+            return new ResponseEntity<>(new ErrorMessage("Patient not Found"), HttpStatus.NOT_FOUND);
+        }
+    }
+
     @PreAuthorize("hasRole('PATIENT')")
     @DeleteMapping("/{id}")
     @Operation(
