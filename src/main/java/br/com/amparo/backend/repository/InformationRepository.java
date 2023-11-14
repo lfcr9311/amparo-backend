@@ -1,6 +1,5 @@
 package br.com.amparo.backend.repository;
 
-import br.com.amparo.backend.domain.entity.Doctor;
 import br.com.amparo.backend.domain.entity.Information;
 import br.com.amparo.backend.dto.information.InformationResponse;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -41,7 +40,7 @@ public class InformationRepository {
             param.addValue("image", information.getImage());
             param.addValue("description", information.getDescription());
             jdbcTemplate.update(sql, param);
-            return new InformationResponse(information.getTitle(), information.getLink(), information.getImage(), information.getDescription(), "Now()");
+            return new InformationResponse(information.getTitle(), information.getLink(), information.getImage(), information.getDescription(), information.getCreatedAt());
         } catch (Exception e) {
             log.error(e.getMessage());
             throw new RuntimeException(e);
@@ -53,6 +52,7 @@ public class InformationRepository {
             String sql = """
                     SELECT *
                     FROM "Information"
+                    ORDER BY "created_at" DESC
                     """;
             MapSqlParameterSource param = new MapSqlParameterSource();
             return jdbcTemplate.query(sql, param, (rs, rowNum) -> new InformationResponse(
@@ -60,7 +60,7 @@ public class InformationRepository {
                     rs.getString("link"),
                     rs.getString("image"),
                     rs.getString("description"),
-                    rs.getString("created_at")
+                    rs.getDate("created_at")
             ));
         } catch (Exception e) {
             log.error(e.getMessage());
@@ -83,7 +83,7 @@ public class InformationRepository {
                     rs.getString("link"),
                     rs.getString("image"),
                     rs.getString("description"),
-                    rs.getString("created_at")
+                    rs.getDate("created_at")
             ));
         } catch (Exception e) {
             log.error(e.getMessage());
@@ -104,7 +104,7 @@ public class InformationRepository {
                     rs.getString("link"),
                     rs.getString("image"),
                     rs.getString("description"),
-                    rs.getString("created_at")
+                    rs.getDate("created_at")
             ));
         } catch (Exception e) {
             log.error(e.getMessage());
