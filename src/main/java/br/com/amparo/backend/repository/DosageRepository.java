@@ -99,7 +99,7 @@ public class DosageRepository {
                     rs.getTimestamp("initial_hour").toLocalDateTime(),
                     rs.getString("frequency"),
                     rs.getTimestamp("final_date") == null ? null : rs.getTimestamp("final_date").toLocalDateTime(),
-                    rs.getTimestamp("last_date") == null ? null : rs.getTimestamp("last_date").toLocalDateTime().toLocalDate(),
+                    rs.getDate("last_date") == null ? null : rs.getDate("last_date").toLocalDate(),
                     rs.getString("medicineName")
             ));
             if (dosage.isEmpty()) {
@@ -134,7 +134,7 @@ public class DosageRepository {
                     rs.getTimestamp("initial_hour").toLocalDateTime(),
                     rs.getString("frequency"),
                     rs.getTimestamp("final_date") == null ? null : rs.getTimestamp("final_date").toLocalDateTime(),
-                    rs.getTimestamp("last_date") == null ? null : rs.getTimestamp("last_date").toLocalDateTime().toLocalDate(),
+                    rs.getDate("last_date") == null ? null : rs.getDate("last_date").toLocalDate(),
                     rs.getString("medicineName")
             ));
             if (dosage.isEmpty()) {
@@ -184,7 +184,7 @@ public class DosageRepository {
                     rs.getTimestamp("initial_hour").toLocalDateTime(),
                     rs.getString("frequency"),
                     rs.getTimestamp("final_date") == null ? null : rs.getTimestamp("final_date").toLocalDateTime(),
-                    rs.getTimestamp("last_date") == null ? null : rs.getTimestamp("last_date").toLocalDateTime().toLocalDate(),
+                    rs.getDate("last_date") == null ? null : rs.getDate("last_date").toLocalDate(),
                     rs.getString("medicineName")
             ));
         } catch (Exception e){
