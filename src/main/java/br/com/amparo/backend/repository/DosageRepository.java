@@ -87,7 +87,7 @@ public class DosageRepository {
                     "quantity", request.quantity(),
                     "idMedicine", request.medicineId()
             ));
-            param.addValue("last_Date", request.lastConsumedDate());
+            param.addValue("last_date", request.lastConsumedDate());
             param.addValue("frequency", request.frequency());
             param.addValue("finalDate", request.finalDate() == null ? null : Timestamp.valueOf(request.finalDate()));
 
