@@ -1,6 +1,5 @@
 package br.com.amparo.backend.controllers;
 
-import br.com.amparo.backend.domain.entity.Doctor;
 import br.com.amparo.backend.domain.entity.Information;
 import br.com.amparo.backend.dto.ErrorMessage;
 import br.com.amparo.backend.dto.information.InformationFindResponse;
@@ -18,7 +17,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.ErrorResponse;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -168,12 +166,13 @@ public class InformationController {
             }
 
     )
-    public Optional<InformationResponse> findInformationById(@PathVariable String id){
+    public Optional<InformationResponse> findInformationById(@PathVariable String id) {
         return informationService.findInformationById(id);
     }
+
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('DOCTOR')")
-    public Optional<InformationResponse> updateInformation(@PathVariable String id, @RequestBody InformationToUpdateResponse informationRequest){
+    public Optional<InformationResponse> updateInformation(@PathVariable String id, @RequestBody InformationToUpdateResponse informationRequest) {
         return informationService.updateInformation(id, informationRequest);
     }
 

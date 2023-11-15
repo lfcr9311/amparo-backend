@@ -4,7 +4,6 @@ import br.com.amparo.backend.domain.entity.Information;
 import br.com.amparo.backend.dto.information.InformationFindResponse;
 import br.com.amparo.backend.dto.information.InformationResponse;
 import br.com.amparo.backend.dto.information.InformationToUpdateResponse;
-import br.com.amparo.backend.dto.medicine.MedicineResponse;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -133,8 +132,8 @@ public class InformationRepository {
         }
     }
 
-    public Optional<InformationResponse> updateInformation (String id, InformationToUpdateResponse informationRequest, String doctorId){
-        try{
+    public Optional<InformationResponse> updateInformation(String id, InformationToUpdateResponse informationRequest, String doctorId) {
+        try {
             String sql = """
                     UPDATE "Information"
                     SET "title" = :title,
@@ -154,7 +153,7 @@ public class InformationRepository {
             param.addValue("description", informationRequest.description());
             jdbcTemplate.update(sql, param);
             return findInformationById(id);
-        } catch (Exception e){
+        } catch (Exception e) {
             log.error(e.getMessage());
             throw new RuntimeException(e);
         }
