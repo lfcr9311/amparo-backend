@@ -11,7 +11,7 @@ public interface MedicineService {
     Optional<MedicineResponse> findMedicineById(int id);
     List<MedicineResponse> findMedicineByName(String name);
     List<MedicineIncResponse> findAllIncompatibility(int id);
-    List<MedicineResponse> findAllMedicines(int pageNumber, int pageSize);
+    List<MedicineResponse> findAllMedicines();
     List<MedicineIncResponse> findIncompatibility(int id, List<Integer> medicineIds);
 
 }
