@@ -27,7 +27,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @ControllerAdvice
 @Slf4j
-@Tag(name = "10. Information")
+@Tag(name = "12. Information")
 
 public class InformationController {
 
