@@ -14,11 +14,11 @@ public class Information {
     private Date createdAt;
 
     @Builder
-    public Information(String title, String link, String image, String description, Date createdAt) {
+    public Information(String title, String link, String image, String description) {
         this.title = title;
         this.link = link;
         this.image = image;
         this.description = description;
-        this.createdAt = createdAt;
+        this.createdAt = new Date();
     }
 }

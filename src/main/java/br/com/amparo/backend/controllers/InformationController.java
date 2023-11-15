@@ -3,7 +3,9 @@ package br.com.amparo.backend.controllers;
 import br.com.amparo.backend.domain.entity.Doctor;
 import br.com.amparo.backend.domain.entity.Information;
 import br.com.amparo.backend.dto.ErrorMessage;
+import br.com.amparo.backend.dto.information.InformationFindResponse;
 import br.com.amparo.backend.dto.information.InformationResponse;
+import br.com.amparo.backend.dto.information.InformationToUpdateResponse;
 import br.com.amparo.backend.service.InformationService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -20,6 +22,7 @@ import org.springframework.web.ErrorResponse;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/information")
@@ -98,12 +101,12 @@ public class InformationController {
             }
 
     )
-    public ResponseEntity<List<InformationResponse>> findAll() {
+    public ResponseEntity<List<InformationFindResponse>> findAll() {
         return ResponseEntity.ok(informationService.findAll());
 
     }
 
-    @GetMapping("/{title}")
+    @GetMapping("/title/{title}")
     @PreAuthorize("hasRole('PATIENT') or hasRole('DOCTOR')")
     @Operation(
             summary = "Find Information by Title",
@@ -132,13 +135,80 @@ public class InformationController {
             }
 
     )
-    public ResponseEntity<List<InformationResponse>> findByTitle(@PathVariable String title) {
+    public ResponseEntity<List<InformationFindResponse>> findByTitle(@PathVariable String title) {
         return ResponseEntity.ok(informationService.findByTitle(title));
     }
 
-    @GetMapping("/orderByDate")
-    @PreAuthorize("(hasRole('PATIENT') or hasRole('DOCTOR'))")
-    public ResponseEntity<List<InformationResponse>> orderByDate() {
-        return ResponseEntity.ok(informationService.orderByDate());
+    @GetMapping("/id/{id}")
+    @PreAuthorize("hasRole('PATIENT') or hasRole('DOCTOR')")
+    @Operation(
+            summary = "Find Information by Id",
+            description = "Find information by id",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Information retrieved successfully",
+                            content = @Content(schema = @Schema(implementation = InformationResponse.class))
+                    ),
+                    @ApiResponse(
+                            responseCode = "403",
+                            description = "Forbidden",
+                            content = @Content(schema = @Schema(implementation = ErrorMessage.class))
+                    ),
+                    @ApiResponse(
+                            responseCode = "404",
+                            description = "Not Found",
+                            content = @Content(schema = @Schema(implementation = ErrorMessage.class))
+                    ),
+                    @ApiResponse(
+                            responseCode = "500",
+                            description = "Internal Server Error",
+                            content = @Content(schema = @Schema(implementation = ErrorMessage.class))
+                    )
+            }
+
+    )
+    public Optional<InformationResponse> findInformationById(@PathVariable String id){
+        return informationService.findInformationById(id);
     }
+    @PutMapping("/{id}")
+    @PreAuthorize("hasRole('DOCTOR')")
+    public Optional<InformationResponse> updateInformation(@PathVariable String id, @RequestBody InformationToUpdateResponse informationRequest){
+        return informationService.updateInformation(id, informationRequest);
+    }
+
+    @GetMapping("/doctor")
+    @PreAuthorize("hasRole('DOCTOR')")
+    @Operation(
+            summary = "Doctor Information",
+            description = "Doctor all information",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Information retrieved successfully",
+                            content = @Content(schema = @Schema(implementation = InformationResponse.class))
+                    ),
+                    @ApiResponse(
+                            responseCode = "403",
+                            description = "Forbidden",
+                            content = @Content(schema = @Schema(implementation = ErrorMessage.class))
+                    ),
+                    @ApiResponse(
+                            responseCode = "404",
+                            description = "Not Found",
+                            content = @Content(schema = @Schema(implementation = ErrorMessage.class))
+                    ),
+                    @ApiResponse(
+                            responseCode = "500",
+                            description = "Internal Server Error",
+                            content = @Content(schema = @Schema(implementation = ErrorMessage.class))
+                    )
+            }
+
+    )
+    public ResponseEntity<List<InformationFindResponse>> findAllDoctor() {
+        return ResponseEntity.ok(informationService.findAllDoctor());
+
+    }
+
 }
