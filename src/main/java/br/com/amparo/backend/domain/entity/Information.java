@@ -3,7 +3,8 @@ package br.com.amparo.backend.domain.entity;
 import lombok.Builder;
 import lombok.Getter;
 
-import java.util.Date;
+import java.time.LocalDate;
+import java.time.ZoneId;
 
 @Getter
 public class Information {
@@ -11,7 +12,7 @@ public class Information {
     private String link;
     private String image;
     private String description;
-    private Date createdAt;
+    private LocalDate createdAt;
 
     @Builder
     public Information(String title, String link, String image, String description) {
@@ -19,6 +20,6 @@ public class Information {
         this.link = link;
         this.image = image;
         this.description = description;
-        this.createdAt = new Date();
+        this.createdAt = LocalDate.now(ZoneId.of("America/Sao_Paulo"));
     }
 }

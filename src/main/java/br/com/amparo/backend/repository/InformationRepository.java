@@ -9,6 +9,8 @@ import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import lombok.extern.slf4j.Slf4j;
 
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.*;
 
 
@@ -42,7 +44,7 @@ public class InformationRepository {
             param.addValue("description", information.getDescription());
             jdbcTemplate.update(sql, param);
             return new InformationResponse(information.getTitle(), information.getLink(),
-                    information.getImage(), information.getDescription(), new Date());
+                    information.getImage(), information.getDescription(), LocalDate.now(ZoneId.of("America/Sao_Paulo")));
         } catch (Exception e) {
             log.error(e.getMessage());
             throw new RuntimeException(e);
@@ -64,7 +66,7 @@ public class InformationRepository {
                     rs.getString("link"),
                     rs.getString("image"),
                     rs.getString("description"),
-                    rs.getDate("created_at"),
+                    rs.getDate("created_at").toLocalDate(),
                     rs.getString("name"),
                     rs.getString("crm"),
                     rs.getString("uf")
@@ -93,7 +95,7 @@ public class InformationRepository {
                     rs.getString("link"),
                     rs.getString("image"),
                     rs.getString("description"),
-                    rs.getDate("created_at"),
+                    rs.getDate("created_at").toLocalDate(),
                     rs.getString("name"),
                     rs.getString("crm"),
                     rs.getString("uf")
@@ -119,7 +121,7 @@ public class InformationRepository {
                     rs.getString("link"),
                     rs.getString("image"),
                     rs.getString("description"),
-                    rs.getDate("created_at")
+                    rs.getDate("created_at").toLocalDate()
             ));
             if (information.isEmpty()) {
                 return Optional.empty();
@@ -176,7 +178,7 @@ public class InformationRepository {
                     rs.getString("link"),
                     rs.getString("image"),
                     rs.getString("description"),
-                    rs.getDate("created_at"),
+                    rs.getDate("created_at").toLocalDate(),
                     rs.getString("name"),
                     rs.getString("crm"),
                     rs.getString("uf")

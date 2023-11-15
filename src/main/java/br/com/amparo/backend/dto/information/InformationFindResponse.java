@@ -1,13 +1,13 @@
 package br.com.amparo.backend.dto.information;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 public record InformationFindResponse(
         String title,
         String link,
         String image,
         String description,
-        Date createdAt,
+        LocalDate createdAt,
         String name,
         String crm,
         String uf
