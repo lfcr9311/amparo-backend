@@ -52,7 +52,7 @@ public class DosageRepository {
                     rs.getString("id_medicine"),
                     rs.getString("quantity"),
                     rs.getTimestamp("initial_hour").toLocalDateTime(),
-                    rs.getInt("frequency"),
+                    rs.getString("frequency"),
                     rs.getTimestamp("final_date") == null ? null : rs.getTimestamp("final_date").toLocalDateTime(),
                     rs.getString("medicineName")
             ));
@@ -94,7 +94,7 @@ public class DosageRepository {
                     rs.getString("id_medicine"),
                     rs.getString("quantity"),
                     rs.getTimestamp("initial_hour").toLocalDateTime(),
-                    rs.getInt("frequency"),
+                    rs.getString("frequency"),
                     rs.getTimestamp("final_date") == null ? null : rs.getTimestamp("final_date").toLocalDateTime(),
                     rs.getString("medicineName")
             ));
@@ -128,7 +128,7 @@ public class DosageRepository {
                     rs.getString("id_medicine"),
                     rs.getString("quantity"),
                     rs.getTimestamp("initial_hour").toLocalDateTime(),
-                    rs.getInt("frequency"),
+                    rs.getString("frequency"),
                     rs.getTimestamp("final_date") == null ? null : rs.getTimestamp("final_date").toLocalDateTime(),
                     rs.getString("medicineName")
             ));
@@ -180,7 +180,7 @@ public class DosageRepository {
                     rs.getString("id_medicine"),
                     rs.getString("quantity"),
                     rs.getTimestamp("initial_hour").toLocalDateTime(),
-                    rs.getInt("frequency"),
+                    rs.getString("frequency"),
                     rs.getTimestamp("final_date") == null ? null : rs.getTimestamp("final_date").toLocalDateTime(),
                     rs.getString("medicineName")
             ));

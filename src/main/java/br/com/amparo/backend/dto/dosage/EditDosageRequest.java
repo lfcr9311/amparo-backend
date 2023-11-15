@@ -7,6 +7,6 @@ import java.time.LocalDateTime;
 public record EditDosageRequest(
         @NotNull int medicineId,
         @NotNull String quantity,
-        @NotNull int frequency,
+        @NotNull String frequency,
         LocalDateTime finalDate
 ) {}

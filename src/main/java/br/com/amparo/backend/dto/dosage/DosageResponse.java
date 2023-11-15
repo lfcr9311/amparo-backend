@@ -8,7 +8,7 @@ public record DosageResponse(
         String idMedicine,
         String quantity,
         LocalDateTime initialHour,
-        int frequency,
+        String frequency,
         LocalDateTime finalDate,
         String medicineName
 ) {}

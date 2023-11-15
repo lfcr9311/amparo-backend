@@ -8,6 +8,6 @@ import java.time.LocalDateTime;
 public record AddDosageRequest(
         @NotNull String quantity,
         @NotNull LocalDateTime initialHour,
-        @NotNull int frequency,
+        @NotNull String frequency,
         LocalDateTime finalDate
 ) {}
