@@ -160,21 +160,18 @@ public class DosageRepository {
         }
     }
 
-    public List<DosageResponse> listDosage(String patientId, int pageNumber, int pageSize){
+    public List<DosageResponse> listDosage(String patientId){
         try{
-            int offset = (pageNumber - 1) * pageSize;
             String sql = """
                 SELECT "id", "id_patient", "id_medicine", "quantity", "initial_hour", "frequency", "final_date",
                           (SELECT "name" FROM "Medicine" WHERE "id" = "id_medicine") AS "medicineName"
                 FROM "Dosage"
                 WHERE "id_patient" = :patientId
-                LIMIT :pageSize OFFSET :offset
                 """;
             MapSqlParameterSource param = new MapSqlParameterSource(Map.of(
-                    "patientId", UUID.fromString(patientId),
-                    "pageSize", pageSize,
-                    "offset", offset));
-            List<DosageResponse> dosage = jdbcTemplate.query(sql, param, (rs, rowNum) -> new DosageResponse(
+                    "patientId", UUID.fromString(patientId)
+            ));
+            return jdbcTemplate.query(sql, param, (rs, rowNum) -> new DosageResponse(
                     rs.getString("id"),
                     rs.getString("id_patient"),
                     rs.getString("id_medicine"),
@@ -184,7 +181,6 @@ public class DosageRepository {
                     rs.getTimestamp("final_date") == null ? null : rs.getTimestamp("final_date").toLocalDateTime(),
                     rs.getString("medicineName")
             ));
-            return dosage;
         } catch (Exception e){
             log.error("Error trying to list dosage from patient with id: " + patientId, e);
             throw new RuntimeException(e);
