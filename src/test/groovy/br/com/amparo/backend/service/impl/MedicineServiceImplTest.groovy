@@ -44,14 +44,11 @@ class MedicineServiceImplTest extends Specification {
 
     def "should find all medicines"() {
         given:
-        def pageNumber = 0
-        def pageSize = 10
-
         def medicine = mockMedicineResponse()
-        repository.findAllMedicines(0, 10) >> List.of(medicine)
+        repository.findAllMedicines() >> List.of(medicine)
 
         when:
-        def result = service.findAllMedicines(pageNumber, pageSize)
+        def result = service.findAllMedicines()
 
         then:
         Assertions.assertThat(result.get(0)).usingRecursiveComparison().isEqualTo(medicine)
