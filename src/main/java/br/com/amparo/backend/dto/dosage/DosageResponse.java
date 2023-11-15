@@ -1,5 +1,6 @@
 package br.com.amparo.backend.dto.dosage;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 public record DosageResponse(
@@ -10,5 +11,7 @@ public record DosageResponse(
         LocalDateTime initialHour,
         String frequency,
         LocalDateTime finalDate,
+        LocalDate lastConsumedDate,
         String medicineName
-) {}
+) {
+}

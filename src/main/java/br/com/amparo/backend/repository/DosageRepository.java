@@ -54,6 +54,7 @@ public class DosageRepository {
                     rs.getTimestamp("initial_hour").toLocalDateTime(),
                     rs.getString("frequency"),
                     rs.getTimestamp("final_date") == null ? null : rs.getTimestamp("final_date").toLocalDateTime(),
+                    null,
                     rs.getString("medicineName")
             ));
             if (dosage.isEmpty()) {
@@ -74,9 +75,10 @@ public class DosageRepository {
                 SET "quantity" = :quantity,
                     "frequency" = :frequency,
                     "final_date" = :finalDate,
-                    "id_medicine" = :idMedicine
+                    "id_medicine" = :idMedicine,
+                    "last_date" = :last_date
                 WHERE "id" = :id AND "id_patient" = :patientId
-                RETURNING "id", "id_patient", "id_medicine", "quantity", "initial_hour", "frequency", "final_date",
+                RETURNING "id", "id_patient", "id_medicine", "quantity", "initial_hour", "frequency", "final_date", "last_date",
                           (SELECT "name" FROM "Medicine" WHERE "id" = "id_medicine") AS "medicineName";
                 """;
             MapSqlParameterSource param = new MapSqlParameterSource(Map.of(
@@ -85,6 +87,7 @@ public class DosageRepository {
                     "quantity", request.quantity(),
                     "idMedicine", request.medicineId()
             ));
+            param.addValue("last_Date", request.lastConsumedDate());
             param.addValue("frequency", request.frequency());
             param.addValue("finalDate", request.finalDate() == null ? null : Timestamp.valueOf(request.finalDate()));
 
@@ -96,6 +99,7 @@ public class DosageRepository {
                     rs.getTimestamp("initial_hour").toLocalDateTime(),
                     rs.getString("frequency"),
                     rs.getTimestamp("final_date") == null ? null : rs.getTimestamp("final_date").toLocalDateTime(),
+                    rs.getTimestamp("last_date") == null ? null : rs.getTimestamp("last_date").toLocalDateTime().toLocalDate(),
                     rs.getString("medicineName")
             ));
             if (dosage.isEmpty()) {
@@ -112,7 +116,7 @@ public class DosageRepository {
     public Optional<DosageResponse> getDosage(String dosageId, String patientId) {
         try {
             String sql = """
-                SELECT "id", "id_patient", "id_medicine", "quantity", "initial_hour", "frequency", "final_date",
+                SELECT "id", "id_patient", "id_medicine", "quantity", "initial_hour", "frequency", "final_date", "last_date",
                           (SELECT "name" FROM "Medicine" WHERE "id" = "id_medicine") AS "medicineName"
                 FROM "Dosage"
                 WHERE "id_patient" = :patientId AND "id" = :id
@@ -130,6 +134,7 @@ public class DosageRepository {
                     rs.getTimestamp("initial_hour").toLocalDateTime(),
                     rs.getString("frequency"),
                     rs.getTimestamp("final_date") == null ? null : rs.getTimestamp("final_date").toLocalDateTime(),
+                    rs.getTimestamp("last_date") == null ? null : rs.getTimestamp("last_date").toLocalDateTime().toLocalDate(),
                     rs.getString("medicineName")
             ));
             if (dosage.isEmpty()) {
@@ -163,7 +168,7 @@ public class DosageRepository {
     public List<DosageResponse> listDosage(String patientId){
         try{
             String sql = """
-                SELECT "id", "id_patient", "id_medicine", "quantity", "initial_hour", "frequency", "final_date",
+                SELECT "id", "id_patient", "id_medicine", "quantity", "initial_hour", "frequency", "final_date", "last_date",
                           (SELECT "name" FROM "Medicine" WHERE "id" = "id_medicine") AS "medicineName"
                 FROM "Dosage"
                 WHERE "id_patient" = :patientId
@@ -179,6 +184,7 @@ public class DosageRepository {
                     rs.getTimestamp("initial_hour").toLocalDateTime(),
                     rs.getString("frequency"),
                     rs.getTimestamp("final_date") == null ? null : rs.getTimestamp("final_date").toLocalDateTime(),
+                    rs.getTimestamp("last_date") == null ? null : rs.getTimestamp("last_date").toLocalDateTime().toLocalDate(),
                     rs.getString("medicineName")
             ));
         } catch (Exception e){
