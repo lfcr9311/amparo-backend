@@ -47,21 +47,9 @@ public class DoctorDosageController {
                     name = "patientId",
                     description = "Patient Id",
                     example = "aed85a2b-28b5-4d24-8c82-40ed02608402"
-            ) String patientId,
-            @RequestParam(defaultValue = "1")
-            @Parameter(
-                    name = "pageNumber",
-                    description = "Current page number",
-                    example = "1"
-            ) int pageNumber,
-            @RequestParam(defaultValue = "10")
-            @Parameter(
-                    name = "pageSize",
-                    description = "Number of items per page",
-                    example = "10"
-            ) int pageSize
+            ) String patientId
     ) {
         ApiUser user = SecurityUtils.getApiUser();
-        return ResponseEntity.ok(dosageService.listAllDosagesToPatient(patientId, pageNumber, pageSize, user));
+        return ResponseEntity.ok(dosageService.listAllDosagesToPatient(patientId, user));
     }
 }

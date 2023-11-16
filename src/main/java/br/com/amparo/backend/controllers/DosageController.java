@@ -59,8 +59,8 @@ public class DosageController {
                     )
             }
     )
-    public ResponseEntity<?> listDosages(@RequestParam(defaultValue = "1") int pageNumber, @RequestParam(defaultValue = "10") int pageSize) {
-            return new ResponseEntity<>(service.findAll(pageNumber, pageSize), HttpStatus.OK);
+    public ResponseEntity<?> listDosages() {
+            return new ResponseEntity<>(service.findAll(), HttpStatus.OK);
     }
 
     @PreAuthorize("hasRole('PATIENT')")

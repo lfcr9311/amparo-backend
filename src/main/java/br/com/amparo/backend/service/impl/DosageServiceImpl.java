@@ -60,15 +60,15 @@ public class DosageServiceImpl implements DosageService {
     }
 
     @Override
-    public List<DosageResponse> findAll(int pageNumber, int pageSize) {
+    public List<DosageResponse> findAll() {
         String patientId = SecurityUtils.getApiUser().getId();
         if(patientService.findPatientById(patientId).isEmpty()){
             throw new NotFoundException("Patient");
-        } else return repository.listDosage(patientId, pageNumber, pageSize);
+        } else return repository.listDosage(patientId);
     }
 
     @Override
-    public List<DosageResponse> listAllDosagesToPatient(String patientId, int pageNumber, int pageSize, ApiUser user) {
+    public List<DosageResponse> listAllDosagesToPatient(String patientId, ApiUser user) {
         if (user.isDoctor() && !linkService.checkConnection(user.getId(), patientId)) {
             throw new NotFoundException("Connection");
         }
@@ -77,7 +77,7 @@ public class DosageServiceImpl implements DosageService {
             throw new NotFoundException("Patient");
         }
 
-        return repository.listDosage(patientId, pageNumber, pageSize);
+        return repository.listDosage(patientId);
     }
 
 

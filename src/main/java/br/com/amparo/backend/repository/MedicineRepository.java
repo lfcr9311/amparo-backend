@@ -128,25 +128,20 @@ public class MedicineRepository {
         }
     }
 
-    public List<MedicineResponse> findAllMedicines(int pageNumber, int pageSize) {
+    public List<MedicineResponse> findAllMedicines() {
         try {
             String sql = """
                     SELECT  m."id"      as "id",
                             m."name"    as "name",
                             m."leaflet" as "leaflet"
                     FROM "Medicine" m
-                    LIMIT :pageSize OFFSET :offset
                     """;
 
-            int offset = (pageNumber - 1) * pageSize;
-
-            SqlParameterSource param = new MapSqlParameterSource()
-                    .addValue("pageSize", pageSize)
-                    .addValue("offset", offset);
+            SqlParameterSource param = new MapSqlParameterSource();
 
             return jdbcTemplate.query(sql, param, getMedicineRowMapper());
         } catch (DataAccessException e) {
-            log.error("Error trying to find medicines by page: " + pageNumber + ". Error: " + e.getMessage());
+            log.error("Error trying to find medicines", e);
             throw new MedicineOperationException(0, "null", "null", e);
         }
     }
