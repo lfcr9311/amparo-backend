@@ -9,6 +9,7 @@ import br.com.amparo.backend.service.LinkService;
 import br.com.amparo.backend.service.PatientService;
 import lombok.RequiredArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -57,6 +58,7 @@ public class LinkServiceImpl implements LinkService {
     @Override
     public List<PatientResponse> getAllPatientOfDoctor(String doctorId) {
         List<UUID> patientIds = linkRepository.getAllPatientForDoctorId(UUID.fromString(doctorId));
+        if (patientIds.isEmpty()) return new ArrayList<>();
         return patientService.findAll(patientIds);
     }
 }
