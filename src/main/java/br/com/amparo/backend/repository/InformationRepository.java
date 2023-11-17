@@ -22,12 +22,12 @@ public class InformationRepository {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    public InformationResponse create(Information information, String id) {
+    public InformationResponse create(Information information, String docId) {
         try {
             String sql = """
                     INSERT INTO "Information" ("title", "link", "image", "description", "id_doctor", "created_at")
                     VALUES (
-                    :title, 
+                    :title,
                     :link, 
                     :image, 
                     :description, 
@@ -36,7 +36,7 @@ public class InformationRepository {
                     )
                     """;
             MapSqlParameterSource param = new MapSqlParameterSource(Map.of(
-                    "id", UUID.fromString(id)
+                    "id", UUID.fromString(docId)
             ));
             param.addValue("title", information.getTitle());
             param.addValue("link", information.getLink());

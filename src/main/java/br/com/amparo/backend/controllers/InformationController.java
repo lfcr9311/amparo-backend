@@ -6,6 +6,7 @@ import br.com.amparo.backend.dto.information.InformationFindResponse;
 import br.com.amparo.backend.dto.information.InformationResponse;
 import br.com.amparo.backend.dto.information.InformationToUpdateResponse;
 import br.com.amparo.backend.service.InformationService;
+import br.com.amparo.backend.service.security.SecurityUtils;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -34,7 +35,7 @@ public class InformationController {
     @Autowired
     private final InformationService informationService;
 
-    @PostMapping("/{id}")
+    @PostMapping
     @PreAuthorize("hasRole('DOCTOR')")
     @Operation(
             summary = "Create Information",
@@ -62,9 +63,9 @@ public class InformationController {
                     )
             }
     )
-    public ResponseEntity<?> create(@RequestBody Information information, @PathVariable String id) throws IllegalAccessException {
+    public ResponseEntity<?> create(@RequestBody Information information) throws IllegalAccessException {
         try {
-            return new ResponseEntity<>(informationService.create(information, id), HttpStatus.CREATED);
+            return new ResponseEntity<>(informationService.create(information, SecurityUtils.getCurrentUserId()), HttpStatus.CREATED);
         } catch (IllegalAccessException e) {
             return new ResponseEntity<>(new ErrorMessage("Forbidden"), HttpStatus.FORBIDDEN);
         }
