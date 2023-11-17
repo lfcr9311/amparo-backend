@@ -10,5 +10,5 @@ public record EditDosageRequest(
         @NotNull String quantity,
         @NotNull String frequency,
         LocalDateTime finalDate,
-        LocalDate lastConsumedDate
+        LocalDateTime lastConsumedDate
 ) {}
