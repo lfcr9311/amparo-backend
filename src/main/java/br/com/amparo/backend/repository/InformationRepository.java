@@ -28,12 +28,13 @@ public class InformationRepository {
                     INSERT INTO "Information" ("title", "link", "image", "description", "id_doctor", "created_at")
                     VALUES (
                     :title,
-                    :link, 
-                    :image, 
-                    :description, 
+                    :link,
+                    :image,
+                    :description,
                     :id,
                     NOW()
                     )
+                    returning id, id_doctor;
                     """;
             MapSqlParameterSource param = new MapSqlParameterSource(Map.of(
                     "id", UUID.fromString(docId)
@@ -42,9 +43,10 @@ public class InformationRepository {
             param.addValue("link", information.getLink());
             param.addValue("image", information.getImage());
             param.addValue("description", information.getDescription());
-            jdbcTemplate.update(sql, param);
-            return new InformationResponse(information.getTitle(), information.getLink(),
-                    information.getImage(), information.getDescription(), LocalDate.now(ZoneId.of("America/Sao_Paulo")));
+            String informationId = jdbcTemplate.queryForObject(sql, param, String.class);
+            return new InformationResponse(informationId, information.getTitle(), information.getLink(),
+                    information.getImage(), docId, information.getDescription(),
+                    LocalDate.now(ZoneId.of("America/Sao_Paulo")));
         } catch (Exception e) {
             log.error(e.getMessage());
             throw new RuntimeException(e);
@@ -62,12 +64,14 @@ public class InformationRepository {
                     """;
             MapSqlParameterSource param = new MapSqlParameterSource();
             return jdbcTemplate.query(sql, param, (rs, rowNum) -> new InformationFindResponse(
+                    rs.getString("id"),
                     rs.getString("title"),
                     rs.getString("link"),
                     rs.getString("image"),
                     rs.getString("description"),
                     rs.getDate("created_at").toLocalDate(),
                     rs.getString("name"),
+                    rs.getString("id_doctor"),
                     rs.getString("crm"),
                     rs.getString("uf")
             ));
@@ -91,12 +95,14 @@ public class InformationRepository {
                     "title", "%" + title + "%"
             ));
             return jdbcTemplate.query(sql, param, (rs, rowNum) -> new InformationFindResponse(
+                    rs.getString("id"),
                     rs.getString("title"),
                     rs.getString("link"),
                     rs.getString("image"),
                     rs.getString("description"),
                     rs.getDate("created_at").toLocalDate(),
                     rs.getString("name"),
+                    rs.getString("id_doctor"),
                     rs.getString("crm"),
                     rs.getString("uf")
             ));
@@ -117,9 +123,11 @@ public class InformationRepository {
                     "id", UUID.fromString(id)
             ));
             List<InformationResponse> information = jdbcTemplate.query(sql, param, (rs, rowNum) -> new InformationResponse(
+                    rs.getString("id"),
                     rs.getString("title"),
                     rs.getString("link"),
                     rs.getString("image"),
+                    rs.getString("id_doctor"),
                     rs.getString("description"),
                     rs.getDate("created_at").toLocalDate()
             ));
@@ -174,12 +182,14 @@ public class InformationRepository {
             MapSqlParameterSource param = new MapSqlParameterSource();
             param.addValue("idDoctor", UUID.fromString(idDoctor));
             return jdbcTemplate.query(sql, param, (rs, rowNum) -> new InformationFindResponse(
+                    rs.getString("id"),
                     rs.getString("title"),
                     rs.getString("link"),
                     rs.getString("image"),
                     rs.getString("description"),
                     rs.getDate("created_at").toLocalDate(),
                     rs.getString("name"),
+                    rs.getString("id_doctor"),
                     rs.getString("crm"),
                     rs.getString("uf")
             ));

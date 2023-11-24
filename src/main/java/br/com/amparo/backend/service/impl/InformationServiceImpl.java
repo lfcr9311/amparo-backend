@@ -18,8 +18,8 @@ public class InformationServiceImpl implements InformationService {
     private final InformationRepository informationRepository;
 
     @Override
-    public InformationResponse create(Information information, String id) throws IllegalAccessException {
-        return informationRepository.create(information, id);
+    public InformationResponse create(Information information, String doctorId) throws IllegalAccessException {
+        return informationRepository.create(information, doctorId);
     }
 
     @Override
