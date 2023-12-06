@@ -1,10 +1,6 @@
 package br.com.amparo.backend.service.impl;
 
 import br.com.amparo.backend.dto.FileUploadResponse;
-import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.model.CannedAccessControlList;
-import com.amazonaws.services.s3.model.PutObjectRequest;
-import com.amazonaws.services.s3.model.PutObjectResult;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.flywaydb.core.api.configuration.S3ClientFactory;
